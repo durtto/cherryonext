@@ -1,0 +1,18 @@
+#summary Cherry filter model
+
+=Filter Model=
+
+http://cherryonext.googlecode.com/svn/wiki/FilterModel.png
+
+Filter defintion using BNF:
+
+{{{
+<filter> ::= <listof elementary_filter>
+<listof elementary_filter> ::= <elementary_filter> [<op> <listof elementary_filter>]
+<op> ::= AND | OR
+<elementary_filter> ::= <field> <operator> <value>
+<operator> ::= <num_op> | <string_op> | <date_op>
+<string_op> ::= “=” | “!=”  
+<field> ::= whatever identifier valid in the underlying domain
+<value> ::= any value permitted for the associated field type
+}}}
