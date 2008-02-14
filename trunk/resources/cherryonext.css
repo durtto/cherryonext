@@ -1,0 +1,20 @@
+.x-icon-modify {
+    background-image: url(../resources/modify.gif) !important;
+}
+
+.x-icon-delete {
+    background-image: url(../resources/delete.gif) !important;
+}
+
+.x-icon-cancel {
+    background-image: url(../resources/cancel.gif) !important;
+}
+
+.x-icon-checked {
+    background-image: url(../resources/checked.gif) !important;
+}
+
+.x-grid3-hd-row td.ux-filtered-column {
+    font-style:italic;
+    font-weight:bold;
+}

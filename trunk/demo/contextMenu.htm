@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Context Menu Demo</title>
+  <link rel="stylesheet" type="text/css" href="../../ext-2.0.1/resources/css/ext-all.css" />
+  <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
+  <script type="text/javascript" src="../../ext-2.0.1/source/core/Ext.js"></script>
+  <script type="text/javascript" src="../../ext-2.0.1/source/adapter/ext-base.js"></script>
+  <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
+  <script type="text/javascript" src="../cherryonext-debug.js"></script>
+  
+  <script type="text/javascript" src="mydata.js"></script>
+
+  <script language="JavaScript" type="text/javascript">
+
+    Ext.BLANK_IMAGE_URL="../../ext-2.0.1/resources/images/default/s.gif";
+
+    Ext.onReady(function(){
+
+//--------------------------------------------------------------------------------------
+//The ContextMenuManager is instantiated passing directly to it the configuration to create the menu
+      var contextMenuManager= new Ext.ux.netbox.ContextMenuManager({
+       menu:{
+        items:[{
+          text: 'Details',
+
+          // isToShow, method that decides whether or not to show the menu
+          isToShow: function(grid,row,column){
+
+            var record=grid.getStore().getAt(row);
+            if(record.get('inPortfolio')==1)
+              return true;
+            else
+              return false;
+          },
+
+          // handler, method that decides what to do when you press the menu item
+          handler: function(grid,row,column){
+
+            var record=grid.getStore().getAt(row);
+            var company = record.get('company');
+            var msg ='You have this company in your portfolio.<br>';
+            msg = msg+'If this were a serious demo here there would be the number of shares for <br><b>'+company+'</b>';
+            var dialog;
+            var messageElement;
+            if(!dialog){
+                messageElement = new Ext.Panel({
+                    id             : 'dlg-message',
+                    autoScroll     : true,
+                    deferredRender : false,
+                    border         : false
+                });
+                dialog = new Ext.Window({
+                    id             : 'dlg-win',
+                    title          : 'Details',
+                    modal          : true,
+                    width          : 400,
+                    height         : 200,
+                    shadow         : true,
+                    minWidth       : 300,
+                    minHeight      : 200,
+                    closeAction    : 'hide',
+                    layout         : 'fit',
+                    plain          : true,
+                    items          : [messageElement],
+                    buttons        : [{
+                                      text: 'Close',
+                                      handler: function(){ dialog.hide(); }
+                                     }]
+                });
+            }
+            dialog.show();
+            messageElement.body.dom.innerHTML = msg;
+          }
+        }]
+       }
+      });
+
+      // Here another way to instantiate tha ContextMenuManager ...
+      //var contextMenuManager=new Ext.ux.netbox.ContextMenuManager({menu: contextMenu});
+//--------------------------------------------------------------------------------------
+
+      var grid = new Ext.grid.GridPanel({
+        store: store,
+        columns: [
+          {id:'company',header: "Company", width: 160, sortable: true, dataIndex: 'company'},
+          {header: "Price", width: 75, sortable: true, renderer: 'usMoney', dataIndex: 'price'},
+          {header: "Change", width: 75, sortable: true, renderer: change, dataIndex: 'change'},
+          {header: "% Change", width: 75, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
+          {header: "Last Updated", width: 95, sortable: true, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i'), dataIndex: 'lastChange'},
+          {header: "In Portfolio", width: 85, sortable: true, renderer: inPortfolio, dataIndex: 'inPortfolio'}
+        ],
+        stripeRows: true,
+        autoExpandColumn: 'company',
+        region: "center",
+        plugins: [contextMenuManager]
+      });
+
+      var viewport = new Ext.Viewport(
+          {layout: "border",
+           items: [ grid ]}
+      );
+
+    });
+
+  </script>
+</head>
+<body>
+</body>
+</html>
