@@ -7,10 +7,12 @@
   <title>Dynamic Filter Demo</title>
   <link rel="stylesheet" type="text/css" href="../ext/resources/css/ext-all.css" />
   <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
+
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
   <script type="text/javascript" src="../cherryonext.js"></script>
-
+  
+  <link rel="stylesheet" type="text/css" href="myStylesheet.css" />
   <script type="text/javascript" src="mydata.js"></script>
 
   <script language="JavaScript" type="text/javascript">
@@ -21,7 +23,12 @@
     var filterModel;
     var localFilterResolver;
     var win;
-
+    var availableValuesStore=new Ext.data.SimpleStore({fields: ['label', 'value'],
+      data: [
+        ["Yes","0"],
+        ["No","1"],
+        ["I don't remember","2"]
+      ]});
     Ext.onReady(function(){
 
       //config for the FieldManager
@@ -53,25 +60,20 @@
         stripeRows: true,
         plugins: [new Ext.ux.netbox.core.FilterHeaderPlugin(filterModel)],
         autoExpandColumn: 'company',
-        region: "center",
         tbar: [{
            text: 'Filters...',
            handler: function(){
              win.show();
            }
-        }]
+        }],
+        width: 800,
+        height: 500
       });
 
       var button2=new Ext.Button({text: "Apply"});
 
       button2.on("click",filterTable);
-      var viewport = new Ext.Viewport(
-          {layout: "border",
-           items: [
-             grid
-           ]
-          }
-      );
+      grid.render("mettiloQui");
 
       win = new Ext.Window({
             title: 'Filters',
@@ -101,6 +103,9 @@
     </script>
 </head>
 
-<body id="mettiloQui">
+<body>
+<h1> Dynamic Filter </h1>
+<p> In this demo you can add or remove filters on the table clicking on the Filters... button. In the window that appears pushing the Apply button applies the filter to the table.</p>
+<div id="mettiloQui"></div>
 </body>
 </html>

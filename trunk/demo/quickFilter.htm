@@ -9,8 +9,9 @@
   <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
-  <script type="text/javascript" src="../cherryonext.js"></script>
+  <script type="text/javascript" src="../cherryonext-debug.js"></script>
   
+  <link rel="stylesheet" type="text/css" href="myStylesheet.css" />  
   <script type="text/javascript" src="mydata.js"></script>
 
   <script language="JavaScript" type="text/javascript">
@@ -20,7 +21,12 @@
     var fieldManager;
     var filterModel;
     var localFilterResolver;
-
+    var availableValuesStore=new Ext.data.SimpleStore({fields: ['label', 'value'],
+      data: [
+        ["Yes","0"],
+        ["No","1"],
+        ["I don't remember","2"]
+      ]});
     Ext.onReady(function(){
 
       var filterCfg=[
@@ -40,7 +46,17 @@
       //--------------------------------------------------------------------------------------
       // QuickFilter
       var quickFilter= new Ext.ux.netbox.core.QuickFilterModelView({
-        filterModel: filterModel
+        filterModel: filterModel,
+        //for the grid's column inPortfolio the value in the store is different from the rendered one....
+        fieldsOptions: [{
+          id: "inPortfolio",
+          getterFn: function(value){
+            return([{
+              value: value,
+              label: inPortfolio(value)
+            }]);
+          }
+        }]
       });
 
       quickFilter.on("filterChanged",filterTable);
@@ -68,13 +84,11 @@
         stripeRows: true,
         plugins: [new Ext.ux.netbox.core.FilterHeaderPlugin(filterModel),contextMenuManager],
         autoExpandColumn: 'company',
-        region: "center"
+        width: 800,
+        height: 500
       });
 
-      var viewport = new Ext.Viewport(
-          {layout: "border",
-           items: [ grid ]}
-      );
+      grid.render("mettiloQui");
 
     });
 
@@ -85,6 +99,9 @@
     </script>
 </head>
 
-<body id="mettiloQui">
+<body>
+<h1>Quick Filter</h1>
+<p> In this demo you can add or remove filters on the table right clicking on the grid</p>
+<div id="mettiloQui"></div>
 </body>
 </html>
