@@ -18,9 +18,9 @@ Ext.namespace('Ext.ux.netbox.core');
   * @config {Array of Object} fieldsOptions The options (otional) for configure the operators to show or add new custom getter function
   * Syntax of fieldsOptions object:<br><PRE>
   * [{
-  *     <b>id:</b> <em>id of the filter Type</em>, 
+  *     <b>id:</b> <em>id of the field</em>, 
   *     <b>operators:</b> <em>array of operator id. This is the set of operators available in the quick filter for the field</em>,
-  *     <b>getterFn</b>: <em>function that, given the value in the grid, returns the value for the filter. Usefull for example when you have a "display" and an id, both from the DB</em>,
+  *     <b>getterFn</b>: <em>function that, given the value in the grid, returns the value for the filter. Usefull for example when the rendered value is totally different from the store value</em>,
   *     <b>getterScope</b>:<em>The scope of the getter function</em>
   *  },
   *  {...}]
@@ -223,7 +223,8 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
         var label= filters[i].getField().getLabel()+' '+ filters[i].getOperator().getLabel()+' '+filters[i].getOperator().render(filters[i].getValues());
         var filterItem = {
           text: label,
-          handler: this.removeFilterById.createDelegate(this,[filters[i].getId()],false)
+          handler: this.removeFilterById.createDelegate(this,[filters[i].getId()],false),
+          isToShow: function(){return(true);}
         };
         itemsArray.push(filterItem);
       }
@@ -231,7 +232,8 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
       var removeAllFilterItem = {
         text    : this.removeAllText,
         handler : this.removeAllFilters,
-        scope   : this
+        scope   : this,
+        isToShow: function(){return(true);}
       };
       itemsArray.push(removeAllFilterItem);
 
