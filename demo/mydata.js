@@ -30,13 +30,6 @@
         ['Wal-Mart Stores, Inc.',45.45,0.73,1.63,'9/1 12:00','2']
     ];
 
-    var availableValuesStore=new Ext.data.SimpleStore({fields: ['value', 'label'],
-      data: [
-        ["Yes","0"],
-        ["No","1"],
-        ["I don't remember","2"]
-      ]});
-
     var store = new Ext.data.SimpleStore({
         fields: [
            {name: 'company'},
@@ -60,9 +53,9 @@
 
     function inPortfolio(val){
       if(val==='0'){
-        return("No");
-      }else if (val==='1'){
         return("Yes");
+      }else if (val==='1'){
+        return("No");
       }else if (val==='2'){
         return("I don't remember");
       } else {

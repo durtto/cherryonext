@@ -10,7 +10,8 @@
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
   <script type="text/javascript" src="../cherryonext.js"></script>
-
+  
+  <link rel="stylesheet" type="text/css" href="myStylesheet.css" />
   <script type="text/javascript" src="mydata.js"></script>
 
   <style TYPE="text/css">
@@ -25,7 +26,12 @@
     var filterObject;
 
     Ext.BLANK_IMAGE_URL="../ext/resources/images/default/s.gif";
-
+    var availableValuesStore=new Ext.data.SimpleStore({fields: ['label', 'value'],
+      data: [
+        ["Yes","0"],
+        ["No","1"],
+        ["I don't remember","2"]
+      ]});
     Ext.onReady(function(){
 
       var filterCfg=[
@@ -34,9 +40,12 @@
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
         {id: 'lastChange',label: 'Last Updated', type: 'date', format: 'd/m/Y H:i'},
-        {id: 'shouldBuy',label: 'Should Buy', availableValues: availableValuesStore, remoteStore: false}
+        {id: 'inPortfolio',label: 'In Portfolio', availableValues: availableValuesStore, remoteStore: false}
       ];
-
+      fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
+      filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
+      localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
+      
       // create the Grid
       var grid = new Ext.grid.GridPanel({
         store: store,
@@ -46,33 +55,31 @@
           {header: "Change", width: 75, sortable: true, renderer: change, dataIndex: 'change'},
           {header: "% Change", width: 75, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
           {header: "Last Updated", width: 95, sortable: true, renderer: Ext.util.Format.dateRenderer('d/m/Y H:i'), dataIndex: 'lastChange'},
-          {header: "Should Buy", width: 85, sortable: true, dataIndex: 'shouldBuy'}
+          {header: "In Portfolio", width: 85, sortable: true, renderer: inPortfolio, dataIndex: 'inPortfolio'}
         ],
         stripeRows: true,
+        plugins: [new Ext.ux.netbox.core.FilterHeaderPlugin(filterModel)],
         autoExpandColumn: 'company',
         region: "center"
       });
-
-      fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
-
-      filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
-      localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
       filterObject={fieldId:"company", operatorId:"STRING_STARTS_WITH", values:[{label: "A",value:"A"}]};
       filterModel.addElementaryFilter(filterObject);
       var button2=new Ext.Button({text: "Apply"});
       button2.on("click",filterTable);
-      var viewport = new Ext.Viewport(
+      var panel = new Ext.Panel(
           {layout: "border",
+          width: 800,
+          height: 550,
            items: [
              { filterModel: filterModel,
-               colsNumber:3,
+               colsNumber:2,
                labelWidth: 55,
                labelAlign: 'top',
                rowSize: 46,
-               ratio: 33,
+               ratio: 28,
                labelPad: 1,
                region: "north",
-               height:150,
+               height:190,
                xtype: 'staticFilter',
                itemCls: 'filter',
                buttons: [button2]
@@ -81,6 +88,7 @@
            ]
           }
         );
+        panel.render("mettiloQui");
     });
 
     function filterTable(){
@@ -90,5 +98,8 @@
     </script>
 </head>
 <body>
+<h1> Static Filter </h1>
+<p> In this demo you can add or remove filters on the table using the form above the table and then pushing the Apply button</p>
+<div id="mettiloQui"></div>
 </body>
 </html>
