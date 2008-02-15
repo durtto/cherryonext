@@ -1,0 +1,461 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit LocalStoreFilterResolver Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../../ext-2.0.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../../ext-2.0.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Filter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/ElementaryFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/CompositeFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FieldManager.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FilterModel.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/TextFieldOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringListOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberOperators.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/FilterEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateOperators.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/LocalStoreFilterResolver.js"></script>
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+      var filterModel;
+      var store;
+      var localStoreResolver;
+      var now;
+    function test_filterStringEquals(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_EQUALS", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha solo 1 elemento",1,store.getCount());
+      assertTrue("E' l'elemento con pietanza vuota",isPietanzaThere(""));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_EQUALS", values: [{label:"boh",value:"Patatine"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha ancora solo 1 elemento",1,store.getCount());
+      assertTrue("Sono le patatine",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterStringList(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_LIST", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Non c'e' neanche un elemento",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_LIST", values: [{label:"boh",value:"Patatine"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha ancora solo 1 elemento",1,store.getCount());
+      assertTrue("Sono le patatine",isPietanzaThere("Patatine"));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_LIST", values: [{label:"boh",value:"Patatine"},{label:"boh",value:"*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha ancora 2 elementi",2,store.getCount());
+      assertTrue("Sono le patatine",isPietanzaThere("Patatine"));
+      assertTrue("C'e' la pietanza strana",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function test_filterStringNotInList(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_NOT_IN_LIST", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ci sono tutti gli elementi",7,store.getCount());
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_NOT_IN_LIST", values: [{label:"boh",value:"Patatine"},{label:"boh",value:"*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 5 elementi",5,store.getCount());
+      assertFalse("Le patatine non ci sono",isPietanzaThere("Patatine"));
+      assertFalse("La pietanza strana non c'e'",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function isPietanzaThere(pietanza){
+      for(var i=0; i<store.getCount();i++){
+        if(store.getAt(i).get("Pietanza")==pietanza){
+          return(true);
+        }
+      }
+      return(false);
+    }
+
+    function test_filterStringDifferent(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DIFFERENT", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 6 elementi",6,store.getCount());
+      assertFalse("L'elemento vuoto non e' piu' la'",isPietanzaThere(""));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DIFFERENT", values: [{label:"boh",value:"Patatine"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 6 elementi",6,store.getCount());
+      assertFalse("L'elemento vuoto non e' piu' la'",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterStringContains(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_CONTAINS", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 7 elementi",7,store.getCount());
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_CONTAINS", values: [{label:"boh",value:"'"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 2 elementi",2,store.getCount());
+      assertTrue("C'e' il ragu'",isPietanzaThere("ragu'"));
+      assertTrue("C'e' la pietanza strana",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_CONTAINS", values: [{label:"boh",value:"*"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("C'e' la pietanza strana 2",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function test_filterStringDoesntContains(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DOESNT_CONTAIN", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DOESNT_CONTAIN", values: [{label:"boh",value:"'"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 5 elementi",5,store.getCount());
+      assertFalse("Non c'e' il ragu'",isPietanzaThere("ragu'"));
+      assertFalse("Non c'e' la pietanza strana",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DOESNT_CONTAIN", values: [{label:"boh",value:"*"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 6 elemento",6,store.getCount());
+      assertFalse("Non c'e' la pietanza strana 2",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function test_filterStringStartsWith(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_STARTS_WITH", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 7 elementi",7,store.getCount());
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_STARTS_WITH", values: [{label:"boh",value:"vitello"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("L'elemento e' il vitello",isPietanzaThere("vitello"));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_STARTS_WITH", values: [{label:"boh",value:"*"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("L'elemento e' la pietanza strana",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function test_filterStringEndsWith(){
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_ENDS_WITH", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 7 elementi",7,store.getCount());
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_ENDS_WITH", values: [{label:"boh",value:"vitello"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("L'elemento e' il vitello",isPietanzaThere("vitello"));
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_ENDS_WITH", values: [{label:"boh",value:"."}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("L'elemento e' la pietanza strana",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function test_filterNumberEqual(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_EQUAL", values: [{label:"boh",value:"5"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 2 elementi",2,store.getCount());
+      assertTrue("Un elemento e' il ragu'",isPietanzaThere("ragu'"));
+      assertTrue("Un elemento e' quello vuoto'",isPietanzaThere(""));
+    }
+
+    function test_filterNumberDifferent(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_NOT_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 7 elementi",7,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_NOT_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_NOT_EQUAL", values: [{label:"boh",value:"0.5"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 6 elementi",6,store.getCount());
+      assertFalse("Manca il vitello",isPietanzaThere("vitello"));
+    }
+
+    function test_filterNumberGreater(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER", values: [{label:"boh",value:"2"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 2 elementi",2,store.getCount());
+      assertTrue("C'e' il ragu'",isPietanzaThere("ragu'"));
+      assertTrue("C'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+    }
+
+    function test_filterNumberGreaterOrEqual(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER_OR_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER_OR_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER_OR_EQUAL", values: [{label:"boh",value:"2"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 3 elementi",3,store.getCount());
+      assertTrue("C'e' il ragu'",isPietanzaThere("ragu'"));
+      assertTrue("C'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterNumberLess(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS", values: [{label:"boh",value:"0.5"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 2 elementi",2,store.getCount());
+      assertTrue("C'e' l'insalata",isPietanzaThere("Insalata"));
+      assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+    }
+
+    function test_filterNumberLessOrEqual(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 3 elementi",3,store.getCount());
+      assertTrue("C'e' l'insalata",isPietanzaThere("Insalata"));
+      assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      assertTrue("C'e' il vitello",isPietanzaThere("vitello"));
+    }
+
+    function test_filterNumberRange(){
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label: "7", value: "0"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "dddd"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "2"},{label: "7", value: "dddd"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label:"boh",value:"0.5"},{label:"boh",value:"2"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 3 elementi",3,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+      assertTrue("C'e' la polenta",isPietanzaThere("polenta"));
+      assertTrue("C'e' il vitello",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterDateEqual(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_EQUAL", values: [{label:"boh",value:now.format('Y-m-d H:i:s')}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("Sono le patatine",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterDateGreater(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 1 elemento",1,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterDateGreaterOrEqual(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER_OR_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER_OR_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER_OR_EQUAL", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 2 elementi",2,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+      assertTrue("C'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+    }
+
+    function test_filterDateLess(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 5 elementi",5,store.getCount());
+      assertFalse("Non ci sono le patatine",isPietanzaThere("Patatine"));
+      assertFalse("Non c'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+    }
+
+    function test_filterDateLessOrEqual(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS_OR_EQUAL", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS_OR_EQUAL", values: [{label: "7", value: "akj"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS_OR_EQUAL", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 6 elementi",6,store.getCount());
+      assertFalse("Non ci sono le patatine",isPietanzaThere("Patatine"));
+    }
+
+    function test_filterDateRange(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label: "7", value: "0"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "dddd"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 3",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "2"},{label: "7", value: "dddd"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 4",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label:"boh",value:now.add(Date.MONTH,-1).format('Y-m-d H:i:s')},{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 5 elementi",5,store.getCount());
+      assertFalse("Non ci sono le patatine",isPietanzaThere("Patatine"));
+      assertFalse("Non c'e' l'insalata",isPietanzaThere("Insalata"));
+    }
+
+    function test_filterDatePeriod(){
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: []});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "0"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_YEAR"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 6 elementi",6,store.getCount());
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_MONTH"}]});
+      assertFalse("Non c'e' l'insalata",isPietanzaThere("Insalata"));
+      localStoreResolver.apply(store);
+      assertEquals("Ha 5 elementi",5,store.getCount());
+      assertFalse("Non c'e' l'insalata",isPietanzaThere("Insalata"));
+      assertFalse("Non c'e' il ragu'",isPietanzaThere("ragu'"));
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_WEEK"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 5 elementi",4,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+      assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      assertTrue("C'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+      assertTrue("C'e' la polenta",isPietanzaThere("polenta"));
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_DAY"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 4 elementi",3,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+      assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      assertTrue("C'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_HOUR"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 3 elementi",2,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+      assertTrue("C'e' la pietanza con il nome vuoto",isPietanzaThere(""));
+      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_QUARTER"}]});
+      localStoreResolver.apply(store);
+      assertEquals("Ha 2 elemento",1,store.getCount());
+      assertTrue("Ci sono le patatine",isPietanzaThere("Patatine"));
+    }
+
+    function test_filter(){
+      //visto che in sostanza le singole operazioni le ho gia' testate sopra, testo gli OR e gli AND
+      filterModel.setFilterObj({left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []},
+        logicalOperator: "OR",
+        right: {fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]}
+      });
+      localStoreResolver.apply(store);
+      assertEquals("Ha 3 elementi",3,store.getCount());
+      assertTrue("C'e' l'insalata",isPietanzaThere("Insalata"));
+      assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      assertTrue("C'e' il vitello",isPietanzaThere("vitello"));
+      filterModel.setFilterObj({left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []},
+        logicalOperator: "AND",
+        right: {fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]}
+      });
+      localStoreResolver.apply(store);
+      assertEquals("Ha 0 elementi",0,store.getCount());
+      //testo le precedenze tra AND e OR
+      filterModel.setFilterObj({
+        left: {
+          left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []},
+          logicalOperator: "AND",
+          right: {fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]}
+        },
+        logicalOperator: "OR",
+        right: {fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]}
+      });
+      localStoreResolver.apply(store);
+      assertEquals("Ha 3 elementi 2",3,store.getCount());
+      assertTrue("C'e' l'insalata",isPietanzaThere("Insalata"));
+      assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
+      assertTrue("C'e' il vitello",isPietanzaThere("vitello"));
+
+    }
+
+    function setUp(){
+      var fieldManager=new Ext.ux.netbox.core.FieldManager();
+      var field=new Ext.ux.netbox.string.StringField("Pietanza","Company");
+      field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_LIST',Ext.ux.netbox.string.StringListOperator.stringListText));
+      field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_NOT_IN_LIST',Ext.ux.netbox.string.StringListOperator.stringNotListText));
+      fieldManager.addField(field);
+      fieldManager.addField(new Ext.ux.netbox.number.NumberField("#volte","Price"));
+      fieldManager.addField(new Ext.ux.netbox.date.DateField("quando","Price",'d/m/Y H:i'));
+      filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
+      localStoreResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
+      now=new Date();
+      now=now.add(Date.SECOND,-1);
+      var myData = [
+        ["Patatine", 2,now.format('d/m/Y H:i:s')],
+        ["Insalata", 0,now.add(Date.YEAR,-1).format('d/m/Y H:i:s')],
+        ["ragu'",5,now.add(Date.MONTH,-1).format('d/m/Y H:i:s')],
+        ["vitello", 0.5,now.add(Date.DAY,-7).format('d/m/Y H:i:s')],
+        ["polenta", 1,now.add(Date.DAY,-1).format('d/m/Y H:i:s')],
+        ["*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali...",-1,now.add(Date.HOUR,-1).format('d/m/Y H:i:s')],
+        ["",5,now.add(Date.MINUTE,-15).format('d/m/Y H:i:s')]
+      ];
+      store = new Ext.data.SimpleStore({
+        fields: [
+           {name: 'Pietanza'},
+           {name: '#volte', type: 'float'},
+           {name: 'quando', type: 'date', dateFormat: 'd/m/Y H:i:s'}
+        ]
+      });
+      store.loadData(myData);
+    }
+
+    function tearDown(){
+      filterModel=null;
+      store=null;
+      localStoreResolver=null;
+    }
+    </script>
+</head>
+
+<body>
+<h1>JsUnit LocalStoreFilterResolver Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>

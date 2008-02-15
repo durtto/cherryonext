@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Operation Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../../ext-2.0.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../../ext-2.0.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operation.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FilterType.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringOperations.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringFilterType.js"></script>
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+        var stringFilterType = null;
+
+        function verifyContained(id,operationsArray){
+          for(var i=0; i<operationsArray.length; i++){
+            if (operationsArray[i].getId() == id)
+              return(true);
+          }
+        }
+        
+        function testConstructor(){
+          assertEquals("Default operation STRING_EQUALS",stringFilterType.getDefaultOperation().getId(),"STRING_EQUALS");
+          assertTrue("STRING_EQUALS contained",verifyContained("STRING_EQUALS",stringFilterType.getAvailableOperations()));
+          assertTrue("STRING_DIFFERENT contained",verifyContained("STRING_DIFFERENT",stringFilterType.getAvailableOperations()));
+          assertTrue("STRING_CONTAINS contained",verifyContained("STRING_CONTAINS",stringFilterType.getAvailableOperations()));
+          assertTrue("STRING_DOESNT_CONTAINS contained",verifyContained("STRING_DOESNT_CONTAINS",stringFilterType.getAvailableOperations()));
+          assertTrue("STRING_STARTS_WITH contained",verifyContained("STRING_STARTS_WITH",stringFilterType.getAvailableOperations()));
+          assertTrue("STRING_ENDS_WITH contained",verifyContained("STRING_ENDS_WITH",stringFilterType.getAvailableOperations()));
+        }
+        
+
+        
+        function setUp() {
+          stringFilterType=new Ext.ux.netbox.string.StringFilterType("TEST");
+        }
+        
+      function tearDown(){
+        delete stringFilterType;
+        stringFilterType=null;
+      }
+    </script>
+</head>
+
+<body>
+<h1>JsUnit Operation Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>
