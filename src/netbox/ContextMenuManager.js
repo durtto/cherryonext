@@ -6,10 +6,16 @@ Ext.namespace('Ext.ux.netbox');
   * or directly the config object as described below.<br>
   * The items that populate the menu must have the following two custom properties passed in the config:
   * <ul>
-  *   <li><b>isToShow</b>: Function<p style="margin-left:1em">Function that indicates whether the item should be displayed in context</p></li>
+  *   <li><b>isToShow</b>: Function<p style="margin-left:1em">Function that indicates whether the item should be displayed in context. Optional
+      If not present:
+        <ul>
+          <li>If the item doesn't have a submenu it will be displayed if the click happened on a cell (i.e. not in the white space outside the rows)</li>
+          <li>If the item has a submenu, if there is at least one item visible in the submenu </li>
+        </ul>
+      </p></li>
   *   <li><b>handler</b>: Function<p style="margin-left:1em">Function invoked when the menu item is selected</p></li>
   * </ul>
-  * Both this functions has the same signature, the parameters are the following:
+  * Both this functions have the same signature, the parameters are the following:
   * <ul>
   *  <li><b>grid</b>: Ext.grid.GridPanel <p style="margin-left:1em">The grid over which the menu is shown</p></li>
   *  <li><b>row</b>: int <p style="margin-left:1em">The row number <b>NB</b> if the user doesn't click on a row it's -1</p></li>
@@ -84,32 +90,28 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
     for(var i=0;i<menu.items.getCount();i++){
       var itemTmp=menu.items.get(i);
       var scope=itemTmp.initialConfig.scope ? itemTmp.initialConfig.scope : window;
+      var visible;
       if(itemTmp.initialConfig.isToShow){
-        if(itemTmp.initialConfig.isToShow.call(scope, grid, rowIndex, cellIndex)){
-          itemTmp.setVisible(true);
-          if(itemTmp.initialConfig.handler){
-            var handler=itemTmp.initialConfig.handler.createDelegate(scope,[grid, rowIndex, cellIndex],false);
-            itemTmp.setHandler(handler);
-          }
-          
-          isSomethingVisible=true;
-          if(itemTmp.menu)
-            this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
-        }else{
-          itemTmp.setVisible(false);
+        visible=itemTmp.initialConfig.isToShow.call(scope, grid, rowIndex, cellIndex);
+        if(visible && itemTmp.menu){
+          this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
         }
-      }else{
-        if(itemTmp.menu){
-          if(this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu)){
-            isSomethingVisible=true;
-            itemTmp.setVisible(true);
-          }else{
-            itemTmp.setVisible(false);
-          }
-        }else{
-          isSomethingVisible=true;
-          itemTmp.setVisible(true);
+      } else {
+        if(!itemTmp.menu){
+          visible = (rowIndex >=0 && cellIndex>=0);
+        } else {
+          visible=this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
         }
+      }
+      if(visible){
+        itemTmp.setVisible(true);
+        if(itemTmp.initialConfig.handler){
+          var handler=itemTmp.initialConfig.handler.createDelegate(scope,[grid, rowIndex, cellIndex],false);
+          itemTmp.setHandler(handler);
+        }
+        isSomethingVisible=true;
+      } else {
+        itemTmp.setVisible(false);
       }
     }
     if(isSomethingVisible && menuUndefined) 
