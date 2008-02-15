@@ -181,10 +181,6 @@ function showDetails(grid,row,column){
       //--------------------------------------------------------------------------------------
     });
 
-    function displayFilter(){
-      document.getElementById('debugInfo').innerHTML=Ext.util.JSON.encode(filterModel.getFilterObj());
-    }
-
     function filterTable(){
      localFilterResolver.apply(store);
     }
