@@ -5,18 +5,17 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Context Menu Demo</title>
-  <link rel="stylesheet" type="text/css" href="../../ext-2.0.1/resources/css/ext-all.css" />
+  <link rel="stylesheet" type="text/css" href="../ext/resources/css/ext-all.css" />
   <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
-  <script type="text/javascript" src="../../ext-2.0.1/source/core/Ext.js"></script>
-  <script type="text/javascript" src="../../ext-2.0.1/source/adapter/ext-base.js"></script>
-  <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
-  <script type="text/javascript" src="../cherryonext-debug.js"></script>
+  <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="../ext/ext-all.js"></script>
+  <script type="text/javascript" src="../cherryonext.js"></script>
   
   <script type="text/javascript" src="mydata.js"></script>
 
   <script language="JavaScript" type="text/javascript">
 
-    Ext.BLANK_IMAGE_URL="../../ext-2.0.1/resources/images/default/s.gif";
+    Ext.BLANK_IMAGE_URL="../ext/resources/images/default/s.gif";
 
     Ext.onReady(function(){
 
@@ -44,36 +43,7 @@
             var company = record.get('company');
             var msg ='You have this company in your portfolio.<br>';
             msg = msg+'If this were a serious demo here there would be the number of shares for <br><b>'+company+'</b>';
-            var dialog;
-            var messageElement;
-            if(!dialog){
-                messageElement = new Ext.Panel({
-                    id             : 'dlg-message',
-                    autoScroll     : true,
-                    deferredRender : false,
-                    border         : false
-                });
-                dialog = new Ext.Window({
-                    id             : 'dlg-win',
-                    title          : 'Details',
-                    modal          : true,
-                    width          : 400,
-                    height         : 200,
-                    shadow         : true,
-                    minWidth       : 300,
-                    minHeight      : 200,
-                    closeAction    : 'hide',
-                    layout         : 'fit',
-                    plain          : true,
-                    items          : [messageElement],
-                    buttons        : [{
-                                      text: 'Close',
-                                      handler: function(){ dialog.hide(); }
-                                     }]
-                });
-            }
-            dialog.show();
-            messageElement.body.dom.innerHTML = msg;
+            Ext.Msg.alert('Sorry, this is only a demo', msg);
           }
         }]
        }
