@@ -13,7 +13,7 @@ Filter defintion using BNF:
 <op> ::= AND | OR
 <elementary_filter> ::= <field> <operator> <value>
 <operator> ::= <num_op> | <string_op> | <date_op>
-<string_op> ::= whatever valid operator 
+<string_op> ::= whatever valid operator (=, !=, contains, > and ao on) 
 <field> ::= whatever identifier valid in the underlying domain
-<value> ::= any value permitted for the associated field type
+<value> ::= any value permitted for the associated field
 }}}
