@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit CompositeFilter Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../../ext-2.0.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../../ext-2.0.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Filter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/ElementaryFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/CompositeFilter.js"></script>    
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+    var compositeFilter;
+    var savedFilter;
+    var field;
+    var operator1;
+    var operator2;
+    var elementaryfilter1;
+    var elementaryfilter2;
+    
+    function onChange(filter){
+      savedFilter=filter;
+    }
+    
+    function testGetLogicalOperator(){
+      assertEquals("testGetLogicalOperator", compositeFilter.getLogicalOperator(), Ext.ux.netbox.core.CompositeFilter.AND);
+    }
+    
+    function testSetLogicalOperator(){
+      compositeFilter.on("operatorChanged", onChange);
+      compositeFilter.setLogicalOperator(Ext.ux.netbox.core.CompositeFilter.OR);
+      assertEquals("testSetLogicalOperator ok value", compositeFilter.getLogicalOperator(), Ext.ux.netbox.core.CompositeFilter.OR);
+      assertEquals("testSetLogicalOperator event fired", savedFilter, compositeFilter);
+      savedFilter=null;
+      try{
+        compositeFilter.setLogicalOperator("CICCIO");
+        fail("setLogicalOperator with CICCIO logical operator without exception");
+      } catch (error){
+        assertTrue("Exception thrown", true);
+        assertNull("Metodo di callback non chiamato", savedFilter);
+      }
+    }
+    
+    function testGetLeftSide(){
+      assertEquals("testGetLeftSide", compositeFilter.getLeftSide(), elementaryfilter1);
+    }
+    
+    function testSetLeftSide() {
+      compositeFilter.on("leftSideChanged", onChange);
+      compositeFilter.setLeftSide(elementaryfilter2);
+      assertEquals("testSetLeftSide", compositeFilter.getLeftSide(), elementaryfilter2);
+      assertEquals("Evento invocato con il giusto parametro", savedFilter,compositeFilter);
+    }
+    
+    function testGetRightSide(){
+      assertEquals("testGetRightSide", compositeFilter.getRightSide(), elementaryfilter2);
+    }
+    
+    function testSetRightSide() {
+      compositeFilter.on("rightSideChanged", onChange);
+      compositeFilter.setRightSide(elementaryfilter1);
+      assertEquals("testSetRightSide", compositeFilter.getRightSide(), elementaryfilter1);
+      assertEquals("Evento invocato con il giusto parametro", savedFilter, compositeFilter);
+    }
+
+    function testGetElementaryFilterById(){
+      assertEquals("testGetElementaryFilterById OK", elementaryfilter1, compositeFilter.getElementaryFilterById(elementaryfilter1.getId()));
+      assertNull("testGetElementaryFilterById null", compositeFilter.getElementaryFilterById("nonEsiste"));
+    }
+
+    function testGetElementaryFiltersByFieldId(){
+      assertEquals("testGetElementaryFiltersByFieldId empty array", 0, compositeFilter.getElementaryFiltersByFieldId("nonEsiste").length);
+      assertEquals("testGetElementaryFiltersByFieldId OK", elementaryfilter1, compositeFilter.getElementaryFiltersByFieldId("field")[0]);
+    }
+
+    function setUp(){
+      savedFilter=null;
+      field=new Ext.ux.netbox.core.Field("field");
+      operator1=new Ext.ux.netbox.core.Operator("newOperator1");
+      operator2=new Ext.ux.netbox.core.Operator("newOperator2");
+      field.addOperator(operator1);
+      field.addOperator(operator2);
+      field.setDefaultOperator(operator1);
+      elementaryfilter1=field.getElementaryFilterInstance();
+      elementaryfilter1.setValues([{label: "ciccio",value:"1"}]);
+      elementaryfilter2=field.getElementaryFilterInstance();
+      elementaryfilter2.setOperator(operator2);
+      elementaryfilter2.setValues([{label: "bombo",value:"2"}]);
+      compositeFilter=new Ext.ux.netbox.core.CompositeFilter(elementaryfilter1,Ext.ux.netbox.core.CompositeFilter.AND,elementaryfilter2);
+    }
+
+    function tearDown(){
+      //delete field;
+      compositeFilter=null;
+      savedFilter=null;
+      field=null;
+      operator1=null;
+      operator2=null;
+      elementaryfilter1=null;
+      elementaryfilter2=null;
+    }
+    </script>
+</head>
+
+<body>
+<h1>JsUnit CompositeFilter Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>
