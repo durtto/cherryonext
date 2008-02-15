@@ -15,7 +15,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @extends Ext.util.Observable
   * @param {Object} config An object which may contain the following properties:
   * @config {Ext.ux.netbox.core.FilterModel} filterModel The FilterModel (mandatory) which is associated the QuickFilter.
-  * @config {Array of Object} fieldsOptions The Options (otional) for configure the operators to show or add new custom getter function
+  * @config {Array of Object} fieldsOptions The options (otional) for configure the operators to show or add new custom getter function
   * Syntax of fieldsOptions object:<br><PRE>
   * [{
   *     <b>id:</b> <em>id of the filter Type</em>, 
@@ -24,6 +24,7 @@ Ext.namespace('Ext.ux.netbox.core');
   *     <b>getterScope</b>:<em>The scope of the getter function</em>
   *  },
   *  {...}]
+  * @config {boolean} duplicatedElementaryFiltersAllowed True to allow 2 equals elementary filter (i.e. to allow name='John' 2 times). Optional. Default true
   */
 Ext.ux.netbox.core.QuickFilterModelView=function(config){
 
@@ -38,6 +39,11 @@ Ext.ux.netbox.core.QuickFilterModelView=function(config){
   this.quickFilterItem=null;
   this.removeFilterItem=null;
   this.fieldsOptions=config.fieldsOptions;
+  if(config.duplicatedElementaryFiltersAllowed === undefined){
+    this.duplicatedElementaryFiltersAllowed=true;
+  } else {
+    this.duplicatedElementaryFiltersAllowed=config.duplicatedElementaryFiltersAllowed;
+  }
 
   this.stringOperDefault = ['STRING_EQUALS','STRING_DIFFERENT'];
   this.numberOperDefault = ['NUMBER_EQUAL','NUMBER_NOT_EQUAL','NUMBER_GREATER','NUMBER_GREATER_OR_EQUAL','NUMBER_LESS','NUMBER_LESS_OR_EQUAL'];
@@ -153,8 +159,22 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
 
     var values=getterFn.call(getterScope,tableValue,fieldId,operatorId);
     var filterObject={fieldId : fieldId, operatorId : operatorId, values : values}
-    this.filterModel.addElementaryFilter(filterObject);
-    this.fireEvent('filterChanged');
+    var addFilter=true;
+    if(!this.duplicatedElementaryFiltersAllowed){
+      var elementaryFilters=this.filterModel.getElementaryFiltersByFieldId(fieldId);
+      for(var i=0; i<elementaryFilters.length;i++){
+        //quick way to compare 2 filters
+        if(elementaryFilters[i].getOperator().getId()===operatorId 
+          && Ext.util.JSON.encode(elementaryFilters[i].getValues())===Ext.util.JSON.encode(values)){
+            addFilter=false;
+            break;
+        }
+      }
+    }
+    if(addFilter){
+      this.filterModel.addElementaryFilter(filterObject);
+      this.fireEvent('filterChanged');
+    }
 
   },
 
