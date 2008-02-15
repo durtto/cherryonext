@@ -2,7 +2,7 @@
 #labels Phase-Design
 
 
-*NB*: The build scripts only works on Windows since they use JSBuilder.
+*NB*: The build scripts only work on Windows since they use JSBuilder.
 
 =Sources=
   # Install JSBuilder in "C:\Program Files\JS Builder" (download from http://www.jackslocum.com/build/download.php?dl=jsb)
