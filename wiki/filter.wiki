@@ -13,7 +13,14 @@ Filter defintion using BNF:
 <op> ::= AND | OR
 <elementary_filter> ::= <field> <operator> <value>
 <operator> ::= <num_op> | <string_op> | <date_op>
-<string_op> ::= whatever valid operator (=, !=, contains, > and so on) 
+<string_op> ::= “=” | “!=” | “begins with” | “ends with” | “contains” | “not contains ”
+<num_op> ::= “=” | “!=” | “>” | “<” | “>=” | “<=” | "number between"
+<date_op> ::= “=” | “>” | “<” | “>=” | “<=” | <date between> | <date period>
 <field> ::= whatever identifier valid in the underlying domain
-<value> ::= any value permitted for the associated field
+<value> ::= any value(s) permitted for the associated field
+
 }}}
+
+The value format depends on the operator. 
+For example if the operator is "date between" the value has the format: "from <date> to <date>", where the date format is mm/dd/yyyy hh:mi.
+If the operator is "date period" the value is one of: “last year”,“last month”,“last week”,“last day”,“last hour”,“last quarter”.
