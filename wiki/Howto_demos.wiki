@@ -1,2 +1,1 @@
-#labels Howtorundemos
 To be able to run demos you must unpack extJs libraries in the directory "ext" at the same level where it is the directory "demo". Alternatively, you need to change the references to libraries extJs within individual demo files.
