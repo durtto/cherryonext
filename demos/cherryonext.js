@@ -1,6 +1,6 @@
 /*
  * Cherry On Ext
- * Copyright(c) 2008, Netbox Team.
+ * Copyright(c) 2008, Netbox Team, RowFitLayout is from Kirill Hryapin, Select is from Andrei Neculau, DateTimeField is from Jozef Sakalos.
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation version 3.0 of
@@ -98,6 +98,30 @@ var r=this.findRecord(this.valueField||this.displayField,value);if(r){this.store
 o[this.displayField]=value;r=new this.store.reader.recordType(o);}
 this.store.clearFilter();this.store.insert(0,r);this.pruneHistory();},pruneHistory:function(){if(this.historyMaxLength==0){return;}
 if(this.store.getCount()>this.historyMaxLength){var overflow=this.store.getRange(this.historyMaxLength,this.store.getCount());for(var i=0,len=overflow.length;i<len;i++){this.store.remove(overflow[i]);}}}});Ext.reg('select',Ext.ux.Andrie.Select);
+
+Ext.ns('Ext.ux.form');Ext.ux.form.DateTime=Ext.extend(Ext.form.Field,{defaultAutoCreate:{tag:'input',type:'hidden'},timeWidth:100,dtSeparator:' ',hiddenFormat:'Y-m-d H:i:s',otherToNow:true,timePosition:'right',dateFormat:'m/d/y',timeFormat:'g:i A',initComponent:function(){Ext.ux.form.DateTime.superclass.initComponent.call(this);var dateConfig=Ext.apply({},{id:this.id+'-date',format:this.dateFormat||Ext.form.DateField.prototype.format,width:this.timeWidth,selectOnFocus:this.selectOnFocus,listeners:{blur:{scope:this,fn:this.onBlur},focus:{scope:this,fn:this.onFocus}}},this.dateConfig);this.df=new Ext.form.DateField(dateConfig);delete(this.dateFormat);var timeConfig=Ext.apply({},{id:this.id+'-time',format:this.timeFormat||Ext.form.TimeField.prototype.format,width:this.timeWidth,selectOnFocus:this.selectOnFocus,listeners:{blur:{scope:this,fn:this.onBlur},focus:{scope:this,fn:this.onFocus}}},this.timeConfig);this.tf=new Ext.form.TimeField(timeConfig);delete(this.timeFormat);this.relayEvents(this.df,['focus','specialkey','invalid','valid']);this.relayEvents(this.tf,['focus','specialkey','invalid','valid']);},onRender:function(ct,position){if(this.isRendered){return;}
+Ext.ux.form.DateTime.superclass.onRender.call(this,ct,position);var t;if('bellow'===this.timePosition){t=Ext.DomHelper.append(ct,{tag:'table',style:'border-collapse:collapse',children:[{tag:'tr',children:[{tag:'td',style:'padding-bottom:1px',cls:'ux-datetime-date'}]},{tag:'tr',children:[{tag:'td',cls:'ux-datetime-time'}]}]},true);}
+else{t=Ext.DomHelper.append(ct,{tag:'table',style:'border-collapse:collapse',children:[{tag:'tr',children:[{tag:'td',style:'padding-right:4px',cls:'ux-datetime-date'},{tag:'td',cls:'ux-datetime-time'}]}]},true);}
+this.tableEl=t;this.wrap=t.wrap({cls:'x-form-field-wrap'});this.wrap.on("mousedown",this.onMouseDown,this,{delay:10});this.df.render(t.child('td.ux-datetime-date'));this.tf.render(t.child('td.ux-datetime-time'));if(Ext.isIE&&Ext.isStrict){t.select('input').applyStyles({top:0});}
+this.on('specialkey',this.onSpecialKey,this);this.df.el.swallowEvent(['keydown','keypress']);this.tf.el.swallowEvent(['keydown','keypress']);if('side'===this.msgTarget){var elp=this.el.findParent('.x-form-element',10,true);this.errorIcon=elp.createChild({cls:'x-form-invalid-icon'});this.df.errorIcon=this.errorIcon;this.tf.errorIcon=this.errorIcon;}
+this.isRendered=true;},adjustSize:Ext.BoxComponent.prototype.adjustSize,alignErrorIcon:function(){this.errorIcon.alignTo(this.tableEl,'tl-tr',[2,0]);},initDateValue:function(){this.dateValue=this.otherToNow?new Date():new Date(1970,0,1,0,0,0);},focus:function(){this.df.focus();},getPositionEl:function(){return this.wrap;},getResizeEl:function(){return this.wrap;},getValue:function(){return this.dateValue?new Date(this.dateValue):'';},isValid:function(){return this.df.isValid()&&this.tf.isValid();},onBlur:function(f){if(this.wrapClick){f.focus();this.wrapClick=false;}
+if(f===this.df){this.updateDate();}
+else{this.updateTime();}
+this.updateHidden();(function(){if(!this.df.hasFocus&&!this.tf.hasFocus){var v=this.getValue();if(String(v)!==String(this.startValue)){this.fireEvent("change",this,v,this.startValue);}
+this.hasFocus=false;this.fireEvent('blur',this);}}).defer(100,this);},onFocus:function(){if(!this.hasFocus){this.hasFocus=true;this.startValue=this.getValue();this.fireEvent("focus",this);}},onMouseDown:function(e){this.wrapClick='td'===e.target.nodeName.toLowerCase();},onSpecialKey:function(t,e){var key=e.getKey();if(key==e.TAB){if(t===this.df&&!e.shiftKey){e.stopEvent();this.tf.focus();}
+if(t===this.tf&&e.shiftKey){e.stopEvent();this.df.focus();}}
+if(key==e.ENTER){this.updateValue();}},setDate:function(date){this.df.setValue(date);},setTime:function(date){this.tf.setValue(date);},setSize:function(w,h){if(!w){return;}
+if('bellow'==this.timePosition){this.df.setSize(w,h);this.tf.setSize(w,h);if(Ext.isIE){this.df.el.up('td').setWidth(w);this.tf.el.up('td').setWidth(w);}}
+else{this.df.setSize(w-this.timeWidth-4,h);this.tf.setSize(this.timeWidth,h);if(Ext.isIE){this.df.el.up('td').setWidth(w-this.timeWidth-4);this.tf.el.up('td').setWidth(this.timeWidth);}}},setValue:function(val){if(!val&&true===this.emptyToNow){this.setValue(new Date());return;}
+else if(!val){this.setDate('');this.setTime('');this.updateValue();return;}
+val=val?val:new Date(1970,0,1,0,0,0);var da,time;if(val instanceof Date){this.setDate(val);this.setTime(val);this.dateValue=new Date(val);}
+else{da=val.split(this.dtSeparator);this.setDate(da[0]);if(da[1]){this.setTime(da[1]);}}
+this.updateValue();},updateDate:function(){var d=this.df.getValue();if(d){if(!(this.dateValue instanceof Date)){this.initDateValue();if(!this.tf.getValue()){this.setTime(this.dateValue);}}
+this.dateValue.setFullYear(d.getFullYear());this.dateValue.setMonth(d.getMonth());this.dateValue.setDate(d.getDate());}
+else{this.dateValue='';this.setTime('');}},updateTime:function(){var t=this.tf.getValue();if(t&&!(t instanceof Date)){t=Date.parseDate(t,this.tf.format);}
+if(t&&!this.df.getValue()){this.initDateValue();this.setDate(this.dateValue);}
+if(this.dateValue instanceof Date){if(t){this.dateValue.setHours(t.getHours());this.dateValue.setMinutes(t.getMinutes());this.dateValue.setSeconds(t.getSeconds());}
+else{this.dateValue.setHours(0);this.dateValue.setMinutes(0);this.dateValue.setSeconds(0);}}},updateHidden:function(){if(this.isRendered){var value=this.dateValue instanceof Date?this.dateValue.format(this.hiddenFormat):'';this.el.dom.value=value;}},updateValue:function(){this.updateDate();this.updateTime();this.updateHidden();return;},validate:function(){return this.df.validate()&&this.tf.validate();},renderer:function(field){var format=field.editor.dateFormat||Ext.ux.form.DateTime.prototype.dateFormat;format+=' '+(field.editor.timeFormat||Ext.ux.form.DateTime.prototype.timeFormat);var renderer=function(val){var retval=Ext.util.Format.date(val,format);return retval;};return renderer;}});Ext.reg('xdatetime',Ext.ux.form.DateTime);
 
 Ext.namespace('Ext.ux.netbox.core');Ext.ux.netbox.core.Operator=function(id,label){this.id=id;this.label=((label==undefined)?id:label);this.field=null;}
 Ext.ux.netbox.core.Operator.prototype={isAvailableValuesAvailable:function(){if(this.getField()==null){throw("An operator must be associated to a Field to know if there is the list of the available values!")}
@@ -256,7 +280,7 @@ if(val.length>0&&toReturn.length==0)
 return(this.originalValue);else
 return toReturn;}});
 
-Ext.namespace('Ext.ux.netbox.core');Ext.ux.netbox.core.TextValuesEditor=function(config,field){if(field==undefined){field=new Ext.form.TextField();}
+Ext.namespace('Ext.ux.netbox.core');Ext.ux.netbox.core.TextValuesEditor=function(field,config){if(field==undefined){field=new Ext.form.TextField();}
 Ext.ux.netbox.core.TextValuesEditor.superclass.constructor.call(this,field,config);}
 Ext.extend(Ext.ux.netbox.core.TextValuesEditor,Ext.ux.netbox.FilterEditor,{setValue:function(value){var val;if(value!==undefined&&value!==null&&Ext.type(value)==="array"){if(value.length==0){val="";}else if(value[0].label!==undefined){val=value[0].label;}else{val=value[0];}}else{val="";}
 Ext.ux.netbox.FilterEditor.superclass.setValue.call(this,val);},getValue:function(){var val=Ext.ux.netbox.FilterEditor.superclass.getValue.call(this);if(val===""){return([]);}else{val=[{label:val,value:val}];}
@@ -331,14 +355,14 @@ if(key){this.inputTextElement.value=cursorPosition.previousValue.substring(0,cur
 cursorPosition.previousValue.substring(cursorPosition.start+key.length,cursorPosition.previousValue.length);return true;}
 return false;},getKeyCode:function(onKeyDownEvent,type){var keycode={};keycode.unicode=onKeyDownEvent.getKey();keycode.isShiftPressed=onKeyDownEvent.shiftKey;keycode.isDelete=((onKeyDownEvent.getKey()==Ext.EventObject.DELETE&&type=='keydown')||(type=='keypress'&&onKeyDownEvent.charCode===0&&onKeyDownEvent.keyCode==Ext.EventObject.DELETE))?true:false;keycode.isTab=(onKeyDownEvent.getKey()==Ext.EventObject.TAB)?true:false;keycode.isBackspace=(onKeyDownEvent.getKey()==Ext.EventObject.BACKSPACE)?true:false;keycode.isLeftOrRightArrow=(onKeyDownEvent.getKey()==Ext.EventObject.LEFT||onKeyDownEvent.getKey()==Ext.EventObject.RIGHT)?true:false;keycode.pressedKey=String.fromCharCode(keycode.unicode);return(keycode);},CursorPosition:function(start,end,range,previousValue){var cursorPosition={};cursorPosition.start=isNaN(start)?0:start;cursorPosition.end=isNaN(end)?0:end;cursorPosition.range=range;cursorPosition.previousValue=previousValue;cursorPosition.inc=function(){cursorPosition.start++;cursorPosition.end++;};cursorPosition.dec=function(){cursorPosition.start--;cursorPosition.end--;};return(cursorPosition);}};Ext.applyIf(RegExp,{escape:function(str){return new String(str).replace(/([.*+?^=!:${}()|[\]\/\\])/g,'\\$1');}});Ext.ux.InputTextMask=Ext.ux.netbox.InputTextMask;
 
-Ext.namespace('Ext.ux.netbox.date');Ext.ux.netbox.date.DateTextEditor=function(config,field){Ext.ux.netbox.date.DateTextEditor.superclass.constructor.call(this,config,field);if(config.format==undefined){config.format='Y-m-d H:i:s';}
+Ext.namespace('Ext.ux.netbox.date');Ext.ux.netbox.date.DateTextEditor=function(field,config){Ext.ux.netbox.date.DateTextEditor.superclass.constructor.call(this,field,config);if(config.format==undefined){config.format='Y-m-d H:i:s';}
 this.format=config.format;}
-Ext.extend(Ext.ux.netbox.date.DateTextEditor,Ext.ux.netbox.core.TextValuesEditor,{getValue:function(){var val=Ext.ux.netbox.date.DateTextEditor.superclass.getValue.call(this);if(val.length==1){var date=Date.parseDate(val[0].value,this.format);if(!date){return([]);}
-val[0].value=date.format('Y-m-d H:i:s');}
-return(val);}});
+Ext.extend(Ext.ux.netbox.date.DateTextEditor,Ext.ux.netbox.FilterEditor,{getValue:function(){var val=Ext.ux.netbox.date.DateTextEditor.superclass.getValue.call(this);if(val===""){return([]);}else{return[{value:val.format('Y-m-d H:i:s'),label:val.format(this.format)}];}},setValue:function(val){var value;if(val.length==0){value="";}else{value=Date.parseDate(val[0].value,'Y-m-d H:i:s');}
+Ext.ux.netbox.date.DateTextEditor.superclass.setValue.call(this,value);}});
 
 Ext.namespace('Ext.ux.netbox.date');Ext.ux.netbox.date.DateOperator=function(id,label,format){Ext.ux.netbox.date.DateOperator.superclass.constructor.call(this,id,label,format);this.editor=null;this.format=format;this.mapping={d:'99',m:'99',Y:'9999',y:'99',H:'99',i:'99',s:'99'}};Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,{getEditor:function(cache){if(cache===undefined){cache=true;}
-var editor;if(this.editor===undefined||this.editor===null||!cache){editor=new Ext.ux.netbox.date.DateTextEditor({format:this.format},new Ext.form.TextField(this.getTextFieldConfig()));if(cache){this.editor=editor;}}else{editor=this.editor;}
+var editor;if(this.editor===undefined||this.editor===null||!cache){var splittedFormat=this.format.split(" ");if(splittedFormat.length>1){editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.ux.form.DateTime({dateFormat:splittedFormat[0],dateConfig:{altFormats:'Y-m-d|Y-n-d',allowBlank:false},timeFormat:splittedFormat[1],timeConfig:{altFormats:'H:i:s',allowBlank:false}}),{format:this.format});}else{editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.form.DateField({format:splittedFormat[0],allowBlank:false}),{format:this.format});}
+if(cache){this.editor=editor;}}else{editor=this.editor;}
 return(editor);},getTextFieldConfig:function(){Ext.QuickTips.init();var registerTip=function(field){Ext.QuickTips.register({target:field.getEl(),text:this.format});}
 registerTip=registerTip.createDelegate(this);var x={init:function(field){if(field.rendered){registerTip(field);}else{field.on('render',registerTip);}}}
 return({plugins:[new Ext.ux.netbox.InputTextMask(this.calculateMask(),true),x],validator:this.checkDate.createDelegate(this)});},calculateMask:function(){var maskTmp='';for(var i=0;i<this.format.length;i++){if(this.mapping[this.format.charAt(i)]){maskTmp+=this.mapping[this.format.charAt(i)];}else{maskTmp+=this.format.charAt(i);}}
