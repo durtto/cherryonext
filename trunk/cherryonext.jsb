@@ -5,6 +5,7 @@
   <target name="Filter" file="$output\cherryonext.js" debug="True" shorthand="False">
     <include name="src\external\RowFitLayout.js" />
     <include name="src\external\Select.js" />
+    <include name="src\external\DateTime.js" />
     <include name="src\netbox\core\Operator.js" />
     <include name="src\netbox\core\Field.js" />
     <include name="src\netbox\core\Filter.js" />
@@ -41,6 +42,7 @@
   <directory name="src" />
   <file name="src\external\RowFitLayout.js" path="external" />
   <file name="src\external\Select.js" path="external" />
+  <file name="src\external\DateTime.js" path="external" />
   <file name="src\netbox\string\TextFieldOperator.js" path="netbox\string" />
   <file name="src\netbox\string\StringListOperator.js" path="netbox\string" />
   <file name="src\netbox\string\StringField.js" path="netbox\string" />
