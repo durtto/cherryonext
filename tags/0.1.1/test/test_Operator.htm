@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Operator Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../../ext-2.0.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../../ext-2.0.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/FilterEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/TextValuesEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+      var operator = null;
+
+      function testGetId() {
+          assertEquals("The id of the operator is test","TEST", operator.getId());
+      }
+
+      function testIsAvailableValuesAvailable() {
+        try{
+          operator.isAvailableValuesAvailable();
+          fail("testIsAvailableValuesAvailable, no exception thrown");
+        } catch (e) {
+          assertTrue("Exception thrown",true);
+        }
+      }
+
+      function testGetAvailableValuesThrows() {
+        try{
+          operator.getAvailableValues();
+          fail("testGetAvailableValuesThrows, no exception thrown");
+        } catch (e) {
+          assertTrue("Exception thrown",true);
+        }
+      }
+
+      function testGetFieldNull() {
+        assertNull(operator.getField());
+      }
+
+      function testRender(){
+        var value="value";
+        try{
+          operator.render([value]);
+          fail("render without field failed without exception");
+        } catch(e){
+          assertTrue("Exception thrown",true);
+        }
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        assertEquals("The result of operator.render is the same that field.render with an empty value",field.render([],"TEST"),operator.render([]));
+        assertEquals("The result of operator.render is the same that field.render with anon empty value",field.render([value],"TEST"),operator.render([value]));
+      }
+
+      function testGetEditor(){
+
+        try{
+          operator.getEditor();
+          fail("getEditor without field failed without exception");
+        } catch(e){
+          assertTrue("Exception thrown",true);
+        }
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        assertEquals("The result of operator.getEditor is the same that field.getEditor",field.getEditor(true,operator.getId()),operator.getEditor(true));
+      }
+
+      function testConvertValue(){
+        var val=operator.convertValue();
+        assertEquals("Passando undefined esce l'array vuoto",0,val.length);
+        val=operator.convertValue(null);
+        assertEquals("Passando null esce l'array vuoto",0,val.length);
+        val=operator.convertValue([]);
+        assertEquals("Passando array vuoto esce l'array vuoto",0,val.length);
+        val=operator.convertValue([{label: 1, value:2}]);
+        assertEquals("Passando 1 array con un elemento, ritorna quell'elemento, label",1,val[0].label);
+        assertEquals("Passando 1 array con un elemento, ritorna quell'elemento, value",2,val[0].value);
+        val=operator.convertValue([{label: 1}]);
+        assertEquals("Passando 1 array con un elemento, ma senza valore",0,val.length);
+        val=operator.convertValue([{value: 1}]);
+        assertEquals("Passando 1 array con un elemento, ma senza label",0,val.length);
+        val=operator.convertValue([{value:1, label:2},{value:3, label: 4}]);
+        assertEquals("Passando 1 array con 2 elementi, con label e value nel primo, torna 1 array con 1 elemento",1,val.length);
+        assertEquals("Passando 1 array con 2 elementi, con label e value nel primo, torna 1 array con 1 elemento, label",2,val[0].label);
+        assertEquals("Passando 1 array con 2 elementi, con label e value nel primo, torna 1 array con 1 elemento, value",1,val[0].value);
+      }
+
+      function testIsStoreRemote(){
+        try{
+          operator.isStoreRemote();
+          fail("Operator without field and isStoreRemote doesn't throw any exception");
+        } catch (e){
+          assertTrue("Exception thrown",true);
+        }
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        var store=new Ext.data.SimpleStore({fields: ['value', 'label'],
+          data: [
+          ["Yes","Si"],
+          ["No","No"],
+          ["Maybe","Forse"]
+        ]});
+        field.setAvailableValues(store);
+        assertEquals("field isStoreRemote and operator.isSotreRemote retunrs the same value",field.isStoreRemote(),operator.isStoreRemote());
+        field.setStoreRemote(false);
+        assertEquals("field isStoreRemote and operator.isSotreRemote retunrs the same value",field.isStoreRemote(),operator.isStoreRemote());
+      }
+
+      function setUp() {
+        operator=new Ext.ux.netbox.core.Operator("TEST");
+      }
+
+      function tearDown(){
+        delete operator;
+        operator=null;
+      }
+    </script>
+</head>
+
+<body>
+<h1>JsUnit Operator Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>
