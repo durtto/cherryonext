@@ -28,7 +28,7 @@ Ext.extend(Ext.ux.netbox.number.NumberOperator,Ext.ux.netbox.core.Operator,/** @
     }
     var editor;
     if(this.editor===undefined || this.editor===null || !cache){
-      editor=new Ext.ux.netbox.core.TextValuesEditor({},new Ext.form.NumberField({decimalPrecision: 10}));
+      editor=new Ext.ux.netbox.core.TextValuesEditor(new Ext.form.NumberField({decimalPrecision: 10}));
       if(cache){
         this.editor=editor;
       }
