@@ -301,7 +301,7 @@ Ext.extend(Ext.ux.netbox.string.StringField,Ext.ux.netbox.core.Field,{stringEqua
 
 Ext.namespace('Ext.ux.netbox.number');Ext.ux.netbox.number.NumberOperator=function(id,label){Ext.ux.netbox.number.NumberOperator.superclass.constructor.call(this,id,label);this.editor=null;}
 Ext.extend(Ext.ux.netbox.number.NumberOperator,Ext.ux.netbox.core.Operator,{getEditor:function(cache){if(cache===undefined){cache=true;}
-var editor;if(this.editor===undefined||this.editor===null||!cache){editor=new Ext.ux.netbox.core.TextValuesEditor({},new Ext.form.NumberField({decimalPrecision:10}));if(cache){this.editor=editor;}}else{editor=this.editor;}
+var editor;if(this.editor===undefined||this.editor===null||!cache){editor=new Ext.ux.netbox.core.TextValuesEditor(new Ext.form.NumberField({decimalPrecision:10}));if(cache){this.editor=editor;}}else{editor=this.editor;}
 return(editor);}});Ext.ux.netbox.number.NumberRangeOperator=function(){Ext.ux.netbox.number.NumberRangeOperator.superclass.constructor.call(this,"NUMBER_RANGE",this.includeText);}
 Ext.extend(Ext.ux.netbox.number.NumberRangeOperator,Ext.ux.netbox.core.Operator,{fromText:'from: ',toText:', to: ',includeText:'between',getEditor:function(cache){if(cache===undefined){cache=true;}
 var editor;if(this.editor===undefined||this.editor===null||!cache){var field=new Ext.ux.netbox.core.RangeField({textCls:Ext.form.NumberField,fromConfig:{allowBlank:false},toConfig:{allowBlank:false}});editor=new Ext.ux.netbox.FilterEditor(field);field.on("editingcompleted",editor.completeEdit,editor);if(cache){this.editor=editor;}}else{editor=this.editor;}
