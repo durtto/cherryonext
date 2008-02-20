@@ -11,7 +11,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @param {Ext.form.Field} The field inside the editor. Optional. The default value is a new Ext.form.TextField
   * @extends Ext.ux.netbox.FilterEditor
   */
-Ext.ux.netbox.core.TextValuesEditor = function(config, field){
+Ext.ux.netbox.core.TextValuesEditor = function(field, config){
   if(field==undefined){
     field=new Ext.form.TextField();
   }

@@ -2,14 +2,16 @@
 
 Ext.namespace('Ext.ux.netbox.date');
 
-/** It istantiate a new DateOperator
+/** It instantiates a new DateOperator.
   * @class This is the general class for all DateOperators (with the exception of DatePeriodOperator)<BR>
   * <B>NB:</B> The value of a date operator (ie: value[0].value) will be always in the following format: Y-m-d H:i:s
   * @constructor
   * @extends Ext.ux.netbox.core.Operator
   * @param {String} id The id of the operator
   * @param {String} label The label of the operator
-  * @param {String} format The format of the date. Supported formats:
+  * @param {String} format The format of the date. The date format should be divided from time format by a space.
+  * If you provided only the date format, the time field will not appear.<br>
+  * Supported formats:
   * <PRE>
   * Format  Description                                                               Example returned values
   * ------  -----------------------------------------------------------------------   -----------------------
@@ -47,10 +49,9 @@ Ext.ux.netbox.date.DateOperator = function(id,label,format) {
 };
 
 Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.date.DateOperator.prototype */{
-  /** getEditor. This function returns the Ext.Editor to use to edit the values for this operator.
-    * It returns a TextValuesEditor whose field has the right input mask, and the right function to validate the given date
+  /** This function returns the Ext.Editor to use to edit the values for this operator.
     * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.ux.netbox.core.TextValuesEditor}
+    * @return {Ext.ux.netbox.date.DateTextEditor}
     */
   getEditor: function(cache){
     if(cache===undefined){
@@ -58,7 +59,31 @@ Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scop
     }
     var editor;
     if(this.editor===undefined || this.editor===null || !cache){
-      editor=new Ext.ux.netbox.date.DateTextEditor({format: this.format},new Ext.form.TextField(this.getTextFieldConfig()));
+      var splittedFormat=this.format.split(" ");
+      if(splittedFormat.length > 1){
+        editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.ux.form.DateTime({
+                  dateFormat: splittedFormat[0],
+                  dateConfig: {
+                    altFormats: 'Y-m-d|Y-n-d',
+                    allowBlank: false
+                  },
+                  timeFormat: splittedFormat[1],
+                  timeConfig: {
+                    altFormats: 'H:i:s',
+                    allowBlank: false
+                  }
+                }),
+                {format: this.format}
+              );
+      }else{
+        editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.form.DateField({
+                  format: splittedFormat[0],
+                  allowBlank: false
+                }),
+                {format: this.format}
+              );
+      }
+
       if(cache){
         this.editor=editor;
       }
@@ -157,7 +182,7 @@ Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scop
 });
 
 /** It instantiates a new DateRangeEditor
-  * @class Editor used to edit date ranges. The DATE_RANGE operator returns this editor. 
+  * @class Editor used to edit date ranges. The DATE_RANGE operator returns this editor.
   * @constructor
   * @extends Ext.ux.netbox.FilterEditor
   */

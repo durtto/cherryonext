@@ -3,33 +3,42 @@
 Ext.namespace('Ext.ux.netbox.date');
 
 /** It instantiates a new DateTextEditor
-  * @class This class extends Ext.ux.netbox.core.TextValuesEditor to manage dates as value,
-  * parsing the result to verify if it's a valida date.
-  * For a description of the parameters look at the documentation of Ext.Editor
+  * @class This class extends Ext.ux.netbox.FilterEditor to manage dates as value.
+  * For a description of the parameters look at the documentation of Ext.Editor.
   * @constructor
-  * @extends Ext.ux.netbox.core.TextValuesEditor
+  * @extends Ext.ux.netbox.FilterEditor
   */
-Ext.ux.netbox.date.DateTextEditor = function(config, field){
-  Ext.ux.netbox.date.DateTextEditor.superclass.constructor.call(this,config,field);
+Ext.ux.netbox.date.DateTextEditor = function(field,config){
+  Ext.ux.netbox.date.DateTextEditor.superclass.constructor.call(this,field,config);
   if(config.format==undefined){
     config.format='Y-m-d H:i:s';
   }
   this.format=config.format;
 }
 
-Ext.extend(Ext.ux.netbox.date.DateTextEditor,Ext.ux.netbox.core.TextValuesEditor,/** @scope Ext.ux.netbox.date.DateTextEditor.prototype */{
+Ext.extend(Ext.ux.netbox.date.DateTextEditor,Ext.ux.netbox.FilterEditor,/** @scope Ext.ux.netbox.date.DateTextEditor.prototype */{
 
   /** This method gets the value. If the value inserted by the user is not a valid date, an empty array is returned.
    */
+
   getValue: function() {
     var val=Ext.ux.netbox.date.DateTextEditor.superclass.getValue.call(this);
-    if(val.length==1){
-      var date=Date.parseDate(val[0].value,this.format);
-      if(!date){
-        return([]);
-      }
-      val[0].value=date.format('Y-m-d H:i:s');
+    
+    if(val===""){
+      return([]);
+    }else{
+      return [{value: val.format('Y-m-d H:i:s'),label:val.format(this.format)}];
     }
-    return(val);
+  },
+
+  setValue: function(val){
+    var value;
+    if(val.length==0){
+      value="";
+    }else{
+      value=Date.parseDate(val[0].value, 'Y-m-d H:i:s');
+    }
+    Ext.ux.netbox.date.DateTextEditor.superclass.setValue.call(this,value);
   }
+
 });
