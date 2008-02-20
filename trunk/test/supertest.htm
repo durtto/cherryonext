@@ -11,7 +11,34 @@
     <script type="text/javascript" src="../../ext-2.0.1/source/adapter/ext-base.js"></script>
     <script type="text/javascript" src="../../ext-2.0.1/ext-all-debug.js"></script>
 
-    <script type="text/javascript" src="../cherryonext-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Filter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/ElementaryFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/CompositeFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FieldManager.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FilterModel.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/DynamicFilterModelView.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/FilterEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/AvailableValuesEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/TextValuesEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/TextFieldOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringListOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberOperators.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/external/Select.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/external/RowFitLayout.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/external/DateTime.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/InputTextMask.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateTextEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateOperators.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/RangeField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/RangeMenu.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/RangeItem.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/PreferenceManager.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/PreferenceManagerView.js"></script>
     
 <!-- <script language="JavaScript" type="text/javascript" src="../src/netbox/locale/filters-lang-it.js"></script> -->
     
@@ -118,7 +145,7 @@
     });
     
     function displayFilter(){
-      document.getElementById('debugInfo').innerHTML=Ext.util.JSON.encode(filterModel.getFilter());
+      document.getElementById('debugInfo').innerHTML=Ext.util.JSON.encode(filterModel.getFilterObj());
     }
 
     function provaGetFunc(){
