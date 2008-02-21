@@ -13,7 +13,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * A field can have a list of available values, a default way to render and editor for the values of the elementary filters and so on.
   * Usually you should not instantiate a field directly, but the Ext.ux.netbox.core.FieldManager (or directly the Ext.ux.netbox.core.FieldModel) instantiates them.
   */
-Ext.ux.netbox.core.Field=function(id,labelIn){
+Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
   Ext.ux.netbox.core.Field.superclass.constructor.call(this);
   this.addEvents(/** @scope Ext.ux.netbox.core.Field.prototype */{
     /** Fires when a operator is added
@@ -75,7 +75,10 @@ Ext.ux.netbox.core.Field=function(id,labelIn){
     * @private
     */
   this.isRemote=true;
-
+  /** The default values of this Field. Optional.
+    * @property {Array} defaultValues
+    * @private
+    */
   this.defaultValues=((defaultValues==undefined)?[]:defaultValues);
 
 }
