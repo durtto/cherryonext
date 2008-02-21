@@ -13,10 +13,10 @@ MockXmlHttpRequest.prototype.send=function(data){
       if(paramNameAndValue[0]=='prefId'){
         if(paramNameAndValue[1]=='1'){
           this.responseText='{grid: {"columns":[{"id":1,"width":75},{"id":"company","width":477},{"id":2,"width":75},{"id":3,"width":75},{"id":4,"width":95},{"id":5,"width":85,hidden:true}],"sort":{"field":"price","direction":"ASC"}},';
-          this.responseText+='filter: {"left":{"fieldId":"pctChange","operatorId":"NUMBER_GREATER","values":[{"label":0,"value":0}]},"logicalOperator":"AND","right":{"fieldId":"inPortfolio","operatorId":"STRING_EQUALS","values":[{"label":"Yes","value":"0"}]}}}';
+          this.responseText+='filter: {"left":{"fieldId":"pctChange","operatorId":"NUMBER_GREATER","values":[{"label":0,"value":0}]},"logicalOperator":"AND","right":{"fieldId":"inPortfolio","operatorId":"STRING_EQUAL","values":[{"label":"Yes","value":"0"}]}}}';
         } else if(paramNameAndValue[1]=='2'){
           this.responseText='{grid: {"columns":[{"id":"company","width":221},{"id":1,"width":75},{"id":2,"width":75},{"id":3,"width":75},{"id":4,"width":95},{"id":5,"width":85}],"sort":{"field":"pctChange","direction":"ASC"}},';
-          this.responseText+='filter: {"left":{"fieldId":"pctChange","operatorId":"NUMBER_LESS_OR_EQUAL","values":[{"label":0,"value":0}]},"logicalOperator":"AND","right":{"fieldId":"inPortfolio","operatorId":"STRING_EQUALS","values":[{"label":"Yes","value":"0"}]}}}';
+          this.responseText+='filter: {"left":{"fieldId":"pctChange","operatorId":"NUMBER_LESS_OR_EQUAL","values":[{"label":0,"value":0}]},"logicalOperator":"AND","right":{"fieldId":"inPortfolio","operatorId":"STRING_EQUAL","values":[{"label":"Yes","value":"0"}]}}}';
         }
         break;
       }
@@ -24,7 +24,7 @@ MockXmlHttpRequest.prototype.send=function(data){
   }
   if(this.url==='http://applyDefaultPrefURL'){
     this.responseText='{grid: {"columns":[{"id":1,"width":75},{"id":"company","width":477},{"id":2,"width":75},{"id":3,"width":75},{"id":4,"width":95},{"id":5,"width":85,hidden:true}],"sort":{"field":"price","direction":"ASC"}},';
-    this.responseText+='filter: {"left":{"fieldId":"pctChange","operatorId":"NUMBER_GREATER","values":[{"label":0,"value":0}]},"logicalOperator":"AND","right":{"fieldId":"inPortfolio","operatorId":"STRING_EQUALS","values":[{"label":"Yes","value":"0"}]}}}';
+    this.responseText+='filter: {"left":{"fieldId":"pctChange","operatorId":"NUMBER_GREATER","values":[{"label":0,"value":0}]},"logicalOperator":"AND","right":{"fieldId":"inPortfolio","operatorId":"STRING_EQUAL","values":[{"label":"Yes","value":"0"}]}}}';
   }
   if(this.url==='http://savePrefURL'){
     this.status=500;
