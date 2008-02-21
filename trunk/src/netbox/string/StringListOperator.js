@@ -6,7 +6,7 @@ Ext.namespace('Ext.ux.netbox.string');
   * @class This is the class that implements an operator that allows the choice of more than one value (from a list)
   * @constructor
   * @extends Ext.ux.netbox.core.Operator
-  * @param {String} id The id of the operator. 
+  * @param {String} id The id of the operator.
   * @param {String} label The label of the operator.
   */
 Ext.ux.netbox.string.StringListOperator = function(id,label) {
@@ -19,8 +19,6 @@ Ext.ux.netbox.string.StringListOperator = function(id,label) {
 }
 
 Ext.extend(Ext.ux.netbox.string.StringListOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.string.StringListOperator.prototype */{
-  
-
 
   /** It returns an Ext.ux.netbox.core.AvailableValuesField, with more than one choice
     * If available values are not available ( isAvailableValuesAvailable  returns false) an exception is thrown
