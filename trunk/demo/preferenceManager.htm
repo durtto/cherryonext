@@ -10,9 +10,9 @@
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
   <script type="text/javascript" src="../cherryonext.js"></script>
-  
+
   <link rel="stylesheet" type="text/css" href="myStylesheet.css" />
-  <script language="JavaScript" type="text/javascript" src="mydata.js"></script>
+  <script type="text/javascript" src="mydata.js"></script>
 
   <!--Ajax call simulation-->
   <script language="JavaScript" type="text/javascript" src="jsUnitAjax.js"></script>
@@ -33,7 +33,7 @@
         ["No","1"],
         ["I don't remember","2"]
       ]});
-      
+
     Ext.onReady(function(){
 
       var filterCfg=[
@@ -42,14 +42,14 @@
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
         {id: 'lastChange',label: 'Last Updated', type: 'date', format: 'd/m/Y H:i'},
-        {id: 'inPortfolio',label: 'In Portfolio', availableValues: availableValuesStore, remoteStore: false}
+        {id: 'inPortfolio',label: 'In Portfolio', type: 'enum', availableValues: availableValuesStore, remoteStore: false}
       ];
 
       //FilterModel
       fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
       filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
       localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
-      
+
       // Preference Manager
       prefManager=new Ext.ux.netbox.PreferenceManager({
         id: 'prefManagerId',

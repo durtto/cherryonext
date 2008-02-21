@@ -10,9 +10,8 @@
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
   <script type="text/javascript" src="../cherryonext.js"></script>
-  
   <script type="text/javascript" src="mydata.js"></script>
-  
+
   <!--Ajax call simulation-->
   <script language="JavaScript" type="text/javascript" src="jsUnitAjax.js"></script>
   <script language="JavaScript" type="text/javascript" src="simulateAjaxCall.js"></script>
@@ -21,38 +20,42 @@
   <script language="JavaScript" type="text/javascript">
 
     Ext.BLANK_IMAGE_URL="../ext/resources/images/default/s.gif";
-//show the shares only if I have some shares in my portfolio 
-function shouldShowShares(grid,row,column){ 
-  //if I click outside the grid, I don't want to show nothing
-  if(row<0){
-    return;
-  }
-  var record=grid.getStore().getAt(row);
-  if(record.get('inPortfolio')==0)
-    return true;
-  else
-    return false;
-}
-
-function showShares(grid,row,column){
-  var record=grid.getStore().getAt(row);
-  var company = record.get('company');
-  var msg ='You have <b>'+company+"</b>'s shares in your portfolio.<br>";
-  msg = msg+'If this were a serious demo here there would be the number of your shares';
-  Ext.Msg.alert("Sorry, we don't know your shares' amount... for now ", msg);
-}
-
-function showDetails(grid,row,column){
-  var record=grid.getStore().getAt(row);
-  var company = record.get('company');
-  Ext.Msg.alert(company+' is very cool', "Marketing material here...");
-}
 
     var fieldManager;
     var filterModel;
     var localFilterResolver;
     var grid;
-    var win;
+    var filterDialog;
+    var filterShouldBeApplied=false;
+    var filterBackup;
+
+    //show the shares only if I have some shares in my portfolio
+    function shouldShowShares(grid,row,column){
+      //if I click outside the grid, I don't want to show nothing
+      if(row<0){
+        return;
+      }
+      var record=grid.getStore().getAt(row);
+      if(record.get('inPortfolio')==0)
+        return true;
+      else
+        return false;
+    }
+
+    function showShares(grid,row,column){
+      var record=grid.getStore().getAt(row);
+      var company = record.get('company');
+      var msg ='You have <b>'+company+"</b>'s shares in your portfolio.<br>";
+      msg = msg+'If this were a serious demo here there would be the number of your shares';
+      Ext.Msg.alert("Sorry, we don't know your shares' amount... for now ", msg);
+    }
+
+    function showDetails(grid,row,column){
+      var record=grid.getStore().getAt(row);
+      var company = record.get('company');
+      Ext.Msg.alert(company+' is very cool', "Marketing material here...");
+    }
+
     var availableValuesStore=new Ext.data.SimpleStore({fields: ['label', 'value'],
       data: [
         ["Yes","0"],
@@ -68,12 +71,14 @@ function showDetails(grid,row,column){
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
         {id: 'lastChange',label: 'Last Updated', type: 'date', format: 'd/m/Y H:i'},
-        {id: 'inPortfolio',label: 'In Portfolio', availableValues: availableValuesStore, remoteStore: false}
+        {id: 'inPortfolio',label: 'In Portfolio', type: 'enum', availableValues: availableValuesStore, remoteStore: false}
       ];
 
       //FilterModel
       fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
       filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
+      filterModel.on('elementaryFilterAdded', onFilterChanged);
+      filterModel.on('elementaryFilterRemoved', onFilterChanged);
       localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
 
       //--------------------------------------------------------------------------------------
@@ -129,14 +134,11 @@ function showDetails(grid,row,column){
         tbar: [{
            text: 'Filters...',
            handler: function(){
-             win.show();
+             filterDialog.show();
            }
         }]
       });
 
-      var button2=new Ext.Button({text: "Apply"});
-
-      button2.on("click",filterTable);
       var viewport = new Ext.Viewport(
           {layout: "border",
            items: [
@@ -145,19 +147,23 @@ function showDetails(grid,row,column){
           }
       );
 
-      win = new Ext.Window({
+      var button2=new Ext.Button({text: "Apply"});
+      button2.on("click",filterTable);
+
+      filterDialog = new Ext.Window({
             title: 'Filters',
             width:600,
             height:350,
             layout: 'border',
             closeAction: 'hide',
             items: [{ filterModel: filterModel,
-               region: "center",
+               region: 'center',
                xtype: 'dynamicFilter',
                buttons: [button2]
-             }
-           ]
-        });
+            }]
+          });
+      filterDialog.on('beforeshow', onShowFilterDialog);
+      filterDialog.on('beforehide', onCloseFilterDialog);
 
       //--------------------------------------------------------------------------------------
       // Preference Manager
@@ -181,7 +187,29 @@ function showDetails(grid,row,column){
       //--------------------------------------------------------------------------------------
     });
 
+    function onShowFilterDialog(){
+      filterBackup = filterModel.getFilterObj();
+    }
+
+    function onCloseFilterDialog(){
+      if(filterShouldBeApplied==true){
+        Ext.MessageBox.confirm('Confirm', 'The filter was not applied. Do you want to do it now?', whatDoYouWantToDo);
+      }
+    }
+
+    function whatDoYouWantToDo(btn){
+      if(btn=='yes')
+        filterTable();
+      if(btn=='no')
+        filterModel.setFilterObj(filterBackup);
+    }
+
+    function onFilterChanged(){
+     filterShouldBeApplied=true;
+    }
+
     function filterTable(){
+      filterShouldBeApplied=false;
      localFilterResolver.apply(store);
     }
 
@@ -201,7 +229,7 @@ function showDetails(grid,row,column){
       filterTable();
     }
 
-    </script>
+  </script>
 </head>
 
 <body id="mettiloQui">
