@@ -26,8 +26,8 @@
         }
         
         function testConstructor(){
-          assertEquals("Default operation STRING_EQUALS",stringFilterType.getDefaultOperation().getId(),"STRING_EQUALS");
-          assertTrue("STRING_EQUALS contained",verifyContained("STRING_EQUALS",stringFilterType.getAvailableOperations()));
+          assertEquals("Default operation STRING_EQUAL",stringFilterType.getDefaultOperation().getId(),"STRING_EQUAL");
+          assertTrue("STRING_EQUAL contained",verifyContained("STRING_EQUAL",stringFilterType.getAvailableOperations()));
           assertTrue("STRING_DIFFERENT contained",verifyContained("STRING_DIFFERENT",stringFilterType.getAvailableOperations()));
           assertTrue("STRING_CONTAINS contained",verifyContained("STRING_CONTAINS",stringFilterType.getAvailableOperations()));
           assertTrue("STRING_DOESNT_CONTAINS contained",verifyContained("STRING_DOESNT_CONTAINS",stringFilterType.getAvailableOperations()));

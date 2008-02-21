@@ -32,11 +32,11 @@
       var localStoreResolver;
       var now;
     function test_filterStringEquals(){
-      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_EQUALS", values: []});
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_EQUAL", values: []});
       localStoreResolver.apply(store);
       assertEquals("Ha solo 1 elemento",1,store.getCount());
       assertTrue("E' l'elemento con pietanza vuota",isPietanzaThere(""));
-      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_EQUALS", values: [{label:"boh",value:"Patatine"}]});
+      filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_EQUAL", values: [{label:"boh",value:"Patatine"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha ancora solo 1 elemento",1,store.getCount());
       assertTrue("Sono le patatine",isPietanzaThere("Patatine"));
