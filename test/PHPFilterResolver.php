@@ -1,5 +1,9 @@
 <?php
-
+/** The main function is getSQL which is at the end of the files. 
+  * At the top of the file there is then some other method to encode the value etc to avoid SQL injection and so on.
+  * In the middle you will find the functions that decode the elementary filter in a SQL condition
+  */
+/*Utility function start*/
   function isDecimalNumber($n) {
     return (string)(float)$n === (string)$n;
   }
@@ -16,6 +20,9 @@
     $value=str_replace("%","\\%",$value);
     return($value);
   }
+/*Utility function end*/
+/*Decoding functions start. They have the field and the value as parameters, and returns the SQL condition
+  */
   function string_equals($field,$value){
     $val=calculateValue($value);
     if($val===""){//in Oracle empty string and null value are the same thing
@@ -236,6 +243,10 @@
       return($field." > ".$val);
     }
   }
+  /*Decoding functions end.*/
+  /** This one is used to associate an operator id to the function that resolves the elementary filter in a SQL filter.
+    * If you have custom operators just add them to the array with the function name
+    */
   $mapping=Array(      
       'NUMBER_EQUAL' => 'number_equals',
       'NUMBER_NOT_EQUAL'=> 'number_differents',
@@ -260,7 +271,9 @@
       'DATE_RANGE'=>'date_range',
       'DATE_PERIOD'=>'date_period'
   );
-    
+  
+  /** Core function that you should call to obtain the SQL filter 
+    */
   function getSQL($filterObj){
     global $mapping;
     if($filterObj==null)
