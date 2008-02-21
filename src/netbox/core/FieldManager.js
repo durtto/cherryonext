@@ -8,7 +8,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @param (Object) config The configuration options for this object. Optional, if not present an empty FieldManager is created.
   * @config {String} id The id of the field (for example the id of the column)
   * @config {String} label The label of the field (for example the header of the column)
-  * @config {String} type The type of the field. Available values are: string, float, int, date
+  * @config {String} type The type of the field. Available values are: string, enum, float, int, date
   * @config {String} format Only for dates, the format of the date. Look Ext.ux.netbox.data.DateFilterType for more details
   * @config {Ext.data.Store} availableValues The store containing the available values for this field. Look at Ext.ux.netbox.core.Field.setAvailableValues for more details
   * @config {boolean} remoteStore True if the store is remote, false otherwise. Look at Ext.ux.netbox.core.Field.setStoreRemote for more details
@@ -45,6 +45,9 @@ Ext.ux.netbox.core.FieldManager=function(config){
         case "string":
           field=new Ext.ux.netbox.string.StringField(config[i].id,config[i].label);
           break;
+        case "enum":
+          field=new Ext.ux.netbox.string.EnumField(config[i].id,config[i].label);
+          break;
         case "float":
         case "int":
           field=new Ext.ux.netbox.number.NumberField(config[i].id,config[i].label);
@@ -60,7 +63,7 @@ Ext.ux.netbox.core.FieldManager=function(config){
         if(config[i].remoteStore!==undefined){
           field.setStoreRemote(config[i].remoteStore);
         }
-        if(config[i].type="string"){
+        if(config[i].type=="string" || config[i].type=="enum"){
           field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_LIST',field.stringListText));
           field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_NOT_IN_LIST',field.stringNotListText));
         }

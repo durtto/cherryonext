@@ -20,7 +20,7 @@ Ext.namespace('Ext.ux.netbox.core');
   *    {id: 'change',label: 'Change', type: 'float'},
   *    {id: 'pctChange',label: '% Change', type: 'float'},
   *    {id: 'lastChange',label: 'Last Updated', type: 'date', format: 'd/m/Y H:i'},
-  *    {id: 'shouldBuy',label: 'Should Buy', availableValues: availableValuesStore, remoteStore: false}
+  *    {id: 'shouldBuy',label: 'Should Buy', type: 'enum', availableValues: availableValuesStore, remoteStore: false}
   *  ];
   *  var fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
   * </pre>

@@ -60,7 +60,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
     * @private
     */
   filterIsToShow : function(grid,row,column){
-    if(column==-1){
+    if(column==-1 || this.getField(grid,column)==null){
       return false;
     }else{
 
@@ -77,7 +77,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
       }
 
       if(!availableOperatorsId){
-        if(field instanceof Ext.ux.netbox.string.StringField){
+        if(field instanceof Ext.ux.netbox.string.StringField || field instanceof Ext.ux.netbox.string.EnumField){
           availableOperatorsId=this.stringOperDefault;
         }else if(field instanceof Ext.ux.netbox.number.NumberField){
           availableOperatorsId=this.numberOperDefault;
