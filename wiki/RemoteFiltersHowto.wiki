@@ -15,7 +15,7 @@ If you want to send filter information a way is the following:
   store.load({params: {start:0, limit: 20,filter: Ext.util.JSON.encode(filterModel.getFilterObj())}});
 }}}
 where filterModel is the Ext.ux.netbox.core.FilterModel used to filter on the grid. In this way your url will have a filter parameter containing the filter object encoded using JSON.
-Now, if you try to sort your grid clicking on the header of the cell, you will see that the filter is lost. To have the filter as a persistent options of the store you shoild use the baseParams attribute of the store:
+Now, if you try to sort your grid clicking on the header of the cell, you will see that the filter is lost. To have the filter as a persistent options of the store you shoild use the baseParams attribute of the store instead:
 {{{
   store.baseParams=Ext.apply(store.baseParams,{filter: Ext.util.JSON.encode(filterModel.getFilterObj())});
   store.load({params: {start:0, limit: 20}});
