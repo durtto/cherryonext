@@ -12,8 +12,8 @@ Ext.namespace('Ex.ux.netbox.core');
   *   <li> <b>value</b>: Mixed <em> The value of the elementary filter that the function should evaluate</em></li>
   *   <li> <b>column</b>: String <em> The field id of the elementary filter that the function should evaluate</em></li>
   * </ol>
-  * For example if I have a filter <PRE>{id:"Ciccio", operator: "STRING_EQUALS", values:[{label: "bombo",value:"bombo"}]},</PRE> the function corresponding with
-  * STRING_EQUALS in the mapping will be called for each record in the store, with [{label: "bombo",value:"bombo"}] as value and "Ciccio" as column.<br>
+  * For example if I have a filter <PRE>{id:"Ciccio", operator: "STRING_EQUAL", values:[{label: "bombo",value:"bombo"}]},</PRE> the function corresponding with
+  * STRING_EQUAL in the mapping will be called for each record in the store, with [{label: "bombo",value:"bombo"}] as value and "Ciccio" as column.<br>
   * This is, for example, the default mapping:
   * <PRE>
   * this.mapping={NUMBER_EQUAL: {fn: this.filterNumberEqual, scope: this},
@@ -23,7 +23,7 @@ Ext.namespace('Ex.ux.netbox.core');
   *   NUMBER_LESS: {fn: this.filterNumberLess, scope: this},
   *   NUMBER_LESS_OR_EQUAL: {fn: this.filterNumberLessOrEqual, scope: this},
   *   NUMBER_RANGE: {fn: this.filterNumberRange, scope: this},
-  *   STRING_EQUALS: {fn: this.filterStringEquals, scope: this},
+  *   STRING_EQUAL: {fn: this.filterStringEquals, scope: this},
   *   STRING_DIFFERENT: {fn: this.filterStringDifferent, scope: this},
   *   STRING_CONTAINS: {fn: this.filterStringContains, scope: this},
   *   STRING_DOESNT_CONTAIN: {fn: this.filterStringDoesntContains, scope: this},
@@ -60,7 +60,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver = function(filterModel, mapping) {
       NUMBER_LESS: {fn: this.filterNumberLess, scope: this},
       NUMBER_LESS_OR_EQUAL: {fn: this.filterNumberLessOrEqual, scope: this},
       NUMBER_RANGE: {fn: this.filterNumberRange, scope: this},
-      STRING_EQUALS: {fn: this.filterStringEquals, scope: this},
+      STRING_EQUAL: {fn: this.filterStringEquals, scope: this},
       STRING_DIFFERENT: {fn: this.filterStringDifferent, scope: this},
       STRING_CONTAINS: {fn: this.filterStringContains, scope: this},
       STRING_DOESNT_CONTAIN: {fn: this.filterStringDoesntContains, scope: this},
@@ -140,7 +140,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
       return(date);
     }
   },
-  /** This is the standard implementation of the STRING_EQUALS filter match.
+  /** This is the standard implementation of the STRING_EQUAL filter match.
     * @param {Ext.data.Record} record The record to match against the value
     * @param {Array of Object} value The value to match against the filter
     * @param {String} column The column of the record to match

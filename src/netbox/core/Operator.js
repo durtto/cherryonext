@@ -134,6 +134,13 @@ Ext.ux.netbox.core.Operator.prototype = {
       throw("Impossible to obtain the type of the store (remote/local) for the operator "+this.getId()+" which is without field");
     }
     return(this.getField().isStoreRemote());
+  },
+  /** Returns the list of default values. By default it asks to the field the default values.
+    * If you have a list of default values specific to the operator, overwrite this method.
+    * @return {Array} array of default values in the format {value: ... , label: ...}
+    */
+  getDefaultValues : function(){
+    return(this.getField().getDefaultValues());
   }
 
 };

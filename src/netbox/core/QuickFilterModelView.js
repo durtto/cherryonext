@@ -7,7 +7,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * In this way you right click on a cell of the grid (for example the cell containing the value "John" in the name column), a context menu appears, 
   * you select the operator from the context menu (for example "=") and a filter is added (name = "John") 
   * Default operators are as follows, divided by datatype:<p><em>
-  * <b>String</b>: ['STRING_EQUALS','STRING_DIFFERENT']<br>
+  * <b>String</b>: ['STRING_EQUAL','STRING_DIFFERENT']<br>
   * <b>Number</b>: ['NUMBER_EQUAL','NUMBER_NOT_EQUAL','NUMBER_GREATER','NUMBER_GREATER_OR_EQUAL','NUMBER_LE$SS','NUMBER_LESS_OR_EQUAL']<br>
   * <b>Date</b>: ['DATE_EQUAL','DATE_GREATER','DATE_GREATER_OR_EQUAL','DATE_LESS','DATE_LESS_OR_EQUAL']</em></p>
   * You can define your own list of operators for each field in the config of the class.
@@ -45,7 +45,7 @@ Ext.ux.netbox.core.QuickFilterModelView=function(config){
     this.duplicatedElementaryFiltersAllowed=config.duplicatedElementaryFiltersAllowed;
   }
 
-  this.stringOperDefault = ['STRING_EQUALS','STRING_DIFFERENT'];
+  this.stringOperDefault = ['STRING_EQUAL','STRING_DIFFERENT'];
   this.numberOperDefault = ['NUMBER_EQUAL','NUMBER_NOT_EQUAL','NUMBER_GREATER','NUMBER_GREATER_OR_EQUAL','NUMBER_LESS','NUMBER_LESS_OR_EQUAL'];
   this.dateOperDefault = ['DATE_EQUAL','DATE_GREATER','DATE_GREATER_OR_EQUAL','DATE_LESS','DATE_LESS_OR_EQUAL'];
 }

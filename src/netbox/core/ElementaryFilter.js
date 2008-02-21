@@ -56,7 +56,7 @@ Ext.ux.netbox.core.ElementaryFilter = function(field, operator){
     * @private
     */
   this.values;
-  this.setValues([]);
+  this.setValues(this.getOperator().getDefaultValues());
 }
 if(Ext.ux.netbox.core.ElementaryFilter.sequence==undefined){
   Ext.ux.netbox.core.ElementaryFilter.sequence=0;
@@ -67,7 +67,7 @@ Ext.extend(Ext.ux.netbox.core.ElementaryFilter,Ext.ux.netbox.core.Filter,/** @sc
   /** This method returns the Field for this elementaryFilter.
     * @return {Ext.ux.netbox.core.ElementaryField} The Field for this elementaryFilter
     */
-  getField : function() {
+  getField : function(){
     return(this.field);
   },
   /** This method returns the Operator for this elementaryFilter.
