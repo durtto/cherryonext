@@ -40,8 +40,9 @@
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
         {id: 'lastChange',label: 'Last Updated', type: 'date', format: 'd/m/Y H:i'},
-        {id: 'inPortfolio',label: 'In Portfolio', availableValues: availableValuesStore, remoteStore: false}
+        {id: 'inPortfolio',label: 'In Portfolio', type: 'enum', availableValues: availableValuesStore, remoteStore: false}
       ];
+
       fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
       filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
       localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);

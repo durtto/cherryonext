@@ -7,11 +7,10 @@
   <title>Dynamic Filter Demo</title>
   <link rel="stylesheet" type="text/css" href="../ext/resources/css/ext-all.css" />
   <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
-
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
   <script type="text/javascript" src="../cherryonext.js"></script>
-  
+
   <link rel="stylesheet" type="text/css" href="myStylesheet.css" />
   <script type="text/javascript" src="mydata.js"></script>
 
@@ -31,14 +30,13 @@
       ]});
     Ext.onReady(function(){
 
-      //config for the FieldManager
       var filterCfg=[
         {id: 'company',label: 'Company'},
         {id: 'price',label: 'Price', type: 'float'},
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
         {id: 'lastChange',label: 'Last Updated', type: 'date', format: 'd/m/Y H:i'},
-        {id: 'inPortfolio',label: 'In Portfolio', availableValues: availableValuesStore, remoteStore: false}
+        {id: 'inPortfolio',label: 'In Portfolio', type: 'enum', availableValues: availableValuesStore, remoteStore: false}
       ];
 
       //You can instantiate the filterModel directly passing to it the config for the fieldManager
