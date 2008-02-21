@@ -98,7 +98,7 @@ var mapping={
   NUMBER_GREATER_OR_EQUAL: filterNumberGreaterOrEqual,
   NUMBER_LESS: filterNumberLess,
   NUMBER_LESS_OR_EQUAL: filterNumberLessOrEqual,
-  STRING_EQUALS: filterStringEquals,
+  STRING_EQUAL: filterStringEquals,
   STRING_DIFFERENT: filterStringDifferent,
   STRING_CONTAINS:  filterStringContains,
   STRING_DOESNT_CONTAIN: filterStringDoesntContains,
