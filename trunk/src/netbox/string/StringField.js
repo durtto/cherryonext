@@ -10,19 +10,19 @@ Ext.namespace('Ext.ux.netbox.string');
   * @class This is the class that implements the field to use if the type is string.
   * It contains as default the following operators:
   * <ul>
-  *   <li> STRING_EQUALS </li>
+  *   <li> STRING_EQUAL </li>
   *   <li> STRING_DIFFERENT </li>
   *   <li> STRING_CONTAINS </li>
   *   <li> STRING_DOESNT_CONTAINS </li>
   *   <li> STRING_STARTS_WITH </li>
   *   <li> STRING_ENDS_WITH </li>
   * </ul>
-  * The default operator is STRING_EQUALS.
+  * The default operator is STRING_EQUAL.
   * The STRING_LIST and STRING_NOT_LIST operations should be manually added if needed.
   */
 Ext.ux.netbox.string.StringField = function(id,label) {
   Ext.ux.netbox.string.StringField.superclass.constructor.call(this,id,label);
-  var equalOperator = new Ext.ux.netbox.core.Operator("STRING_EQUALS",this.stringEqualsLabel);
+  var equalOperator = new Ext.ux.netbox.core.Operator("STRING_EQUAL",this.stringEqualsLabel);
   this.addOperator(equalOperator);
   this.setDefaultOperator(equalOperator);
   this.addOperator(new Ext.ux.netbox.core.Operator("STRING_DIFFERENT",this.stringDifferentLabel));

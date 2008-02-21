@@ -9,7 +9,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @class A field is an item on whch I want to perform filter operations.
   * For example if I have a grid with a column 'Price' and I want to filter on the price column, surelly I have a filter on the price column.
   * In a filter the operators available are defined (for example, on the Price column I want only to have the =, and > operators. The Price field will have these 2 operators.
-  * Among all the operators there is an operator of default, that will be used as default when a new elementary filter is instantiated. 
+  * Among all the operators there is an operator of default, that will be used as default when a new elementary filter is instantiated.
   * A field can have a list of available values, a default way to render and editor for the values of the elementary filters and so on.
   * Usually you should not instantiate a field directly, but the Ext.ux.netbox.core.FieldManager (or directly the Ext.ux.netbox.core.FieldModel) instantiates them.
   */
@@ -75,10 +75,25 @@ Ext.ux.netbox.core.Field=function(id,labelIn){
     * @private
     */
   this.isRemote=true;
+
+  this.defaultValues=((defaultValues==undefined)?[]:defaultValues);
+
 }
 
 Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox.core.Field.prototype */
 {
+  /** This method returns the default values for this Field.
+    * @return {Array} The default values for this Field
+    */
+  getDefaultValues : function(){
+    return(this.defaultValues);
+  },
+  /** This method sets the default values for this Field.
+    * @param {Array} values The default values for this Field
+    */
+  setDefaultValues : function(values){
+    this.defaultValues=values;
+  },
   /** This method returns the default operator for this Field.
     * Before the setDefaultOperator method is called it returns null.
     * @return {Ext.ux.netbox.core.Operator} The default operator for this Field
