@@ -21,6 +21,7 @@
     <include name="src\netbox\string\TextFieldOperator.js" />
     <include name="src\netbox\string\StringListOperator.js" />
     <include name="src\netbox\string\StringField.js" />
+    <include name="src\netbox\string\EnumField.js" />
     <include name="src\netbox\number\NumberOperators.js" />
     <include name="src\netbox\number\NumberField.js" />
     <include name="src\netbox\InputTextMask.js" />
@@ -46,6 +47,7 @@
   <file name="src\netbox\string\TextFieldOperator.js" path="netbox\string" />
   <file name="src\netbox\string\StringListOperator.js" path="netbox\string" />
   <file name="src\netbox\string\StringField.js" path="netbox\string" />
+  <file name="src\netbox\string\EnumField.js" path="netbox\string" />
   <file name="src\netbox\core\Filter.js" path="netbox\core" />
   <file name="src\netbox\core\ElementaryFilter.js" path="netbox\core" />
   <file name="src\netbox\core\AvailableValuesEditor.js" path="netbox\core" />
