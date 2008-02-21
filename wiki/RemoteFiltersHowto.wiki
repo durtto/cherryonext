@@ -22,7 +22,7 @@ Now, if you try to sort your grid clicking on the header of the cell, you will s
 }}}
 
 =Server=
-On the server you have to decode the object from JSON (there are implementation on most of the languages, just google for JSON <language name>). Then you probably want to transform this object in a SQL where condition. 
+On the server you have to decode the object from JSON (there are implementations on most of the languages, just google for JSON <language name>). Then you probably want to transform this object in a SQL where condition. 
 For details about the structure of the filter object look at [filter this page]. In practice what matters is that it's a binary tree, where the leaf are the elementary filters, while the other nodes are the logical operators.
 In pseudocode the sql converter should do something like this:
 {{{
@@ -32,11 +32,11 @@ start
     return noFilter
   end if
   if theFilterObject.left is not defined then //this means that it's a leaf
-    return(call to decode the elementary filter in SQL);
+    return(call to decode the elementary filter in SQL (you can use library such hibernate, or write directly your sql code here);
   else
     leftSQL=getSql(filterObject.left);
     rightSQL=getSql(filterObject.right);
-    return(concatenate leftSQL filterObject.logicalConnector rightSQL);
+    return(concatenate (leftSQL filterObject.logicalConnector rightSQL));
   end if
 end function
 }}}
