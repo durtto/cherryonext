@@ -1,6 +1,6 @@
 <?php
 /** The main function is getSQL which is at the end of the files. 
-  * At the top of the file there is then some other method to encode the value etc to avoid SQL injection and so on.
+  * At the top of the file there are some methods to encode the value etc to avoid SQL injection and so on.
   * In the middle you will find the functions that decode the elementary filter in a SQL condition
   */
 /*Utility function start*/
