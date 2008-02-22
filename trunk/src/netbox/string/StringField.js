@@ -13,7 +13,7 @@ Ext.namespace('Ext.ux.netbox.string');
   *   <li> STRING_EQUAL </li>
   *   <li> STRING_DIFFERENT </li>
   *   <li> STRING_CONTAINS </li>
-  *   <li> STRING_DOESNT_CONTAINS </li>
+  *   <li> STRING_DOESNT_CONTAIN </li>
   *   <li> STRING_STARTS_WITH </li>
   *   <li> STRING_ENDS_WITH </li>
   * </ul>
