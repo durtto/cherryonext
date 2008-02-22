@@ -61,7 +61,7 @@
         assertTrue("Exception thrown",true);
       }
     }
-    
+
     function testRender(){
       var operator=addOperator();
       assertEquals("Render con array undefined","",field.render(undefined,operator.getId()));
@@ -71,11 +71,11 @@
       assertEquals("Render con qualche cosa che non sia un array ma che abbia value e label","label",field.render({value: "value", label: "label"},operator.getId()));
       assertEquals("Render con qualche cosa che non sia un array ma che non abbia value e label",String({val: "value", lab: "label"}),field.render({val: "value", lab: "label"},operator.getId()));
     }
-    
+
     function testGetEditor(){
       var text=field.getEditor();
       assertTrue("viene tornato un Ext.ux.netbox.core.TextValuesEditor",text instanceof Ext.ux.netbox.core.TextValuesEditor);
-      var store=new Ext.data.SimpleStore({fields: ['value', 'label'], 
+      var store=new Ext.data.SimpleStore({fields: ['value', 'label'],
         data: [
         ["Yes","Si"],
         ["No","No"],
@@ -89,7 +89,7 @@
       var combo1=field.getEditor();
       assertEquals("The returned element is the cached one",combo1,combo);
     }
-      
+
     function testRemoveOperator(){
       field.on("operatorRemoved",onOperatorRemoved);
       operator=addOperator();
@@ -126,7 +126,7 @@
 			operatorTmp=new Ext.ux.netbox.core.Operator("TEST");
 			field.addOperator(operatorTmp);
  			field.setDefaultOperator(operatorTmp);
- 			assertEquals("testGetDefaultOperator returns the default operator", operatorTmp,field.getDefaultOperator());
+ 			assertEquals("testGetDefaultOperator returns the default operator", operatorTmp, field.getDefaultOperator());
     }
 
     function testSetDefaultOperator(){
@@ -140,7 +140,7 @@
         assertTrue("setDefaultOperator: Exception thrown",true);
       }
       field.setDefaultOperator(operatorTmp1);
-      assertEquals("Default Operator is the right one", operatorTmp1,field.getDefaultOperator());
+      assertEquals("Default Operator is the right one", operatorTmp1, field.getDefaultOperator());
     }
 
     function testGetFilterInstance(){
@@ -151,7 +151,7 @@
       assertEquals(filt2.getField(),field);
       assertEquals(filt2.getOperator(),field.getDefaultOperator());
     }
-    
+
     function testGetId(){
        assertEquals("GetId works","TEST",field.getId());
     }
@@ -159,11 +159,11 @@
     function testGetLabel(){
        assertEquals("getLabel works","label",field.getLabel());
     }
-    
+
     function testGetLabel(){
        assertEquals("getLabel works","label",field.getLabel());
     }
-    
+
     function testSetAvailableValues(){
       assertFalse("isAvailableValuesAvailable false",field.isAvailableValuesAvailable());
       var store = new Ext.data.SimpleStore({
@@ -173,7 +173,7 @@
       field.setAvailableValues(store);
       assertTrue("isAvailableValuesAvailable true",field.isAvailableValuesAvailable());
     }
-    
+
     function testIsStoreRemote(){
       try{
         field.isStoreRemote();
@@ -188,7 +188,7 @@
       field.setAvailableValues(store);
       assertTrue("field.isStoreRemote is true by default",field.isStoreRemote());
     }
-    
+
     function testSetStoreRemote(){
       var store = new Ext.data.SimpleStore({
       fields: ['label', 'value'],
@@ -198,8 +198,11 @@
       field.setStoreRemote(false);
       assertFalse("field.isStoreRemote is false",field.isStoreRemote());
     }
-    
 
+    function testSetDefaultValues(){
+      field.setDefaultValues([{value:"aaa",label:"aaa"}]);
+      assertArrayEquals("testSetDefaultValues",[{value:"aaa",label:"aaa"}],field.getDefaultValues());
+    }
 
     function setUp(){
       field=new Ext.ux.netbox.core.Field("TEST","label");
