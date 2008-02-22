@@ -228,26 +228,22 @@
   }
   function date_period($field,$value){
     $val=calculateValue($value);
-    if($val===""){
-      return("1<>1");
+    if($val==='LAST_YEAR'){
+      $val="sysdate-TO_YMINTERVAL('01-00')";
+    }elseif ($val==='LAST_MONTH'){
+      $val="ADD_MONTHS(sysdate,-1)";
+    }elseif ($val==='LAST_WEEK'){
+      $val="sysdate -7";
+    }elseif ($val==='LAST_DAY'){
+      $val="sysdate -1";
+    }elseif ($val==='LAST_HOUR'){
+      $val="sysdate -(1/24)";
+    }elseif ($val==='LAST_QUARTER'){
+      $val="sysdate -(1/96)";
     } else {
-      if($val==='LAST_YEAR'){
-        $val="sysdate-TO_YMINTERVAL('01-00')";
-      }elseif ($val==='LAST_MONTH'){
-        $val="ADD_MONTHS(sysdate,-1)";
-      }elseif ($val==='LAST_WEEK'){
-        $val="sysdate -7";
-      }elseif ($val==='LAST_DAY'){
-        $val="sysdate -1";
-      }elseif ($val==='LAST_HOUR'){
-        $val="sysdate -(1/24)";
-      }elseif ($val==='LAST_QUARTER'){
-        $val="sysdate -(1/96)";
-      } else {
-        return("1<>1");
-      }
-      return($field." > ".$val);
+      return("1<>1");
     }
+    return($field." > ".$val);
   }
   /*Decoding functions end.*/
   /** This one is used to associate an operator id to the function that resolves the elementary filter in a SQL filter.
@@ -261,7 +257,7 @@
       'NUMBER_LESS'=> 'number_less',
       'NUMBER_LESS_OR_EQUAL'=> 'number_less_or_equal',
       'NUMBER_RANGE'=> 'number_range',
-      'STRING_EQUALS'=> 'string_equals',
+      'STRING_EQUAL'=> 'string_equals',
       'STRING_DIFFERENT'=> 'string_different',
       'STRING_CONTAINS'=> 'string_contains',
       'STRING_DOESNT_CONTAIN'=> 'string_doesnt_contains',
