@@ -8,7 +8,8 @@ Ext.namespace('Ext.ux.netbox.core');
   * you select the operator from the context menu (for example "=") and a filter is added (name = "John") 
   * Default operators are as follows, divided by datatype:<p><em>
   * <b>String</b>: ['STRING_EQUAL','STRING_DIFFERENT']<br>
-  * <b>Number</b>: ['NUMBER_EQUAL','NUMBER_NOT_EQUAL','NUMBER_GREATER','NUMBER_GREATER_OR_EQUAL','NUMBER_LE$SS','NUMBER_LESS_OR_EQUAL']<br>
+  * <b>Enummerative</b>: ['STRING_EQUAL','STRING_DIFFERENT']<br>
+  * <b>Number</b>: ['NUMBER_EQUAL','NUMBER_NOT_EQUAL','NUMBER_GREATER','NUMBER_GREATER_OR_EQUAL','NUMBER_LESS','NUMBER_LESS_OR_EQUAL']<br>
   * <b>Date</b>: ['DATE_EQUAL','DATE_GREATER','DATE_GREATER_OR_EQUAL','DATE_LESS','DATE_LESS_OR_EQUAL']</em></p>
   * You can define your own list of operators for each field in the config of the class.
   * @constructor
@@ -16,15 +17,49 @@ Ext.namespace('Ext.ux.netbox.core');
   * @param {Object} config An object which may contain the following properties:
   * @config {Ext.ux.netbox.core.FilterModel} filterModel The FilterModel (mandatory) which is associated the QuickFilter.
   * @config {Array of Object} fieldsOptions The options (otional) for configure the operators to show or add new custom getter function
-  * Syntax of fieldsOptions object:<br><PRE>
-  * [{
-  *     <b>id:</b> <em>id of the field</em>, 
-  *     <b>operators:</b> <em>array of operator id. This is the set of operators available in the quick filter for the field</em>,
-  *     <b>getterFn</b>: <em>function that, given the value in the grid, returns the value for the filter. Usefull for example when the rendered value is totally different from the store value</em>,
-  *     <b>getterScope</b>:<em>The scope of the getter function</em>
-  *  },
-  *  {...}]
-  * @config {boolean} duplicatedElementaryFiltersAllowed True to allow 2 equals elementary filter (i.e. to allow name='John' 2 times). Optional. Default true
+  * Each element of the array has the following fields:
+  * <ul>
+  *   <li> <b>id:</b> <em>id of the field</em></li>
+  *   <li> <b>operators:</b> <em>array of operators id. This is the set of operators available in the quick filter for the field</em></li>  
+  *   <li> <b>getterFn</b>: <em>
+  *       function that, given the value in the grid, returns the value for the filter.  
+  *       Usefull for example when the rendered value is totally different from the store value. 
+  *       This function has the following attributes:
+  *       <ul>
+  *         <li><b>tableValue:</b> The value in the Store that is displayed in the cell of the grid</li>
+  *         <li><b>fieldId:</b> The id of the field on which the elementary filter will be created</li>  
+  *         <li><b>operatorId:</b> The id of the operator choose by the user</li>
+  *         <li><b>grid:</b> The grid on which the user clicked</li>
+  *         <li><b>row:</b> the row on which the user clicked</li>
+  *         <li><b>column:</b> the column on which the user clicked</li>
+  *       </ul>
+  *     </em>
+  *   </li>  
+  * </ul>
+  * @config {boolean} duplicatedElementaryFiltersAllowed True to allow 2 equals elementary filter (i.e. to allow name='John' 2 times). Optional. Default false
+  * <h4> Example </h4>
+  * <pre>
+  * var quickFilter= new Ext.ux.netbox.core.QuickFilterModelView({
+  *   filterModel: filterModel,
+  *   //for the grid's column inPortfolio the value in the store is different from the rendered one....
+  *   fieldsOptions: [{
+  *     id: "inPortfolio",
+  *     getterFn: function(value,fieldId,operatorId,grid,row,column){
+  *       return([{
+  *         value: value,
+  *         label: inPortfolio(value)
+  *       }]);
+  *     }
+  *   }]
+  * });
+  * quickFilter.on("filterChanged",filterTable);
+  * var contextMenuManager=new Ext.ux.netbox.ContextMenuManager({menu: {items:[quickFilter.getFilterMenu(),quickFilter.getRemoveFilterMenu()]}});
+  * var grid = new Ext.grid.GridPanel({
+  *     store: ....,
+  *     columns: ....,
+  *     plugins: [contextMenuManager],
+  *   });
+  * </pre>
   */
 Ext.ux.netbox.core.QuickFilterModelView=function(config){
 
@@ -40,7 +75,7 @@ Ext.ux.netbox.core.QuickFilterModelView=function(config){
   this.removeFilterItem=null;
   this.fieldsOptions=config.fieldsOptions;
   if(config.duplicatedElementaryFiltersAllowed === undefined){
-    this.duplicatedElementaryFiltersAllowed=true;
+    this.duplicatedElementaryFiltersAllowed=false;
   } else {
     this.duplicatedElementaryFiltersAllowed=config.duplicatedElementaryFiltersAllowed;
   }
@@ -108,14 +143,17 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
   /** Default getter. Returns the values formatted.
     * @private
     */
-  getValues: function(tableValue,fieldId,operatorId){
-    return([{label: tableValue, value: tableValue}]);
+  getValues: function(tableValue,fieldId,operatorId,grid,row,column){
+    var rendererFn=grid.getColumnModel().getRenderer(column);
+    var record=grid.getStore().getAt(row);
+    var label=rendererFn(tableValue,{},record, row,column,grid.getStore());
+    return([{label: label, value: tableValue}]);
   },
 
   /** Default getter for dates. Returns the values formatted, only for dates.
     * @private
     */
-  getValuesDate: function(tableValue,fieldId,operatorId){
+  getValuesDate: function(tableValue,fieldId,operatorId,grid,row,column){
     var field=this.filterModel.getFieldManager().getFieldById(fieldId);
     var operator=field.getAvailableOperatorById(operatorId);
 
@@ -156,8 +194,8 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
 
     if(!getterScope)
       getterScope=this;
-
-    var values=getterFn.call(getterScope,tableValue,fieldId,operatorId);
+    
+    var values=getterFn.call(getterScope,tableValue,fieldId,operatorId,grid,row,column);
     var filterObject={fieldId : fieldId, operatorId : operatorId, values : values}
     var addFilter=true;
     if(!this.duplicatedElementaryFiltersAllowed){
