@@ -4,7 +4,7 @@
 In the demos, since we don't have access to a DB in a public web space, we use LocalStoreFilterResolver to filter a local store. Here I will explain how to filter remote data, and I will give an example php code to translate a filter expression to a SQL where clause (Oracle 9i or better)
 
 
-= Client =
+==Client==
 To filter a grid you have to filter the data in the grid's store. If the store obtains the data from a remote URL, the standard Ext JS way to load the data is the following:
 {{{
 store.load({params: {start:0, limit: 20}});
@@ -21,7 +21,11 @@ Now, if you try to sort your grid clicking on the header of the cell, you will s
   store.load({params: {start:0, limit: 20}});
 }}}
 
-=Server=
+==Server==
+===Security===
+First of all reapet 3 times with me: the server should not trust the client, the server should not trust the client, the server should not trust the client.
+It's not difficult to send you a malicious filter (for example looking at the filters with firebug and changing them manually....). Your server should not send back data if the user should not see them, indipendently from the filter. Write your code and your queries to ensure this.
+===Real work===
 On the server you have to decode the object from JSON (there are implementations on most of the languages, just google for JSON <language name>). Then you probably want to transform this object in a SQL where condition. 
 For details about the structure of the filter object look at [filter this page]. In practice what matters is that it's a binary tree, where the leaf are the elementary filters, while the other nodes are the logical operators.
 In pseudocode the sql converter should do something like this:
