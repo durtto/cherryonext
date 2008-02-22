@@ -15,6 +15,7 @@
     <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FieldManager.js"></script>
     <script language="JavaScript" type="text/javascript" src="../src/netbox/string/TextFieldOperator.js"></script>
     <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/EnumField.js"></script>
     <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringListOperator.js"></script>
     <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberField.js"></script>
     <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberOperators.js"></script>
@@ -57,9 +58,11 @@
         {id: 'test2',label: 'test2', type: 'float'},
         {id: 'test3',label: 'test3', type: 'int'},
         {id: 'test4',label: 'test4', type: 'date', format: 'd/m/Y H:i'},
-        {id: 'test5',label: 'test5', availableValues: availableValuesStore, remoteStore: false}
+        {id: 'test5',label: 'test5', availableValues: availableValuesStore, remoteStore: false},
+        {id: 'test6',label: 'test5', type: 'enum'},
+        {id: 'test7',label: 'test5', type: 'enum', availableValues: availableValuesStore, remoteStore: true}
       ]);
-      assertEquals("There are 6 fields",6,fieldManager.getAllFields().length);
+      assertEquals("There are 8 fields",8,fieldManager.getAllFields().length);
       var field=fieldManager.getFieldById('test0');
       assertTrue("test0 field is an Ext.ux.netbox.string.StringField",field instanceof Ext.ux.netbox.string.StringField);
       var field=fieldManager.getFieldById('test1');
@@ -69,7 +72,7 @@
       var field=fieldManager.getFieldById('test3');
       assertTrue("test3 field is an Ext.ux.netbox.string.NumberField",field instanceof Ext.ux.netbox.number.NumberField);
       var field=fieldManager.getFieldById('test4');
-      assertTrue("test3 field is an Ext.ux.netbox.date.DateField",field instanceof Ext.ux.netbox.date.DateField);
+      assertTrue("test4 field is an Ext.ux.netbox.date.DateField",field instanceof Ext.ux.netbox.date.DateField);
       assertEquals("test4 has the right format",'d/m/Y H:i',field.getAvailableOperatorById('DATE_EQUAL').getFormat());
       var field=fieldManager.getFieldById('test5');
       assertTrue("test5 field is an Ext.ux.netbox.string.StringField",field instanceof Ext.ux.netbox.string.StringField);
@@ -77,6 +80,14 @@
       assertNotNull("test5 has the STRING_NOT_LIST operation",field.getAvailableOperatorById("STRING_NOT_IN_LIST"));
       assertObjectEquals("test5 has the right store",availableValuesStore,field.getAvailableValues());
       assertFalse("test5 has the right remoteStore",field.isStoreRemote());
+      var field=fieldManager.getFieldById('test6');
+      assertTrue("test6 field is an Ext.ux.netbox.string.EnumField",field instanceof Ext.ux.netbox.string.EnumField);
+      var field=fieldManager.getFieldById('test7');
+      assertTrue("test7 field is an Ext.ux.netbox.string.EnumField",field instanceof Ext.ux.netbox.string.EnumField);
+      assertNotNull("test7 has the STRING_LIST operation",field.getAvailableOperatorById("STRING_LIST"));
+      assertNotNull("test7 has the STRING_NOT_LIST operation",field.getAvailableOperatorById("STRING_NOT_IN_LIST"));
+      assertObjectEquals("test7 has the right store",availableValuesStore,field.getAvailableValues());
+      assertTrue("test5 has the right remoteStore",field.isStoreRemote());
     }
 
     function test_GetAllFields(){
