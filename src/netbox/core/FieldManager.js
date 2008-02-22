@@ -8,7 +8,8 @@ Ext.namespace('Ext.ux.netbox.core');
   * @param (Object) config The configuration options for this object. Optional, if not present an empty FieldManager is created.
   * @config {String} id The id of the field (for example the id of the column)
   * @config {String} label The label of the field (for example the header of the column)
-  * @config {String} type The type of the field. Available values are: string, enum, float, int, date
+  * @config {Array} defaultValues The default values of the field in the format {value: ... , label: ...} Optional
+  * @config {String} type The type of the field. Available values are: string, enum, float, int, date. Default type is string
   * @config {String} format Only for dates, the format of the date. Look Ext.ux.netbox.data.DateFilterType for more details
   * @config {Ext.data.Store} availableValues The store containing the available values for this field. Look at Ext.ux.netbox.core.Field.setAvailableValues for more details
   * @config {boolean} remoteStore True if the store is remote, false otherwise. Look at Ext.ux.netbox.core.Field.setStoreRemote for more details
