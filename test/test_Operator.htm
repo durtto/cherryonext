@@ -112,6 +112,14 @@
         assertEquals("field isStoreRemote and operator.isSotreRemote retunrs the same value",field.isStoreRemote(),operator.isStoreRemote());
       }
 
+      function testGetDefaultValues() {
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        assertArrayEquals("testGetDefaultValues",[],operator.getDefaultValues());
+        field.setDefaultValues([{value:"aaa",label:"aaa"}]);
+        assertArrayEquals("testGetDefaultValues",[{value:"aaa",label:"aaa"}],field.getDefaultValues());
+      }
+
       function setUp() {
         operator=new Ext.ux.netbox.core.Operator("TEST");
       }
