@@ -84,17 +84,7 @@
       //--------------------------------------------------------------------------------------
       // QuickFilter
       var quickFilter= new Ext.ux.netbox.core.QuickFilterModelView({
-        filterModel: filterModel,
-        //inPortfolio the value in the store is different from the rendered one....
-        fieldsOptions: [{
-          id: "inPortfolio",
-          getterFn: function(value){
-            return([{
-              value: value,
-              label: inPortfolio(value)
-            }]);
-          }
-        }]
+        filterModel: filterModel
       });
 
       quickFilter.on("filterChanged",filterTable);

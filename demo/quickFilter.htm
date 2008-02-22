@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
-  <script type="text/javascript" src="../cherryonext.js"></script>
+  <script type="text/javascript" src="../cherryonext-debug.js"></script>
   
   <link rel="stylesheet" type="text/css" href="myStylesheet.css" />  
   <script type="text/javascript" src="mydata.js"></script>
@@ -46,17 +46,7 @@
       //--------------------------------------------------------------------------------------
       // QuickFilter
       var quickFilter= new Ext.ux.netbox.core.QuickFilterModelView({
-        filterModel: filterModel,
-        //for the grid's column inPortfolio the value in the store is different from the rendered one....
-        fieldsOptions: [{
-          id: "inPortfolio",
-          getterFn: function(value,fieldId,operatorId,grid,row,column){
-            return([{
-              value: value,
-              label: inPortfolio(value)
-            }]);
-          }
-        }]
+        filterModel: filterModel
       });
 
       quickFilter.on("filterChanged",filterTable);
