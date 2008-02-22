@@ -7,6 +7,7 @@
   function isDecimalNumber($n) {
     return (string)(float)$n === (string)$n;
   }
+  
   function calculateValue($value){
     if(count($value)===0){
       return("");
@@ -44,10 +45,12 @@
   function string_list($field,$value){
     $values=Array();
     $toReturn="";
+    $nullValue=false;
     foreach($value as $val){
-      $val=calculateValue($val);
-      if($val===""){
-        $toReturn="(".$field."is null";
+      $val=calculateValue(Array($val));
+      if($val==="" && !$nullValue){
+        $toReturn="(".$field." is null";
+        $nullValue=true;
       } else {
         $values[]=$val;
       }
@@ -57,6 +60,9 @@
         $toReturn.=" or";
       }
       $toReturn.=" ".$field." in ('".implode("','",$values)."')";
+    }
+    if($nullValue){
+      $toReturn.=")";
     }
     return($toReturn);
   }
@@ -229,7 +235,7 @@
         $val="sysdate-TO_YMINTERVAL('01-00')";
       }elseif ($val==='LAST_MONTH'){
         $val="ADD_MONTHS(sysdate,-1)";
-      }elseif ($val==='LAST_MONTH'){
+      }elseif ($val==='LAST_WEEK'){
         $val="sysdate -7";
       }elseif ($val==='LAST_DAY'){
         $val="sysdate -1";
