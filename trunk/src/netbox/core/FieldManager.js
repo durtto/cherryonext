@@ -68,6 +68,9 @@ Ext.ux.netbox.core.FieldManager=function(config){
           field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_NOT_IN_LIST',field.stringNotListText));
         }
       }
+      if(config[i].defaultValues!==undefined)
+        field.setDefaultValues(config[i].defaultValues);
+
       this.addField(field);
     }
   }

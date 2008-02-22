@@ -189,10 +189,10 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     *    left:{
     *      left:{fieldId:"field4",operatorId:"DATE_EQUAL",values:[{label:"12/10/2009 12:12",value:"2009-10-12 12:12:00"}]},
     *      logicalOperator:"AND",
-    *      right:{fieldId:"field3",operatorId:"STRING_EQUAL",values:[{"label":"label1","value":"valore1"}]}
+    *      right:{fieldId:"field3",operatorId:"STRING_EQUAL",values:[{label:"label1",value:"valore1"}]}
     *    },
     *    logicalOperator:"AND",
-    *    right:{fieldId:"field",operatorId:"NUMBER_EQUAL",values:[{"label":5,"value":5}]}
+    *    right:{fieldId:"field",operatorId:"NUMBER_EQUAL",values:[{label:5,value:5}]}
     * }
     * </pre>
     * @return {Object}
