@@ -106,11 +106,11 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
   /** @private
     *
     */
-  _encodeFilter : function(filterObject){
-    if(filterObject.setValues){
-      return(filterObject.getFilterObj());
+  _encodeFilter : function(filter){
+    if(filter.setValues){
+      return(filter.getFilterObj());
     } else {
-      var filterTmp=filterObject.getFilterObj();
+      var filterTmp=filter.getFilterObj();
       filterTmp.left=this._encodeFilter(filterTmp.left);
       filterTmp.right=this._encodeFilter(filterTmp.right);
       return(filterTmp);
@@ -197,9 +197,17 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     * </pre>
     * @return {Object}
     */
-  getFilterObj : function(){
-    if(this.getFilter()==null) return null;
-    return(this._encodeFilter(this.getFilter()));
+  getFilterObj : function(additionalFilterObj,additionalLogicalOper){
+    if(additionalFilterObj===undefined)
+      additionalFilterObj=null;
+    if(additionalLogicalOper===undefined)
+      additionalLogicalOper=Ext.ux.netbox.core.CompositeFilter.AND;
+    var filter=this.getFilter();
+    if(filter===null) return additionalFilterObj;
+    if(additionalFilterObj===null) return(this._encodeFilter(filter));
+    var additionalFilter=this._decodeFilter(additionalFilterObj);
+    var newCompositeFilter = new Ext.ux.netbox.core.CompositeFilter(filter,additionalLogicalOper,additionalFilter);
+    return(this._encodeFilter(newCompositeFilter));
   },
   /** This method sets the filter with an object formatted:
     * <PRE>
