@@ -5,7 +5,8 @@ Ext.namespace('Ext.ux.netbox.core');
 /** Create a new QuickFilterModelView. 
   * @class Provides a view on FilterModel and allows to quickly add filters directly from a grid using a context menu. 
   * In this way you right click on a cell of the grid (for example the cell containing the value "John" in the name column), a context menu appears, 
-  * you select the operator from the context menu (for example "=") and a filter is added (name = "John") 
+  * you select the operator from the context menu (for example "=") and a filter is added (name = "John"). <br>
+  * <b>NB</b> By default it will use the value in the store as value, and what returned by the renderer of the column as label
   * Default operators are as follows, divided by datatype:<p><em>
   * <b>String</b>: ['STRING_EQUAL','STRING_DIFFERENT']<br>
   * <b>Enummerative</b>: ['STRING_EQUAL','STRING_DIFFERENT']<br>
