@@ -1,7 +1,7 @@
 #summary Cherry filter model
 #labels Phase-Design
 =What is a filter?=
-In Cherry On Ext filters there are only 2 main component:
+In Cherry On Ext filters have only only 2 components:
  # conditions that are made of a field, an operator and a value. For example: `name = John`. This are known as elementary filters. In the example, name is the field, = is the operator and John is the value
  # conditions that are the composition of 2 filters (left and right), connected with a logical operator. For example `name = John and age > 12`. In the example and is the logical operator, `name = John` is the left side and `age > 12` is the right side
 =Filter Model=
