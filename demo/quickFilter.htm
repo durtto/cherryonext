@@ -50,7 +50,7 @@
         //for the grid's column inPortfolio the value in the store is different from the rendered one....
         fieldsOptions: [{
           id: "inPortfolio",
-          getterFn: function(value){
+          getterFn: function(value,fieldId,operatorId,grid,row,column){
             return([{
               value: value,
               label: inPortfolio(value)
