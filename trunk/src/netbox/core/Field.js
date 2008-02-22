@@ -80,7 +80,6 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @private
     */
   this.defaultValues=((defaultValues==undefined)?[]:defaultValues);
-
 }
 
 Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox.core.Field.prototype */
@@ -95,7 +94,14 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     * @param {Array} values The default values for this Field
     */
   setDefaultValues : function(values){
-    this.defaultValues=values;
+    var arrayValues=[];
+    for(var i=0;i<values.length;i++){
+      if(values[i].label==undefined){
+        values[i].label=values[i].value;
+      }
+      arrayValues.push(values[i]);
+    }
+    this.defaultValues=arrayValues;
   },
   /** This method returns the default operator for this Field.
     * Before the setDefaultOperator method is called it returns null.
