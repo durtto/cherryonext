@@ -8,7 +8,8 @@ Ext.namespace('Ext.ux.netbox.core');
   * @param {Ext.ux.netbox.core.Field} field The field owner of this operator
   * @class This class is the operator in an elementary filter (for example in 'name = "John"' the operator is '='). 
   * The editing and the rendering of the values are the main role of the operator class. (for example in a date field the editing widget and renderer are totally different if 
-  * the operation is DATE_EQUAL or DATE_PERIOD). In this base implementation the class delegates all the behaviour to the associated field, and throws an exception if no field is associtated.  
+  * the operation is DATE_EQUAL or DATE_PERIOD). In this base implementation the class delegates all the behaviour to the associated field, and throws an exception if no field is associtated.
+  * For a list of the operators available in Cherry look Ext.ux.netbox.string.StringField, Ext.ux.netbox.number.NumberField, Ext.ux.netbox.date.DateField
   */
 Ext.ux.netbox.core.Operator=function(id, label){
   /** The id of this Ext.ux.netbox.core.Operator

@@ -323,7 +323,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     parent.remove();
     this.panelColumns[panelNum].doLayout();
     this.panelColumns[panelNum-1].doLayout();
-    this.fieldPanelMapping.remove(field.getId());
+    this.fieldPanelMapping.removeKey(field.getId());
   },
 
   /** Callback of the selected event of a operator combo.
