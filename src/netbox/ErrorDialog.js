@@ -25,7 +25,7 @@ Ext.ux.netbox.ErrorDialog = function(){
 
         hide : function(){
             dialog.hide();
-            if (hideCallback != null) {
+            if (hideCallback !== null) {
                 var dt=new Ext.util.DelayedTask(hideCallback);
                 dt.delay(100);
             }

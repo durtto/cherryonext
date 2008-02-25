@@ -28,13 +28,14 @@ Ext.namespace('Ext.ux.netbox');
  */
 Ext.ux.netbox.InputTextMask = function(mask,clearWhenInvalid) {
 
-    if(clearWhenInvalid === undefined)
+    if(clearWhenInvalid === undefined){
       this.clearWhenInvalid = true;
-    else
+    }else{
       this.clearWhenInvalid = clearWhenInvalid;
+    }
     this.rawMask = mask;
     this.viewMask = '';
-    this.maskArray = new Array();
+    this.maskArray = [];
     var mai = 0;
     var regexp = '';
     for(var i=0; i<mask.length; i++){
@@ -143,7 +144,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
     },
 
     managePaste : function() {
-        if(this.oldCursorPos==null){
+        if(this.oldCursorPos===null){
           return;
         }
         var valuePasted=this.inputTextElement.value.substring(this.oldCursorPos.start,this.inputTextElement.value.length-(this.oldCursorPos.previousValue.length-this.oldCursorPos.end));
@@ -156,13 +157,13 @@ Ext.ux.netbox.InputTextMask.prototype = {
         }
         this.inputTextElement.value=this.oldCursorPos.previousValue;
         keycode={unicode :'',
-        isShiftPressed: false,
-        isTab: false,
-        isBackspace: false,
-        isLeftOrRightArrow: false,
-        isDelete: false,
-        pressedKey : ''
-        }
+          isShiftPressed: false,
+          isTab: false,
+          isBackspace: false,
+          isLeftOrRightArrow: false,
+          isDelete: false,
+          pressedKey : ''
+        };
         var charOk=false;
         for(var i=0;i<valuePasted.length;i++){
             keycode.pressedKey=valuePasted.substr(i,1);
@@ -193,18 +194,19 @@ Ext.ux.netbox.InputTextMask.prototype = {
     },
 
     startTask : function(setOldCursor){
-        if(this.task==undefined){
-            this.task=new Ext.util.DelayedTask(this.managePaste,this);
+      if(this.task===undefined){
+        this.task=new Ext.util.DelayedTask(this.managePaste,this);
       }
-        if(setOldCursor!== false){
-            this.oldCursorPos=this.getCursorPosition();
+      if(setOldCursor!== false){
+        this.oldCursorPos=this.getCursorPosition();
       }
       this.task.delay(0);
     },
 
     skipMaskCharacters : function(keycode, cursorPos){
-        if(cursorPos.start!=cursorPos.end && (keycode.isDelete || keycode.isBackspace))
-            return(cursorPos);
+       if(cursorPos.start!=cursorPos.end && (keycode.isDelete || keycode.isBackspace)){
+         return(cursorPos);
+       }
         while(this.specialChars.match(RegExp.escape(this.viewMask.charAt(((keycode.isBackspace)? cursorPos.start-1: cursorPos.start))))){
             if(keycode.isBackspace) {
                 cursorPos.dec();
@@ -229,7 +231,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
         this.oldCursorPos=null;
         var cursorPos = this.getCursorPosition();
         var keycode = this.getKeyCode(e, type);
-        if(keycode.unicode==0){//?? sometimes on Safari
+        if(keycode.unicode===0){//?? sometimes on Safari
             return;
         }
         if((keycode.unicode==67 || keycode.unicode==99) && e.ctrlKey){//Ctrl+c, let's the browser manage it!
@@ -274,7 +276,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
     },
 
     processMaskFocus : function(){
-        if(this.inputTextElement.value.length == 0){
+        if(this.inputTextElement.value.length === 0){
             var cursorPos = this.getCursorPosition();
             this.inputTextElement.value = this.viewMask;
             this.moveCursorToPosition(null, cursorPos);
@@ -346,8 +348,9 @@ Ext.ux.netbox.InputTextMask.prototype = {
     },
 
     injectValue : function(keycode, cursorPosition) {
-        if (!keycode.isDelete && keycode.unicode == cursorPosition.previousValue.charCodeAt(cursorPosition.start))
-            return true;
+        if (!keycode.isDelete && keycode.unicode == cursorPosition.previousValue.charCodeAt(cursorPosition.start)){
+          return true;
+        }
         var key;
         if(!keycode.isDelete && !keycode.isBackspace){
             key=this.getValidatedKey(keycode, cursorPosition);
@@ -362,9 +365,8 @@ Ext.ux.netbox.InputTextMask.prototype = {
             }
         }
         if(key){
-            this.inputTextElement.value = cursorPosition.previousValue.substring(0,cursorPosition.start)
-                + key +
-                cursorPosition.previousValue.substring(cursorPosition.start + key.length,cursorPosition.previousValue.length);
+            this.inputTextElement.value = cursorPosition.previousValue.substring(0,cursorPosition.start);
+            this.inputTextElement.value+= key +cursorPosition.previousValue.substring(cursorPosition.start + key.length,cursorPosition.previousValue.length);
             return true;
         }
         return false;
@@ -397,7 +399,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
 
 Ext.applyIf(RegExp, {
   escape : function(str) {
-    return new String(str).replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
+    return str.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
   }
 });
 

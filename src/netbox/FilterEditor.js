@@ -9,7 +9,7 @@ Ext.namespace('Ext.ux.netbox');
   */
 Ext.ux.netbox.FilterEditor = function(field,config){
   Ext.ux.netbox.FilterEditor.superclass.constructor.call(this,field,config);
-}
+};
 
 Ext.extend(Ext.ux.netbox.FilterEditor,Ext.grid.GridEditor,/** @scope Ext.ux.netbox.FilterEditor.prototype */
 {

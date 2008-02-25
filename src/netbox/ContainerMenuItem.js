@@ -11,7 +11,7 @@ Ext.namespace('Ext.ux.netbox');
   */
 Ext.ux.netbox.ContainerMenuItem=function(config){
   Ext.ux.netbox.ContainerMenuItem.superclass.constructor.call(this,config);
-}
+};
 
 Ext.extend(Ext.ux.netbox.ContainerMenuItem, Ext.menu.Item,/** @scope Ext.ux.netbox.ContainerMenuItem.prototype */
 {
@@ -28,8 +28,9 @@ Ext.extend(Ext.ux.netbox.ContainerMenuItem, Ext.menu.Item,/** @scope Ext.ux.netb
     */
   setSubMenu : function(menu){
     this.menu = Ext.menu.MenuMgr.get(menu);
-    if(this.getEl())
+    if(this.getEl()){
       this.getEl().addClass('x-menu-item-arrow');
+    }
   },
 
   /** This method removes the submenu for this item.
@@ -37,8 +38,9 @@ Ext.extend(Ext.ux.netbox.ContainerMenuItem, Ext.menu.Item,/** @scope Ext.ux.netb
     */
   removeSubMenu : function(){
     this.menu=undefined;
-    if(this.getEl())
+    if(this.getEl()){
       this.getEl().removeClass('x-menu-item-arrow');
+    }
   }
 
 });
