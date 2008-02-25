@@ -28,8 +28,8 @@ Ext.extend(Ext.ux.netbox.core.TextValuesEditor,Ext.ux.netbox.FilterEditor,/** @s
     if(value!==undefined && value!==null && Ext.type(value)==="array"){ 
       if(value.length==0){
         val="";
-      } else if (value[0].label!==undefined){
-        val=value[0].label;
+      } else if (value[0].value!==undefined){
+        val=value[0].value;
       } else {
         val=value[0];
       }
