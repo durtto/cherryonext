@@ -1,13 +1,13 @@
 #summary Change Log of the cherry on ext releases
 
 ==Version 0.1.2 ^Not yet released^==
- *Better management of quick filters' labels. As default it now uses the grid renderer to render the values
- *Added ability to set a default value to the filter different from the empty one
- *Fixed demos according to BlueCamel forum post
- *Fixed bug on quick filter signaled by BlueCamel (quick filter on column without filter)
- *Added `enum` among the field types
- *Added ability to add additional filters in getFilterObj method of FilterModel
- *Added more automatic tests
+ * Better management of quick filters' labels. As default it now uses the grid renderer to render the values
+ * Added ability to set a default value to the filter different from the empty one
+ * Fixed demos according to BlueCamel forum post
+ * Fixed bug on quick filter signaled by BlueCamel (quick filter on column without filter)
+ * Added `enum` among the field types
+ * Added ability to add additional filters in getFilterObj method of FilterModel
+ * Added more automatic tests
 
 
 ==Version 0.1.1 ^Released on 2008-02-20^ ==
