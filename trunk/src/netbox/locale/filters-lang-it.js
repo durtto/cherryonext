@@ -60,7 +60,8 @@ if(Ext.ux.netbox.core.RangeField){
 if(Ext.ux.netbox.date.DateRangeOperator){
    Ext.apply(Ext.ux.netbox.date.DateRangeOperator.prototype, {
       fromText : 'da: ',
-      toText   : ', a: '
+      toText   : ', a: ',
+      includeText : 'compreso'
    });
 }
 
@@ -74,13 +75,13 @@ if(Ext.ux.netbox.number.NumberRangeOperator){
 
 if(Ext.ux.netbox.date.DatePeriodOperator){
    Ext.apply(Ext.ux.netbox.date.DatePeriodOperator.prototype, {
-      periodText : "periodo",
-      yearText   : "ultimo anno",
-      monthText  : "ultimo mese",
-      weekText   : "ultima settimana",
-      dayText    : "ultimo giorno",
-      hourText   : "ultima ora",
-      quarter    : "ultimo quarto d'ora"
+      periodText  : "periodo",
+      yearText    : "ultimo anno",
+      monthText   : "ultimo mese",
+      weekText    : "ultima settimana",
+      dayText     : "ultimo giorno",
+      hourText    : "ultima ora",
+      quarterText : "ultimo quarto d'ora"
    });
 }
 
