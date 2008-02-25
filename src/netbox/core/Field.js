@@ -41,7 +41,7 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @property {String} label
     * @private
     */
-  this.label=((labelIn==undefined)?id:labelIn);
+  this.label=((labelIn===undefined)?id:labelIn);
   /** The list of all the available operators for this Field
     * @property {Array of Ext.ux.netbox.core.Operator} availableOperators
     * @private
@@ -118,7 +118,9 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
   setDefaultOperator : function(defaultOperator){
     var id=defaultOperator.getId();
     var oper=this.getAvailableOperatorById(id);
-    if (oper==null) throw("operator not among available operators");
+    if (oper==null){
+      throw("operator not among available operators");
+    }
     this.defaultOperator=defaultOperator;
     this.fireEvent("defaultOperatorChanged",defaultOperator);
   },
@@ -129,7 +131,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     */
   getAvailableValues : function(){
     if(!this.isAvailableValuesAvailable()){
-      throw("Available values not available!")
+      throw("Available values not available!");
     }
     return(this.availableValueStore);
   },
@@ -153,7 +155,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     * @return {boolean} true if the operator supports a list of available values, false otherwise
     */
   isAvailableValuesAvailable: function(){
-    return(this.availableValueStore!=null);
+    return(this.availableValueStore!==null);
   },
   /** This method is used to set a variable that says if the store of the available values is local or remote.
     * If isAvailableValuesAvailable returns false the value is ignored. The default is true.
@@ -183,7 +185,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     * @throw {String} If the operator is already associated to a different filter type
     */
   addOperator : function(operator){
-    if(operator.getField()!=null && operator.getField != this){
+    if(operator.getField()!==null && operator.getField != this){
       throw("Impossible to add the operator "+operator.getId()+" to the Field "+this.getId()+". The operator is already associated to another Field");
     }
     this.availableOperators.push(operator);
@@ -203,7 +205,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     */
   getAvailableOperatorById : function(id){
     var index=this._getOperatorIndexById(id);
-    if(index==null)
+    if(index===null)
       return(null);
     else
       return(this.getAvailableOperators()[index]);
@@ -230,11 +232,13 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     */
   removeOperator : function(id){
     var index=this._getOperatorIndexById(id);
-    if(index==null){
+    if(index===null){
       throw("The operator with the given id doesn't exist");
     } else {
       var operator=this.getAvailableOperators()[index];
-      if (operator==this.getDefaultOperator) throw("operator to remove is the DefaultOperator");
+      if (operator==this.getDefaultOperator) { 
+        throw("operator to remove is the DefaultOperator");
+      }
       this.availableOperators.splice(index,1);
       this.fireEvent("operatorRemoved",operator);
     }
