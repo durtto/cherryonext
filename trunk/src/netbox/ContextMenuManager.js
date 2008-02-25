@@ -60,7 +60,7 @@ Ext.ux.netbox.ContextMenuManager=function(config){
 
   this.menu=config.menu;
   
-}
+};
 
 Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuManager.prototype */
 {
@@ -114,8 +114,9 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
         itemTmp.setVisible(false);
       }
     }
-    if(isSomethingVisible && menuUndefined) 
+    if(isSomethingVisible && menuUndefined){
       this.menu.showAt([e.getPageX(),e.getPageY()]);
+    }
     return isSomethingVisible;
   },
 
@@ -125,14 +126,17 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
   onContextmenu : function(e){
     var t = e.getTarget();
     var header = this.gridPanel.getView().findHeaderIndex(t);
-    if(header !== false)
+    if(header !== false){
       return;
+    }
     var row=-1;
     var col=-1;
-    if(this.gridPanel.getView().findRowIndex(t)!==false)
+    if(this.gridPanel.getView().findRowIndex(t)!==false){
       row=this.gridPanel.getView().findRowIndex(t);
-    if(this.gridPanel.getView().findCellIndex(t)!==false)
+    }
+    if(this.gridPanel.getView().findCellIndex(t)!==false){
       col=this.gridPanel.getView().findCellIndex(t);
+    }
     this.onCellcontextmenu(this.gridPanel,row,col,e);
   }
 
