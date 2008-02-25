@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="../resources/cherryonext.css" />
   <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="../ext/ext-all.js"></script>
-  <script type="text/javascript" src="../cherryonext.js"></script>
+  <script type="text/javascript" src="../cherryonext-debug.js"></script>
   <script type="text/javascript" src="mydata.js"></script>
 
   <!--Ajax call simulation-->
@@ -26,7 +26,6 @@
     var localFilterResolver;
     var grid;
     var filterDialog;
-    var filterShouldBeApplied=false;
     var filterBackup;
 
     //show the shares only if I have some shares in my portfolio
@@ -66,7 +65,7 @@
     Ext.onReady(function(){
 
       var filterCfg=[
-        {id: 'company',label: 'Company'},
+        {id: 'company',label: 'Company',defaultValues:[{value:"aaa"}]},
         {id: 'price',label: 'Price', type: 'float'},
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
@@ -77,8 +76,6 @@
       //FilterModel
       fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
       filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
-      filterModel.on('elementaryFilterAdded', onFilterChanged);
-      filterModel.on('elementaryFilterRemoved', onFilterChanged);
       localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
 
       //--------------------------------------------------------------------------------------
@@ -182,7 +179,7 @@
     }
 
     function onCloseFilterDialog(){
-      if(filterShouldBeApplied==true){
+      if(filterBackup!=filterModel.getFilterObj()){
         Ext.MessageBox.confirm('Confirm', 'The filter was not applied. Do you want to do it now?', whatDoYouWantToDo);
       }
     }
@@ -194,12 +191,7 @@
         filterModel.setFilterObj(filterBackup);
     }
 
-    function onFilterChanged(){
-     filterShouldBeApplied=true;
-    }
-
     function filterTable(){
-      filterShouldBeApplied=false;
      localFilterResolver.apply(store);
     }
 
