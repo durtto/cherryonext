@@ -1,4 +1,4 @@
-// $Id: TextValuesEditor.js 304727 2008-02-14 13:45:03Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 

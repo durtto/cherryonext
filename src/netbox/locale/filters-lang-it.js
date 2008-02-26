@@ -1,3 +1,4 @@
+// $Id:$
 /*
  * Italian translation
  */

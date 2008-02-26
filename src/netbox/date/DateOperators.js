@@ -1,4 +1,4 @@
-// $Id: DateOperators.js 297787 2008-02-07 14:12:18Z UE014015 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.date');
 

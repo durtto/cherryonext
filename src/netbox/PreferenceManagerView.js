@@ -1,4 +1,4 @@
-// $Id: PreferenceManagerView.js 301938 2008-02-12 13:24:23Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox');
 

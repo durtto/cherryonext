@@ -1,4 +1,4 @@
-// $Id: StringListOperator.js 301942 2008-02-12 13:24:41Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.string');
 
