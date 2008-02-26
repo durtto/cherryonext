@@ -35,7 +35,7 @@ Ext.extend(Ext.ux.netbox.string.StringListOperator,Ext.ux.netbox.core.Operator,/
       if(!this.isAvailableValuesAvailable()){
         throw("This operator is availble only if there are available values");
       }
-      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getField().getAvailableValues(),this.isStoreRemote(),{multiSelect: true});
+      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getField().getAvailableValues(),this.isStoreRemote(),this.isForceReload(),{multiSelect: true});
       if(cache){
         this.editor=editor;
       }
