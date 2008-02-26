@@ -65,7 +65,7 @@
     Ext.onReady(function(){
 
       var filterCfg=[
-        {id: 'company',label: 'Company',defaultValues:[{value:"aaa"}]},
+        {id: 'company',label: 'Company',defaultValues:[{value:"default value"}]},
         {id: 'price',label: 'Price', type: 'float'},
         {id: 'change',label: 'Change', type: 'float'},
         {id: 'pctChange',label: '% Change', type: 'float'},
@@ -179,7 +179,7 @@
     }
 
     function onCloseFilterDialog(){
-      if(filterBackup!=filterModel.getFilterObj()){
+      if(Ext.util.JSON.encode(filterBackup)!=Ext.util.JSON.encode(filterModel.getFilterObj())){
         Ext.MessageBox.confirm('Confirm', 'The filter was not applied. Do you want to do it now?', whatDoYouWantToDo);
       }
     }
