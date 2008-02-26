@@ -167,8 +167,8 @@
     function testSetAvailableValues(){
       assertFalse("isAvailableValuesAvailable false",field.isAvailableValuesAvailable());
       var store = new Ext.data.SimpleStore({
-      fields: ['label', 'value'],
-      data : [["ciccio","bombo"]]
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
       });
       field.setAvailableValues(store);
       assertTrue("isAvailableValuesAvailable true",field.isAvailableValuesAvailable());
@@ -182,8 +182,8 @@
         assertTrue("Exception thrown",true);
       }
       var store = new Ext.data.SimpleStore({
-      fields: ['label', 'value'],
-      data : [["ciccio","bombo"]]
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
       });
       field.setAvailableValues(store);
       assertTrue("field.isStoreRemote is true by default",field.isStoreRemote());
@@ -191,12 +191,37 @@
 
     function testSetStoreRemote(){
       var store = new Ext.data.SimpleStore({
-      fields: ['label', 'value'],
-      data : [["ciccio","bombo"]]
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
       });
       field.setAvailableValues(store);
       field.setStoreRemote(false);
       assertFalse("field.isStoreRemote is false",field.isStoreRemote());
+    }
+
+    function testIsForceReload(){
+      try{
+        field.isForceReload();
+        fail("The store is not here and isForceReload doesn't throws an exception");
+      }catch(e){
+        assertTrue("testIsForceReload, exception thrown",true);
+      }
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      assertFalse("field.isForceReload is false by default",field.isForceReload());
+    }
+
+    function testSetForceReload(){
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      field.setForceReload(true);
+      assertTrue("field.isForceReload is true",field.isForceReload());
     }
 
     function testSetDefaultValues(){
