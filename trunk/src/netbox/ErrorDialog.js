@@ -1,4 +1,4 @@
-// $Id: ErrorDialog.js 304048 2008-02-14 08:10:40Z UE014015 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox');
 

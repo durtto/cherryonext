@@ -1,4 +1,4 @@
-// $Id: NumberField.js 300311 2008-02-11 13:09:39Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.number');
 

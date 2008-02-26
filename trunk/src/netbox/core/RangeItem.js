@@ -1,4 +1,4 @@
-// $Id: RangeItem.js 304754 2008-02-14 13:54:00Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 

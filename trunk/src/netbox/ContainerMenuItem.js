@@ -1,4 +1,4 @@
-// $Id: ContainerMenuItem.js 303082 2008-02-13 10:17:19Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox');
 

@@ -1,4 +1,4 @@
-// $Id: LocalStoreFilterResolver.js 302973 2008-02-13 09:38:20Z UE014015 $
+// $Id$
 
 Ext.namespace('Ex.ux.netbox.core');
 

@@ -1,4 +1,4 @@
-// $Id: TextFieldOperator.js 299603 2008-02-08 17:10:09Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.string');
 

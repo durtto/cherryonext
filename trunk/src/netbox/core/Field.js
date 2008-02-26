@@ -1,4 +1,4 @@
-// $Id: Field.js 303993 2008-02-13 17:02:19Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 

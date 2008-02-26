@@ -1,4 +1,4 @@
-// $Id: ElementaryFilter.js 303649 2008-02-13 14:23:18Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 

@@ -1,4 +1,4 @@
-// $Id: AvailableValuesEditor.js 303649 2008-02-13 14:23:18Z SO000377 $
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 
@@ -8,7 +8,8 @@ Ext.namespace('Ext.ux.netbox.core');
   * @constructor
   * @param {Ext.data.Store} store The store used to retrieve the data. It must have 2 columns, label (which will be used as displayField)
   * and value (which will be used as labelField
-  * @param {boolean} remote true if the store is remote, false if the data is local (ie, if store is a Ext.data.SimpleStore)
+  * @param {boolean} remote True if the store is remote, false if the data is local (ie, if store is a Ext.data.SimpleStore)
+  * @param {boolean} forceReload True if the store is to be reloaded everytime the combo expands
   * @config {Object} config See the parameter with the same name of Ex.ux.FilterEditor. The only added parameter in the config is multiSelect.
   * If true more than one selection is allowed, if false the maximum number of selecte items is 1
   * @extends Ext.ux.netbox.FilterEditor
