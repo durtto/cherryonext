@@ -292,12 +292,12 @@ Ext.ux.netbox.date.DatePeriodOperator = function() {
     */
   this.periodStore=new Ext.data.SimpleStore({fields: ['value', 'label'],
       data: [
-        ["LAST_YEAR",this.yearText],
-        ["LAST_MONTH",this.monthText],
-        ["LAST_WEEK",this.weekText],
-        ["LAST_DAY",this.dayText],
+        ["LAST_QUARTER",this.quarterText],
         ["LAST_HOUR",this.hourText],
-        ["LAST_QUARTER",this.quarterText]
+        ["LAST_DAY",this.dayText],
+        ["LAST_WEEK",this.weekText],
+        ["LAST_MONTH",this.monthText],
+        ["LAST_YEAR",this.yearText]
       ]});
 }
 

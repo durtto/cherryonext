@@ -75,6 +75,12 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @private
     */
   this.isRemote=true;
+  /** This value says if the store is always to reload.
+    * If true it reloads data everytime expanding the combo, if false it loads once. The default is false.
+    * @property {boolean} forceReload
+    * @private
+    */
+  this.forceReload=false;
   /** The default values of this Field. Optional.
     * @property {Array} defaultValues
     * @private
@@ -177,6 +183,22 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
       throw(this.getId()+" isStoreRemote: no store available");
     }
     return(this.isRemote);
+  },
+  /** Sets the attribute that decides forced reloading of store.
+    * @param {boolean} forceReload True if the store is always to reload, false otherwise
+    */
+  setForceReload: function(forceReload){
+    this.forceReload=forceReload;
+  },
+  /** Returns true if the store is always to reload. Default is false.
+    * @return {boolean} True if the store is always to reload, false otherwise
+    * @throws {String} If isAvailableValuesAvailable returns false this method throws an exception
+    */
+  isForceReload: function(){
+    if(!this.isAvailableValuesAvailable()){
+      throw(this.getId()+" isForceReload: no store available");
+    }
+    return(this.forceReload);
   },
   /** Add a operator to the list of available operator.
     * If this succeeds the event "operatorAdded" is triggered.
@@ -314,7 +336,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
       if(!this.isAvailableValuesAvailable()){
         editor=new Ext.ux.netbox.core.TextValuesEditor();
       } else {
-        editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getAvailableValues(),this.isStoreRemote());
+        editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getAvailableValues(),this.isStoreRemote(),this.isForceReload());
       }
       if(cache){
         this.editor=editor;

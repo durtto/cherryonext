@@ -35,8 +35,8 @@ Ext.ux.netbox.core.Operator.prototype = {
     * @return {boolean} true if the operator supports a list of available values, false otherwise
     */
   isAvailableValuesAvailable: function(){
-    if(this.getField()==null){
-      throw("An operator must be associated to a Field to know if there is the list of the available values!")
+    if(this.getField()===null){
+      throw("An operator must be associated to a Field to know if there is the list of the available values!");
     }
     return(this.getField().isAvailableValuesAvailable());
   },
@@ -47,10 +47,10 @@ Ext.ux.netbox.core.Operator.prototype = {
     */
   getAvailableValues: function(){
     if(!this.isAvailableValuesAvailable()){
-      throw("Available values not available!")
+      throw("Available values not available!");
     }
     if(this.getField()==null){
-      throw("An operator must be associated to a field to obtain the list of the available values!")
+      throw("An operator must be associated to a field to obtain the list of the available values!");
     }
     return(this.getField().getAvailableValues());
   },
@@ -87,7 +87,7 @@ Ext.ux.netbox.core.Operator.prototype = {
     * @throws {String} If this method is called when the field is undefined or null
     */
   render: function(value){
-    if(this.getField()==undefined || this.getField()==null){
+    if(this.getField()===undefined || this.getField()===null){
       throw("Impossible to render a value from the operator "+this.getId()+" which is without field");
     }
     return(this.getField().render(value,this.getId()));
@@ -131,7 +131,7 @@ Ext.ux.netbox.core.Operator.prototype = {
     * @throws {String} If the field is null or undefined
     */
   isStoreRemote: function(){
-    if(this.getField()==undefined || this.getField()==null){
+    if(this.getField()===undefined || this.getField()===null){
       throw("Impossible to obtain the type of the store (remote/local) for the operator "+this.getId()+" which is without field");
     }
     return(this.getField().isStoreRemote());

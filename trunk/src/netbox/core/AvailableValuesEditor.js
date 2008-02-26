@@ -14,7 +14,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @extends Ext.ux.netbox.FilterEditor
   */
 
-Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,config){
+Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,forceReload,config){
   var mode;
   if(remote){
     mode='remote';
@@ -40,6 +40,9 @@ Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,config){
   });
   if(!config.multiSelect){
     this.fieldCombo.on('select',this.completeEdit,this);
+  }
+  if(forceReload){
+    this.fieldCombo.on("beforequery",function(qe){ qe.combo.lastQuery = null; });
   }
   Ext.ux.netbox.core.AvailableValuesEditor.superclass.constructor.call(this,this.fieldCombo,config);
   this.store=store;
