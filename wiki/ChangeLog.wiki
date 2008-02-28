@@ -8,6 +8,8 @@
  * Added `enum` among the field types
  * Added ability to add additional filters in getFilterObj method of FilterModel
  * Added more automatic tests
+ * Changed default to quick filter: ignore duplicated filters
+ * Added validation for the values of an elementary filter
 
 
 ==Version 0.1.1 ^Released on 2008-02-20^ ==
