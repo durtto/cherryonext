@@ -45,4 +45,5 @@ Ext.ux.netbox.date.DateField = function(id,label,format) {
   this.addOperator(new Ext.ux.netbox.date.DateRangeOperator(format));
 }
 
-Ext.extend(Ext.ux.netbox.date.DateField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.date.DateField.prototype */{});
+Ext.extend(Ext.ux.netbox.date.DateField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.date.DateField.prototype */{
+});

@@ -49,48 +49,37 @@ Ext.ux.netbox.date.DateOperator = function(id,label,format) {
 };
 
 Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.date.DateOperator.prototype */{
-  /** This function returns the Ext.Editor to use to edit the values for this operator.
-    * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.ux.netbox.date.DateTextEditor}
+  /** This method creates an Ext.ux.netbox.date.DateTextEditor.
+    * @param {String} operatorId The operatorId actually used in the filter
+    * @return {Ext.Editor} The field used to edit the values of this filter
     */
-  getEditor: function(cache){
-    if(cache===undefined){
-      cache=true;
-    }
+  createEditor: function(operatorId){
     var editor;
-    if(this.editor===undefined || this.editor===null || !cache){
-      var splittedFormat=this.format.split(" ");
-      if(splittedFormat.length > 1){
-        editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.ux.form.DateTime({
-                  dateFormat: splittedFormat[0],
-                  dateConfig: {
-                    altFormats: 'Y-m-d|Y-n-d',
-                    allowBlank: false
-                  },
-                  timeFormat: splittedFormat[1],
-                  timeConfig: {
-                    altFormats: 'H:i:s',
-                    allowBlank: false
-                  }
-                }),
-                {format: this.format}
-              );
-      }else{
-        editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.form.DateField({
-                  format: splittedFormat[0],
+    var splittedFormat=this.format.split(" ");
+    if(splittedFormat.length > 1){
+      editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.ux.form.DateTime({
+                dateFormat: splittedFormat[0],
+                dateConfig: {
+                  altFormats: 'Y-m-d|Y-n-d',
                   allowBlank: false
-                }),
-                {format: this.format}
-              );
-      }
-
-      if(cache){
-        this.editor=editor;
-      }
-    } else {
-      editor=this.editor;
+                },
+                timeFormat: splittedFormat[1],
+                timeConfig: {
+                  altFormats: 'H:i:s',
+                  allowBlank: false
+                }
+              }),
+              {format: this.format}
+            );
+    }else{
+      editor=new Ext.ux.netbox.date.DateTextEditor(new Ext.form.DateField({
+                format: splittedFormat[0],
+                allowBlank: false
+              }),
+              {format: this.format}
+            );
     }
-    return(editor);
+    return editor;
   },
 
   /** It returns the config to use to create the Ext.form.TextField
@@ -227,34 +216,22 @@ Ext.extend(Ext.ux.netbox.date.DateRangeOperator,Ext.ux.netbox.date.DateOperator,
   toText      : ', to: ',
   includeText : 'between',
 
-  /** This method returns the Ext.ux.netbox.core.RangeField used to edit the range of dates
-    * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.ux.netbox.core.RangeField} The Ext.Editor used to edit the date range value
-    * @private
+  /** This method creates an editor used to edit the range of dates.
+    * @param {String} operatorId The operatorId actually used in the filter
+    * @return {Ext.Editor} The field used to edit the values of this filter
     */
-  getEditor: function(cache){
-    if(cache===undefined){
-      cache=true;
-    }
-    var editor;
-    if(this.editor===undefined || this.editor===null || !cache){
-      var field=new Ext.ux.netbox.core.RangeField({
-        textCls: Ext.form.TextField,
-        fromConfig: this.getTextFieldConfig(),
-        toConfig: this.getTextFieldConfig(),
-        minListWidth: 260,
-        fieldSize: 36
-      });
+  createEditor: function(operatorId){
+    var field=new Ext.ux.netbox.core.RangeField({
+      textCls: Ext.form.TextField,
+      fromConfig: this.getTextFieldConfig(),
+      toConfig: this.getTextFieldConfig(),
+      minListWidth: 260,
+      fieldSize: 36
+    });
 
-      editor=new Ext.ux.netbox.date.DateRangeEditor(field,{format: this.format});
-      field.on("editingcompleted",editor.completeEdit,editor);
-      if(cache){
-        this.editor=editor;
-      }
-    } else {
-      editor=this.editor;
-    }
-    return(editor);
+    var editor=new Ext.ux.netbox.date.DateRangeEditor(field,{format: this.format});
+    field.on("editingcompleted",editor.completeEdit,editor);
+    return editor;
   },
   /** This function returns a string rendering the values. The format is da: (value[0].label), a: (value[1].label).
     * If the value doesn't have any of the elements, "" is used.
@@ -331,27 +308,14 @@ Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/**
     this.periodStore=store;
     this.editor=null;
   },
-  /** This method retruns an Ext.ux.netbox.core.AvailableValuesEditor used to edit the periods
-    * The editor is created using the periodStore as local store
-    * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.ux.netbox.core.AvailableValuesEditor} The editor used to choose the periods
+  /** This method retruns an Ext.ux.netbox.core.AvailableValuesEditor used to edit the periods.
+    * @param {String} operatorId The operatorId actually used in the filter
+    * @return {Ext.Editor} The field used to edit the values of this filter
     */
-  getEditor: function(cache){
-    if(cache===undefined){
-      cache=true;
-    }
-    var editor;
-    if(this.editor===undefined || this.editor===null || !cache){
-      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.periodStore,false);
-      if(cache){
-        this.editor=editor;
-      }
-    } else {
-      editor=this.editor;
-    }
-    return(editor);
+  createEditor: function(operatorId){
+    var editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.periodStore,false);
+    return editor;
   },
-
   /**This method convert an old value in a filter to a new value,
     * suitable for this operator. If the given value is an array, with at least one element,
     * this element is an object with {label:...,value:...} and the value is in the period store,

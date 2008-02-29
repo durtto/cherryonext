@@ -1,11 +1,11 @@
-// $Id:$
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 
 /** Creates a new FilterModel. It can have as input parametr a fieldManager or the config to build the fieldManager
-  * @class The filter model is the core class of the whole filter design, and probably the one you will interact most. It's the class that mantains the filter, it's the class used to obtain 
+  * @class The filter model is the core class of the whole filter design, and probably the one you will interact most. It's the class that mantains the filter, it's the class used to obtain
   * an export of the filter in a predefined way (look at getFilterObj for more information about the format), to import a filter, to add or remove a filter and so on. All the views (for example QuickFilterModelView, StaticFilterModelView and DynamicFilterModelView)
-  * just shows the data contained in the filter model, and use the filterModel to perform some operation on the filter.  
+  * just shows the data contained in the filter model, and use the filterModel to perform some operation on the filter.
   * A filter model only manages elementary filters that have their field inside the fieldManager that is used to build the filterModel.
   * <h4> Examples </h4>
   * Build a filter model given the fieldManager
@@ -60,7 +60,7 @@ Ext.ux.netbox.core.FilterModel=function(config){
   if(config instanceof Ext.ux.netbox.core.FieldManager)
     this.fieldManager=config;
   else
-    this.fieldManager = new Ext.ux.netbox.core.FieldManager(config);
+    this.fieldManager=new Ext.ux.netbox.core.FieldManager(config);
 }
 
 Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.netbox.core.FilterModel.prototype */
@@ -91,15 +91,15 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     */
   _decodeFilter : function(filterObject){
     if(filterObject.fieldId){
-      var myField = this.getFieldManager().getFieldById(filterObject.fieldId);
+      var myField=this.getFieldManager().getFieldById(filterObject.fieldId);
       if(myField==null) throw ("Field "+filterObject.fieldId+" not found!");
-      var elementaryFilter = myField.getElementaryFilterInstance();
+      var elementaryFilter=myField.getElementaryFilterInstance();
       elementaryFilter.setFilterObj(filterObject);
       return(elementaryFilter);
     } else {
       var leftTmp=this._decodeFilter(filterObject.left);
       var rightTmp=this._decodeFilter(filterObject.right);
-      var myCompositeFilter = new Ext.ux.netbox.core.CompositeFilter(leftTmp,filterObject.logicalOperator,rightTmp);
+      var myCompositeFilter=new Ext.ux.netbox.core.CompositeFilter(leftTmp,filterObject.logicalOperator,rightTmp);
       return(myCompositeFilter);
     }
   },
@@ -119,50 +119,40 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
   /** @private
     *
     */
-  _findAndRemoveFilter : function(parentExpression, expression, filterId){
-    var removedFilter;
-    if(expression.getLeftSide().setValues){
-      if(expression.getLeftSide().getId()==filterId){
-        removedFilter=expression.getLeftSide();
-        if(parentExpression!=null){
-          if(parentExpression.getLeftSide()==expression){
-            parentExpression.setLeftSide(expression.getRightSide());
-          } else {
-            parentExpression.setRightSide(expression.getRightSide());
-          }
-          return removedFilter;
-        } else {
-          this.filter=expression.getRightSide();
-          return removedFilter;
-        }
+  _findAndRemoveFilter : function(parentExpression,expression, matchFn, toRemove){
+    if(expression instanceof Ext.ux.netbox.core.ElementaryFilter){
+      if(matchFn.call(this,expression)){
+        toRemove.push(expression);
+        return(true);
+      } else {
+        return(false);
       }
-    } else {
-      removedFilter=this._findAndRemoveFilter(expression, expression.getLeftSide(), filterId);
-      if(removedFilter!==null)
-        return(removedFilter);
     }
 
-    if(expression.getRightSide().setValues){
-      if(expression.getRightSide().getId()==filterId){
-        removedFilter=expression.getRightSide();
-        if(parentExpression!=null){
-          if(parentExpression.getLeftSide()==expression){
-            parentExpression.setLeftSide(expression.getLeftSide());
-          } else {
-            parentExpression.setRightSide(expression.getLeftSide());
-          }
-          return removedFilter;
-        } else {
-          this.filter=expression.getLeftSide();
-          return removedFilter;
-        }
-      }
-    } else {
-      removedFilter=this._findAndRemoveFilter(expression, expression.getRightSide(), filterId);
-      if(removedFilter!==null)
-        return removedFilter;
+    var shouldRemoveLeft=this._findAndRemoveFilter(expression,expression.getLeftSide(),matchFn,toRemove)
+    var shouldRemoveRight=this._findAndRemoveFilter(expression,expression.getRightSide(),matchFn,toRemove);
+
+    if(shouldRemoveRight && shouldRemoveLeft){
+      return(true);
     }
-    return null;
+
+    if(shouldRemoveLeft){
+      if(parentExpression.getLeftSide()==expression){
+        parentExpression.setLeftSide(expression.getRightSide());
+      } else {
+        parentExpression.setRightSide(expression.getRightSide());
+      }
+    }
+
+    if(shouldRemoveRight){
+      if(parentExpression.getLeftSide()==expression){
+        parentExpression.setLeftSide(expression.getLeftSide());
+      } else {
+        parentExpression.setRightSide(expression.getLeftSide());
+      }
+    }
+
+    return(false);
   },
   /** This method returns the FieldManager associated to this filterModel.
     * @return {Ext.ux.netbox.core.FieldManager} The FieldManager
@@ -195,19 +185,54 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     *    right:{fieldId:"field",operatorId:"NUMBER_EQUAL",values:[{label:5,value:5}]}
     * }
     * </pre>
-    * @return {Object}
+    * @param {boolean} evenInvalid (optional) default false
+    * @param {Object} additionalFilterObj (optional)
+    * @param {String} additionalLogicalOper Ext.ux.netbox.core.CompositeFilter.AND/OR (optional)
+    * @return {Object} the filter object
     */
-  getFilterObj : function(additionalFilterObj,additionalLogicalOper){
-    if(additionalFilterObj===undefined)
-      additionalFilterObj=null;
+  getFilterObj : function(evenInvalid,additionalFilterObj,additionalLogicalOper){
+    var additionalFilter;
+    if(additionalFilterObj===undefined){
+      additionalFilter=null;
+    } else {
+      additionalFilter=this._decodeFilter(additionalFilterObj);
+    }
     if(additionalLogicalOper===undefined)
       additionalLogicalOper=Ext.ux.netbox.core.CompositeFilter.AND;
     var filter=this.getFilter();
-    if(filter===null) return additionalFilterObj;
-    if(additionalFilterObj===null) return(this._encodeFilter(filter));
-    var additionalFilter=this._decodeFilter(additionalFilterObj);
-    var newCompositeFilter = new Ext.ux.netbox.core.CompositeFilter(filter,additionalLogicalOper,additionalFilter);
-    return(this._encodeFilter(newCompositeFilter));
+   
+    var filterToExport;
+    if(filter===null) 
+      filterToExport=additionalFilter;
+    else if (additionalFilter === null){
+      filterToExport=filter;
+    } else {
+      filterToExport=new Ext.ux.netbox.core.CompositeFilter(filter,additionalLogicalOper,additionalFilter);
+    }
+    
+    if(filterToExport instanceof Ext.ux.netbox.core.ElementaryFilter){
+      if(!filterToExport.isValid()){
+        filterToExport=null;
+      }
+    } else if(filterToExport !== null) {
+      var matchFn=function(filter){
+        return(!filter.isValid());
+      };
+      var toRemove=[];
+      var shouldRemoveLeft=this._findAndRemoveFilter(filterToExport,filterToExport.getLeftSide(),matchFn,toRemove);
+      var shouldRemoveRight=this._findAndRemoveFilter(filterToExport,filterToExport.getRightSide(),matchFn,toRemove);
+      if(shouldRemoveLeft && shouldRemoveRight){
+        filterToExport=null;
+      } else if(shouldRemoveLeft){
+        filterToExport=filterToExport.getRightSide();
+      }else if(shouldRemoveRight){
+        filterToExport=filterToExport.getLeftSide();
+      }
+    }
+    if(filterToExport!=null)
+      return(this._encodeFilter(filterToExport));
+    else
+      return null;
   },
   /** This method sets the filter with an object formatted:
     * <PRE>
@@ -273,7 +298,7 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     var removedElementaryFilter=null;
     if(this.getFilter()==null)
       throw("Unable to remove the elementaryFilter with id "+filterId+". The elementaryFilter doesn't exist.");
-    if(this.getFilter().setValues){
+    if(this.getFilter() instanceof Ext.ux.netbox.core.ElementaryFilter){
       if(this.getFilter().getId()==filterId){
         removedElementaryFilter=this.filter;
         this.filter=null;
@@ -281,9 +306,26 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
         throw("Unable to remove the elementaryFilter with id "+filterId+". The elementaryFilter doesn't exist");
       }
     } else {
-      removedElementaryFilter=this._findAndRemoveFilter(null, this.getFilter(), filterId);
-      if(removedElementaryFilter===null){
+      var matchFn=function(filter){
+        if(filter.getId()===filterId){
+          return(true);
+        } else {
+          return(false);
+        }
+      };
+      var toRemove=[];
+      var shouldRemoveLeft=this._findAndRemoveFilter(this.getFilter(),this.getFilter().getLeftSide(),matchFn,toRemove);
+      var shouldRemoveRight=this._findAndRemoveFilter(this.getFilter(),this.getFilter().getRightSide(),matchFn,toRemove);
+      if(toRemove.length===0){
         throw("Unable to remove the elementaryFilter with id "+filterId+". The elementaryFilter doesn't exist");
+      }
+      removedElementaryFilter=toRemove[0];
+      if(shouldRemoveLeft){
+        this.filter=this.getFilter().getRightSide();
+      }
+
+      if(shouldRemoveRight){
+        this.filter=this.getFilter().getLeftSide();
       }
     }
     this.fireEvent("elementaryFilterRemoved", this, removedElementaryFilter);

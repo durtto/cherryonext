@@ -83,7 +83,7 @@ Ext.namespace('Ext.ux.netbox');
   * var getterFn=function(){
   *   return({grid: grid.getState(),filter: filterModel.getFilterObj()});
   * }
-  * var setterFn=function(){
+  * var setterFn=function(pref){
   *   //filter
   *   if(pref.filter){
   *     filterModel.setFilterObj(pref.filter);

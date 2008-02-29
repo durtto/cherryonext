@@ -12,36 +12,19 @@ Ext.namespace('Ext.ux.netbox.string');
 Ext.ux.netbox.string.StringListOperator = function(id,label) {
   Ext.ux.netbox.string.StringListOperator.superclass.constructor.call(this,id,label);
   /** With this operator I want always a combo with multiple choice. The editor that implements the behaviour is Ext.ux.netbox.core.AvailableValuesEditor
-    * If available values are not available ( isAvailableValuesAvailable  returns false) an exception is thrown
+    * If available values are not available (isAvailableValuesAvailable  returns false) an exception is thrown
     * @property {Ext.Editor} editor
     */
   this.editor=null;
 }
 
 Ext.extend(Ext.ux.netbox.string.StringListOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.string.StringListOperator.prototype */{
-
-  /** It returns an Ext.ux.netbox.core.AvailableValuesField, with more than one choice
-    * If available values are not available ( isAvailableValuesAvailable  returns false) an exception is thrown
-    * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.ux.netbox.core.AvailableValuesEditor} The editor to use
-    * @throws {String} When no availableValues are available
+  /** This method creates an Ext.ux.netbox.core.AvailableValuesEditor as editor.
+    * @param {String} operatorId The operatorId actually used in the filter
+    * @return {Ext.Editor} The field used to edit the values of this filter
     */
-  getEditor:function(cache){
-    if(cache===undefined){
-      cache=true;
-    }
-    var editor;
-    if(this.editor===undefined || this.editor===null || !cache){
-      if(!this.isAvailableValuesAvailable()){
-        throw("This operator is availble only if there are available values");
-      }
-      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getField().getAvailableValues(),this.isStoreRemote(),this.isForceReload(),{multiSelect: true});
-      if(cache){
-        this.editor=editor;
-      }
-    } else {
-      editor=this.editor;
-    }
-    return(editor);
+  createEditor: function(operatorId){
+    var editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getField().getAvailableValues(),this.isStoreRemote(),this.isForceReload(),{multiSelect: true});
+    return editor;
   }
 });
