@@ -86,6 +86,11 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @private
     */
   this.defaultValues=((defaultValues==undefined)?[]:defaultValues);
+  /** The validate function of this Field. Optional.
+    * @property {function} validateFunc
+    * @private
+    */
+  this.validateFunc=null;
 }
 
 Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox.core.Field.prototype */
@@ -319,32 +324,51 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
       return("");
     }
   },
-  /** This method returns the Ext.form.Field used to edit the value of the elementaryFilter based on this Field
-    * when the operator doesn't provide a specialized implementation.
+  /** This method creates the editor for the grid when the operator doesn't provide a specialized implementation.
     * In this default implementation it simply returns an Ext.ux.netbox.core.AvailableValuesEditor (ie a ComboBox) if there are availble values
     * or a Ext.ux.netbox.core.TextValuesEditor (ie a TextField) otherwise.
-    * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
     * @param {String} operatorId The operatorId actually used in the filter
     * @return {Ext.Editor} The field used to edit the values of this filter
     */
-  getEditor: function(cache,operatorId){
+  createEditor: function(operatorId){
     var editor;
-    if(cache===undefined){
-      cache=true;
-    }
-    if(this.editor==null || !cache){
-      if(!this.isAvailableValuesAvailable()){
-        editor=new Ext.ux.netbox.core.TextValuesEditor();
-      } else {
-        editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getAvailableValues(),this.isStoreRemote(),this.isForceReload());
-      }
-      if(cache){
-        this.editor=editor;
-      }
+    if(!this.isAvailableValuesAvailable()){
+      editor=new Ext.ux.netbox.core.TextValuesEditor();
     } else {
-      editor=this.editor;
+      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getAvailableValues(),this.isStoreRemote(),this.isForceReload());
     }
-    return(editor);
+    return editor;
+  },
+  /** This method sets the function used to validate the values on the field. Example of usage:
+    * <PRE>
+    * var myValidateFunction=function(valuesArray){
+    *   if(valuesArray.length > 0){
+    *     if(valuesArray[0].value > 1)
+    *       return true;
+    *     else
+    *       return "The value is too small";
+    *   }else{
+    *     return "The value is required";
+    *   }
+    * };
+    * field.setValidate(myValidateFunction);
+    * </PRE>
+    * @param {function} func The function used to validate the values on the field
+    */
+  setValidate: function(func){
+    this.validateFunc=func;
+  },
+  /** This method calls the validation function provided for the field. If none is supplied returns always true.
+    * @param {Array} values The values to be validated
+    * @return {boolean} true if the values are valid
+    * @return {String} the message returned by the custom validator if the values are not valid
+    */
+  validate: function(values){
+    if(this.validateFunc!==null){
+      return this.validateFunc.call(this,values);
+    }else{
+      return true;
+    }
   }
 
 });

@@ -141,13 +141,14 @@ Ext.extend(Ext.ux.netbox.core.ElementaryFilter,Ext.ux.netbox.core.Filter,/** @sc
     if(values===undefined || values === null){
       throw("ElementaryFilter "+this.getId()+". Impossible to set a undefined or null value. The empty value is an empty array.");
     }
-
     if(Ext.type(values)!="array"){
       throw("ElementaryFilter "+this.getId()+". The value of a ElementaryFilter MUST be an array!");
     }
     if(Ext.util.JSON.encode(this.values)!=Ext.util.JSON.encode(values)){
-      this.values=values;
-      this.fireEvent("valueChanged",this,values);
+      if(this.getOperator().validate(values)===true){
+        this.values=values;
+        this.fireEvent("valueChanged",this,values);
+      }
     }
   },
   /** This method returns a javascript object representing the elementaryFilter.<BR>
@@ -195,6 +196,15 @@ Ext.extend(Ext.ux.netbox.core.ElementaryFilter,Ext.ux.netbox.core.Filter,/** @sc
   	if(this.getField().getId()==fieldId)
   	  return([this]);
   	return([]);
+  },
+  /** This method controls if the values is setted for this elementaryFilter.
+    * @return {boolean} true if this elementaryFilter is valid, false otherwise
+    */
+  isValid : function(){
+    if(this.values!==undefined && this.getOperator().validate(this.values)===true)
+      return true;
+    else
+      return false;
   }
 
 });

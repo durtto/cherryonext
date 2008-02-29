@@ -519,30 +519,33 @@ Ext.extend(Ext.ux.Andrie.Select, Ext.form.ComboBox, {
 	setValue:function(v){
 		var result = [],
 				resultRaw = [];
-		if (!(v instanceof Array)){
-			if (this.separator && this.separator !== true){
-				v = v.split(String(this.separator));
-			}else{
-				v = [v];
-			}
-		}
-		else if (!this.multiSelect){
-			v = v.slice(0,1);
-		} 
-		for (var i=0, len=v.length; i<len; i++){
-			var value = v[i];
-			var text = null;
-			if(this.valueField){
-				var r = this.findRecord(this.valueField || this.displayField, value);
-				if(r){
-					text = r.data[this.displayField];
-				}else if(this.forceSelection){
-					continue;
-				}
-			}
-			result.push(value);
-			resultRaw.push(text);
-		}
+		if (v!==null){
+    		if (!(v instanceof Array)){
+    			if (this.separator && this.separator !== true){
+    				v = v.split(String(this.separator));
+    			}else{
+    				v = [v];
+    			}
+    		}
+    		else if (!this.multiSelect){
+    			v = v.slice(0,1);
+    		}
+
+    		for (var i=0, len=v.length; i<len; i++){
+    			var value = v[i];
+    			var text = null;
+    			if(this.valueField){
+    				var r = this.findRecord(this.valueField || this.displayField, value);
+    				if(r){
+    					text = r.data[this.displayField];
+    				}else if(this.forceSelection){
+    					continue;
+    				}
+    			}
+    			result.push(value);
+    			resultRaw.push(text);
+    		}
+    }
 		v = result.join(this.separator || ',');
 		text = resultRaw.join(this.displaySeparator || this.separator || ',');
 		

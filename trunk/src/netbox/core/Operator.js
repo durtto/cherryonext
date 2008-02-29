@@ -92,18 +92,42 @@ Ext.ux.netbox.core.Operator.prototype = {
     }
     return(this.getField().render(value,this.getId()));
   },
-  /** This method returns the Ext.form.Field used to edit the value of the elemenatry filters using this operator.
-    * In this default implementation it simply call the getEditor method of Ext.ux.netbox.core.Field.
+  /** This method returns the Ext.Editor used to edit the value of the elemenatry filters using this operator.
+    * The creation of the editor is delegated at the specific operetator.
     * In this default implementation if the field of the operator is unknown, an exception is thrown.
     * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.form.Field} The Ext.form.Field used to edit the values of this elementary filter
+    * @return {Ext.Editor} the editor used to edit the values of this elementary filter
     * @throws {String} If this method is called when the field is undefined or null
     */
   getEditor: function(cache){
     if(this.getField()==undefined || this.getField()==null){
       throw("Impossible to obtain the editor for the operator "+this.getId()+" which is without field");
     }
-    return(this.getField().getEditor(cache,this.getId()));
+    var editor;
+    if(cache===undefined){
+      cache=true;
+    }
+    if(this.editor==null || !cache){
+      editor=this.createEditor();
+      var myField=editor.field;
+      var originalFunc=myField.validateValue;
+      var myValidateFunc=this.validate;
+      var myValidateScope=this;
+      myField.validateValue=function(value){
+        if(originalFunc.call(this,myField.value)===false)
+          return false;
+        var retval=myValidateFunc.call(myValidateScope,editor.getValue());
+        if(retval===true)
+          return true;
+        myField.markInvalid(retval);
+      };
+      if(cache){
+        this.editor=editor;
+      }
+    } else {
+      editor=this.editor;
+    }
+    return(editor);
   },
   /** This method convert an old value of an elementary filter to a new value, suitable for this operator.
     * <B>NB:</B> if you want to return an empty operator return [].
@@ -136,12 +160,40 @@ Ext.ux.netbox.core.Operator.prototype = {
     }
     return(this.getField().isStoreRemote());
   },
-  /** Returns the list of default values. By default it asks to the field the default values.
+  /** Returns true if the store is always to reload.
+    * In this default implementation it simply call the same method of the field.
+    * In this default implementation if the field for the operator is unknown, an exception is thrown.
+    * @return {boolean} True if the store is always to reload, false otherwise
+    * @throws {String} If isAvailableValuesAvailable returns false this method throws an exception
+    */
+  isForceReload: function(){
+    if(this.getField()===undefined || this.getField()===null){
+      throw("Impossible to obtain the forceReload info for the operator "+this.getId()+" which is without field");
+    }
+    return(this.getField().isForceReload());
+  },
+  /** Returns the list of default values. By default it asks the default values to the field.
     * If you have a list of default values specific to the operator, overwrite this method.
     * @return {Array} array of default values in the format {value: ... , label: ...}
     */
   getDefaultValues : function(){
     return(this.getField().getDefaultValues());
+  },
+  /** Validate the values of the ElementaryFilter. By default is called method validate on Field.
+    * @param {Array} values The values to be validated
+    * @return {boolean} true if the values are valid
+    * @return {String} the message returned by the custom validator if the values are not valid
+    */
+  validate: function(values){
+    return(this.getField().validate(values));
+  },
+  /** Returns the editor. By default it asks the editor to the field.
+    * @return {Ext.Editor} The field used to edit the values of this filter
+    */
+  createEditor: function(){
+    if(this.getField()===undefined || this.getField()===null){
+      throw("Impossible to create the editor for the operator "+this.getId()+" which is without field");
+    }
+    return(this.getField().createEditor(this.getId()));
   }
-
 };

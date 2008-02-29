@@ -21,23 +21,13 @@ Ext.ux.netbox.string.TextFieldOperator = function(id,label) {
 
 Ext.extend(Ext.ux.netbox.string.TextFieldOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.string.TextFieldOperator.prototype */
 {
-  /** This method always returns a Ext.ux.netbox.core.TextValuesEditor as editor.
-    * @param {boolean} cache true to use a cached editor if available, and to put the newly created editor in the cache if not available, false otherwise. The default is true
-    * @return {Ext.ux.netbox.core.TextValuesEditor} The editor used to edit the values associated to this operator
+  /** This method creates an Ext.ux.netbox.core.TextValuesEditor as editor.
+    * @param {String} operatorId The operatorId actually used in the filter
+    * @return {Ext.Editor} The field used to edit the values of this filter
     */
-  getEditor: function(cache){
-    if(cache===undefined){
-      cache=true;
-    }
-    var editor;
-    if(this.editor===undefined || this.editor===null || !cache){
-      editor=new Ext.ux.netbox.core.TextValuesEditor();
-      if(cache){
-        this.editor=editor;
-      }
-    } else {
-      editor=this.editor;
-    }
-    return(editor);
+  createEditor: function(operatorId){
+    var editor=new Ext.ux.netbox.core.TextValuesEditor();
+    return editor;
   }
+
 });

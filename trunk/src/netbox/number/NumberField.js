@@ -22,15 +22,24 @@ Ext.namespace('Ext.ux.netbox.number');
   */
 Ext.ux.netbox.number.NumberField = function(id,label) {
   Ext.ux.netbox.number.NumberField.superclass.constructor.call(this,id,label);
-  var equalOperator = new Ext.ux.netbox.number.NumberOperator("NUMBER_EQUAL","=");
+  var equalOperator = new Ext.ux.netbox.core.Operator("NUMBER_EQUAL","=");
   this.addOperator(equalOperator);
   this.setDefaultOperator(equalOperator);
-  this.addOperator(new Ext.ux.netbox.number.NumberOperator("NUMBER_NOT_EQUAL","!="));
-  this.addOperator(new Ext.ux.netbox.number.NumberOperator("NUMBER_GREATER",">"));
-  this.addOperator(new Ext.ux.netbox.number.NumberOperator("NUMBER_GREATER_OR_EQUAL",">="));
-  this.addOperator(new Ext.ux.netbox.number.NumberOperator("NUMBER_LESS","<"));
-  this.addOperator(new Ext.ux.netbox.number.NumberOperator("NUMBER_LESS_OR_EQUAL","<="));
+  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_NOT_EQUAL","!="));
+  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_GREATER",">"));
+  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_GREATER_OR_EQUAL",">="));
+  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_LESS","<"));
+  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_LESS_OR_EQUAL","<="));
   this.addOperator(new Ext.ux.netbox.number.NumberRangeOperator());
 }
 
-Ext.extend(Ext.ux.netbox.number.NumberField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.number.NumberField.prototype */{});
+Ext.extend(Ext.ux.netbox.number.NumberField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.number.NumberField.prototype */{
+  /** This method creates an Ext.ux.netbox.core.TextValuesEditor  with a Ext.form.NumberField as field.
+    * @param {String} operatorId The operatorId actually used in the filter
+    * @return {Ext.Editor} The field used to edit the values of this filter
+    */
+  createEditor: function(operatorId){
+    var editor=new Ext.ux.netbox.core.TextValuesEditor(new Ext.form.NumberField({decimalPrecision: 10}));
+    return editor;
+  }
+});
