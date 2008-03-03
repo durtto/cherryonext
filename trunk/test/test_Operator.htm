@@ -58,17 +58,17 @@
         assertEquals("The result of operator.render is the same that field.render with anon empty value",field.render([value],"TEST"),operator.render([value]));
       }
 
-      function testGetEditor(){
-
+      function testCreateEditor(){
         try{
-          operator.getEditor();
+          operator.createEditor();
           fail("getEditor without field failed without exception");
         } catch(e){
           assertTrue("Exception thrown",true);
         }
         var field=new Ext.ux.netbox.core.Field("TEST","label");
         field.addOperator(operator);
-        assertEquals("The result of operator.getEditor is the same that field.getEditor",field.getEditor(true,operator.getId()),operator.getEditor(true));
+        var text=field.createEditor();
+        assertTrue("viene tornato un Ext.ux.netbox.core.TextValuesEditor",text instanceof Ext.ux.netbox.core.TextValuesEditor);
       }
 
       function testConvertValue(){
@@ -118,6 +118,18 @@
         assertArrayEquals("testGetDefaultValues",[],operator.getDefaultValues());
         field.setDefaultValues([{value:"aaa",label:"aaa"}]);
         assertArrayEquals("testGetDefaultValues",[{value:"aaa",label:"aaa"}],field.getDefaultValues());
+      }
+
+      function testValidate() {
+        try{
+          operator.validate();
+          fail("validate without field failed without exception");
+        } catch(e){
+          assertTrue("Exception thrown",true);
+        }
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        assertTrue("testValidate",operator.validate([{value:"aaa",label:"aaa"}]));
       }
 
       function setUp() {
