@@ -1,10 +1,10 @@
-// $Id:$
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 
-/** Create a new QuickFilterModelView. 
-  * @class Provides a view on FilterModel and allows to quickly add filters directly from a grid using a context menu. 
-  * In this way you right click on a cell of the grid (for example the cell containing the value "John" in the name column), a context menu appears, 
+/** Create a new QuickFilterModelView.
+  * @class Provides a view on FilterModel and allows to quickly add filters directly from a grid using a context menu.
+  * In this way you right click on a cell of the grid (for example the cell containing the value "John" in the name column), a context menu appears,
   * you select the operator from the context menu (for example "=") and a filter is added (name = "John"). <br>
   * <b>NB</b> By default it will use the value in the store as value, and what returned by the renderer of the column as label
   * Default operators are as follows, divided by datatype:<p><em>
@@ -21,21 +21,21 @@ Ext.namespace('Ext.ux.netbox.core');
   * Each element of the array has the following fields:
   * <ul>
   *   <li> <b>id:</b> <em>id of the field</em></li>
-  *   <li> <b>operators:</b> <em>array of operators id. This is the set of operators available in the quick filter for the field</em></li>  
+  *   <li> <b>operators:</b> <em>array of operators id. This is the set of operators available in the quick filter for the field</em></li>
   *   <li> <b>getterFn</b>: <em>
-  *       function that, given the value in the grid, returns the value for the filter.  
-  *       Usefull for example when the rendered value is totally different from the store value. 
+  *       function that, given the value in the grid, returns the value for the filter.
+  *       Usefull for example when the rendered value is totally different from the store value.
   *       This function has the following attributes:
   *       <ul>
   *         <li><b>tableValue:</b> The value in the Store that is displayed in the cell of the grid</li>
-  *         <li><b>fieldId:</b> The id of the field on which the elementary filter will be created</li>  
+  *         <li><b>fieldId:</b> The id of the field on which the elementary filter will be created</li>
   *         <li><b>operatorId:</b> The id of the operator choose by the user</li>
   *         <li><b>grid:</b> The grid on which the user clicked</li>
   *         <li><b>row:</b> the row on which the user clicked</li>
   *         <li><b>column:</b> the column on which the user clicked</li>
   *       </ul>
   *     </em>
-  *   </li>  
+  *   </li>
   * </ul>
   * @config {boolean} duplicatedElementaryFiltersAllowed True to allow 2 equals elementary filter (i.e. to allow name='John' 2 times). Optional. Default false
   * <h4> Example </h4>
@@ -95,7 +95,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
   /** Creates menu items based on the operators set for the selected field
     * @private
     */
-  filterIsToShow : function(grid,row,column){
+  filterIsToShow: function(grid,row,column){
     if(column==-1 || this.getField(grid,column)==null){
       return false;
     }else{
@@ -128,47 +128,42 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
       }
 
       for(var i=0;i<availableOperatorsId.length;i++){
+        var isToAdd=true;
         var operator=field.getAvailableOperatorById(availableOperatorsId[i]);
         var filterItem = {
           text: Ext.util.Format.htmlEncode(operator.getLabel()),
           handler: this.setFilter.createDelegate(this,[grid,row,column,field.getId(),operator.getId()],false)
         };
-        itemsArray.push(filterItem);
+
+        var filtersList=this.filterModel.getElementaryFiltersByFieldId(field.getId());
+        var values=this.getValues(grid,row,column,field.getId(),operator.getId());
+        for(var j=0;j<filtersList.length;j++){
+          if(filtersList[j].getOperator().getId()===operator.getId() &&
+          Ext.util.JSON.encode(filtersList[j].getValues())===Ext.util.JSON.encode(values))
+            isToAdd=false;
+        }
+        if(operator.validate(values)!==true)
+          isToAdd=false;
+
+        if(isToAdd)
+          itemsArray.push(filterItem);
       }
 
-      this.quickFilterItem.setSubMenu(new Ext.menu.Menu({items: itemsArray}));
-      return true;
+      if(itemsArray.length > 0){
+        this.quickFilterItem.setSubMenu(new Ext.menu.Menu({items: itemsArray}));
+        return true;
+      } else {
+        return false;
+      }
     }
   },
 
-  /** Default getter. Returns the values formatted.
+  /**
     * @private
     */
-  getValues: function(tableValue,fieldId,operatorId,grid,row,column){
-    var rendererFn=grid.getColumnModel().getRenderer(column);
-    var record=grid.getStore().getAt(row);
-    var label=rendererFn(tableValue,{},record, row,column,grid.getStore());
-    return([{label: label, value: tableValue}]);
-  },
-
-  /** Default getter for dates. Returns the values formatted, only for dates.
-    * @private
-    */
-  getValuesDate: function(tableValue,fieldId,operatorId,grid,row,column){
-    var field=this.filterModel.getFieldManager().getFieldById(fieldId);
-    var operator=field.getAvailableOperatorById(operatorId);
-
-    return([{label: tableValue.format(operator.getFormat()), value: tableValue.format('Y-m-d H:i:s')}]);
-  },
-
-  /** Method that takes care of the filter set on filterModel when selecting a menu item.
-    * @private
-    */
-  setFilter : function(grid,row,column,fieldId,operatorId){
-
+  getValues: function(grid,row,column,fieldId,operatorId){
     var record=grid.getStore().getAt(row);
     var tableValue=record.get(grid.getColumnModel().getDataIndex(column));
-
     var getterFn;
     var getterScope;
 
@@ -189,21 +184,48 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
       if(operator instanceof Ext.ux.netbox.date.DateOperator && tableValue instanceof Date){
         getterFn=this.getValuesDate;
       }else{
-        getterFn=this.getValues;
+        getterFn=this.getValuesOther;
       }
     }
 
     if(!getterScope)
       getterScope=this;
-    
+
     var values=getterFn.call(getterScope,tableValue,fieldId,operatorId,grid,row,column);
+    return values;
+  },
+
+  /** Default getter. Returns the values formatted.
+    * @private
+    */
+  getValuesOther: function(tableValue,fieldId,operatorId,grid,row,column){
+    var rendererFn=grid.getColumnModel().getRenderer(column);
+    var record=grid.getStore().getAt(row);
+    var label=rendererFn(tableValue,{},record, row,column,grid.getStore());
+    return([{label: label, value: tableValue}]);
+  },
+
+  /** Default getter for dates. Returns the values formatted, only for dates.
+    * @private
+    */
+  getValuesDate: function(tableValue,fieldId,operatorId,grid,row,column){
+    var field=this.filterModel.getFieldManager().getFieldById(fieldId);
+    var operator=field.getAvailableOperatorById(operatorId);
+    return([{label: tableValue.format(operator.getFormat()), value: tableValue.format('Y-m-d H:i:s')}]);
+  },
+
+  /** Method that takes care of the filter set on filterModel when selecting a menu item.
+    * @private
+    */
+  setFilter: function(grid,row,column,fieldId,operatorId){
+    var values=this.getValues(grid,row,column,fieldId,operatorId);
     var filterObject={fieldId : fieldId, operatorId : operatorId, values : values}
     var addFilter=true;
     if(!this.duplicatedElementaryFiltersAllowed){
       var elementaryFilters=this.filterModel.getElementaryFiltersByFieldId(fieldId);
       for(var i=0; i<elementaryFilters.length;i++){
         //quick way to compare 2 filters
-        if(elementaryFilters[i].getOperator().getId()===operatorId 
+        if(elementaryFilters[i].getOperator().getId()===operatorId
           && Ext.util.JSON.encode(elementaryFilters[i].getValues())===Ext.util.JSON.encode(values)){
             addFilter=false;
             break;
@@ -214,15 +236,13 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
       this.filterModel.addElementaryFilter(filterObject);
       this.fireEvent('filterChanged');
     }
-
   },
 
   /** Returns a menu item containing the operators available for the selected field,
     * which corresponds to one of the columns of the grid.
     * @return (Ext.ux.netbox.ContainerMenuItem)
     */
-  getFilterMenu : function(){
-
+  getFilterMenu: function(){
     if(this.quickFilterItem==null){
       this.quickFilterItem = new Ext.ux.netbox.ContainerMenuItem({
         text     : this.quickFilterText,
@@ -237,8 +257,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
     * in a contextual way to the column of the selected cell.
     * @return (Ext.ux.netbox.ContainerMenuItem)
     */
-  getRemoveFilterMenu : function(){
-
+  getRemoveFilterMenu: function(){
     if(this.removeFilterItem==null){
       this.removeFilterItem = new Ext.ux.netbox.ContainerMenuItem({
         text     : this.removeText,
@@ -252,18 +271,22 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
   /** Creates menu items based on the operators to be removed, for the selected field.
     * @private
     */
-  removeFilterIsToShow : function(grid,row,column){
+  removeFilterIsToShow: function(grid,row,column){
     var filters=this.filterModel.getAllElementaryFilters();
     if(filters.length > 0){
 
       var itemsArray=[];
 
       for(var i=0;i<filters.length;i++){
-        var label= filters[i].getField().getLabel()+' '+ filters[i].getOperator().getLabel()+' '+filters[i].getOperator().render(filters[i].getValues());
-        var filterItem = {
-          text: label,
-          handler: this.removeFilterById.createDelegate(this,[filters[i].getId()],false),
-          isToShow: function(){return(true);}
+        var label=filters[i].getField().getLabel()+' '+ filters[i].getOperator().getLabel()+' '+filters[i].getOperator().render(filters[i].getValues());
+        var iconCls='';
+        if(filters[i].isValid()!==true)
+          iconCls='x-icon-invalid';
+        var filterItem={
+          iconCls  : iconCls,
+          text     : label,
+          handler  : this.removeFilterById.createDelegate(this,[filters[i].getId()],false),
+          isToShow : function(){return(true);}
         };
         itemsArray.push(filterItem);
       }
@@ -286,7 +309,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
   /** Removes all filters set on the filterModel.
     * @private
     */
-  removeAllFilters : function(){
+  removeAllFilters: function(){
     this.filterModel.setFilterObj(null);
     this.fireEvent('filterChanged');
   },
@@ -294,7 +317,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
   /** Removes one filter by id from the filterModel.
     * @private
     */
-  removeFilterById : function(filterId){
+  removeFilterById: function(filterId){
     this.filterModel.removeElementaryFilterById(filterId);
     this.fireEvent('filterChanged');
   },
@@ -303,7 +326,7 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
     * @private
     * @ignore
     */
-  getField : function(grid,column){
+  getField: function(grid,column){
     var columnId=grid.getColumnModel().getDataIndex(column);
     var field=this.filterModel.getFieldManager().getFieldById(columnId);
     return field;

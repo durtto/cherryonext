@@ -1,4 +1,4 @@
-// $Id:$
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.core');
 
@@ -9,14 +9,14 @@ Ext.namespace('Ext.ux.netbox.core');
   * <h4> Example </h4>
   * The following code will instantiate a window with a DynamicFilterModelView inside using lazy initialization
   * <pre>
-  * win = new Ext.Window({
+  * win=new Ext.Window({
   *   title: 'Filters',
   *   width:600,
   *   height:350,
   *   layout: 'border',
   *   closeAction: 'hide',
   *   items: [{ filterModel: filterModel,
-  *     region: "center", 
+  *     region: "center",
   *     xtype: 'dynamicFilter'
   *   }]
   * });
@@ -27,7 +27,7 @@ Ext.namespace('Ext.ux.netbox.core');
   */
 Ext.ux.netbox.core.DynamicFilterModelView=function(config){
 
-  this.filterModel = config.filterModel;
+  this.filterModel=config.filterModel;
   config=this.createFilterGridConfig(config);
   Ext.ux.netbox.core.DynamicFilterModelView.superclass.constructor.call(this,config);
   this.on('cellclick', this.removeFilter, this);
@@ -43,7 +43,15 @@ Ext.ux.netbox.core.DynamicFilterModelView=function(config){
   this.getFilterModel().getFieldManager().on('fieldRemoved', this.onFieldRemoved, this);
 
   this.createFieldCombo();
-  //this.getTopToolbar().addField(this.fieldCombo);
+
+  this.getView().getRowClass=function(record, index, rowParams, store){
+    var cls = '';
+    var aFilter = record.data.filter;
+    if(!aFilter.isValid()){
+      cls='x-grid3-row-notValid';
+    }
+    return cls;
+  };
 }
 
 Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/** @scope Ext.ux.netbox.core.DynamicFilterModelView.prototype */
@@ -76,7 +84,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     * @private
     */
   onFilterAdded : function(filterModel, filter){
-    var filterRecord = [];
+    var filterRecord=[];
     filterRecord.push(['',
       filter.getField(),
       filter.getOperator().getId(),
@@ -91,7 +99,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     * @private
     */
   onFilterRemoved : function(filterModel, filter){
-    var recordToRemove = this.filterStore.getById(filter.getId());
+    var recordToRemove=this.filterStore.getById(filter.getId());
     this.filterStore.remove(recordToRemove);
     filter.un('operatorChanged', this.updateFilterOperator, this);
     filter.on('valueChanged',this.updateFilterValues,this);
@@ -106,30 +114,30 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     * @private
     */
   onEditComplete: function(ed, value, startValue){
-    this.editing = false;
-    this.activeEditor = null;
+    this.editing=false;
+    this.activeEditor=null;
     ed.un('specialkey', this.selModel.onEditorKey, this.selModel);
     if(Ext.util.JSON.encode(value) !== Ext.util.JSON.encode(startValue)){
-      var r = ed.record;
+      var r=ed.record;
       //workaround to manage objects in editorGrid
       r.set=function(name, value){
         if(Ext.util.JSON.encode(this.data[name]) == Ext.util.JSON.encode(value)){
           return;
         }
-        this.dirty = true;
+        this.dirty=true;
         if(!this.modified){
-          this.modified = {};
+          this.modified={};
         }
         if(typeof this.modified[name] == 'undefined'){
-          this.modified[name] = this.data[name];
+          this.modified[name]=this.data[name];
         }
-        this.data[name] = value;
+        this.data[name]=value;
         if(!this.editing){
           this.store.afterEdit(this);
         }
       }
-      var field = this.colModel.getDataIndex(ed.col);
-      var e = {
+      var field=this.colModel.getDataIndex(ed.col);
+      var e={
         grid: this,
         record: r,
         field: field,
@@ -157,16 +165,16 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     */
   createFilterGridConfig : function(config){
 
-    this.filterStore = new Ext.data.SimpleStore({
-      fields : ['image', 'field', 'operatorId', 'value', 'filter', 'filterId'],
+    this.filterStore=new Ext.data.SimpleStore({
+      fields : ['image','field','operatorId','value','filter','filterId'],
       data : [],
       id : 5});
 
-    this.operatorStore = new Ext.data.SimpleStore({
+    this.operatorStore=new Ext.data.SimpleStore({
       fields : ['operatorId','operatorLabel'],
       data : [] });
 
-    var operatorCombo = new Ext.form.ComboBox({
+    var operatorCombo=new Ext.form.ComboBox({
       store         : this.operatorStore,
       mode          : 'local',
       valueField    : 'operatorId',
@@ -177,7 +185,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
       listClass     : 'x-combo-list-small'
     });
 
-    var cm = new Ext.grid.ColumnModel([{
+    var cm=new Ext.grid.ColumnModel([{
         header    : this.deleteText,
         renderer  : this.imageRenderer,
         width     : 50,
@@ -203,12 +211,12 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
 
     operatorCombo.on('select',cm.getCellEditor(2).completeEdit,cm.getCellEditor(2));
 
-    cm.getCellEditorOrig = cm.getCellEditor;
-    cm.filterStore = this.filterStore;
-    cm.getCellEditor = function(colIndex, rowIndex){
+    cm.getCellEditorOrig=cm.getCellEditor;
+    cm.filterStore=this.filterStore;
+    cm.getCellEditor=function(colIndex, rowIndex){
       if(colIndex==3){
-        var filter = this.filterStore.getAt(rowIndex).get('filter');
-        var operator = filter.getOperator();
+        var filter=this.filterStore.getAt(rowIndex).get('filter');
+        var operator=filter.getOperator();
         return(operator.getEditor());
       }
       return(this.getCellEditorOrig(colIndex, rowIndex));
@@ -240,11 +248,11 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   createFieldCombo : function(){
-    this.fieldStore = new Ext.data.SimpleStore({fields: ['fieldId', 'label'], data: [], id:0});
-    var allFields = this.getFilterModel().getFieldManager().getAllFields();
+    this.fieldStore=new Ext.data.SimpleStore({fields: ['fieldId', 'label'], data: [], id:0});
+    var allFields=this.getFilterModel().getFieldManager().getAllFields();
     this.addFields(allFields);
 
-    this.fieldCombo = new Ext.form.ComboBox({
+    this.fieldCombo=new Ext.form.ComboBox({
         emptyText     : this.comboText,
         displayField  : 'label',
         valueField    : 'fieldId',
@@ -263,7 +271,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   addFields : function(fieldsToAdd){
-    var fields = [];
+    var fields=[];
     for(var i=0; i<fieldsToAdd.length; i++){
       fields.push([fieldsToAdd[i].getId(), fieldsToAdd[i].getLabel()]);
     }
@@ -275,8 +283,8 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   removeFields : function(fieldToRemove){
-    var fieldId = fieldToRemove.getId();
-    var toRemove = this.fieldStore.getById(fieldId);
+    var fieldId=fieldToRemove.getId();
+    var toRemove=this.fieldStore.getById(fieldId);
     this.fieldStore.remove(toRemove);
   },
   /** addFilter
@@ -293,10 +301,10 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     *
     */
-  removeFilter : function(grid , rowIndex, columnIndex, event){
+  removeFilter : function(grid, rowIndex, columnIndex, event){
     if (columnIndex == 0){
-      var recordToRemove = grid.getStore().getAt(rowIndex);
-      var filter = recordToRemove.get('filter');
+      var recordToRemove=grid.getStore().getAt(rowIndex);
+      var filter=recordToRemove.get('filter');
       this.getFilterModel().removeElementaryFilterById(filter.getId());
     }
   },
@@ -305,11 +313,11 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     */
   updateOperatorStore : function(e){
     if(e.column==2){
-      var field = e.record.get('field');
-      var operators = [];
+      var field=e.record.get('field');
+      var operators=[];
       for(var i=0; i<field.getAvailableOperators().length;i++){
         operators.push([field.getAvailableOperators()[i].getId(),
-                         field.getAvailableOperators()[i].getLabel()]);
+                        field.getAvailableOperators()[i].getLabel()]);
       }
       this.operatorStore.loadData(operators, false);
     }
@@ -319,15 +327,15 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     */
   updateFilter : function(e){
     if(e.column==2){
-      var filter = e.record.get('filter');
-      var operatorId = e.record.get('operatorId');
+      var filter=e.record.get('filter');
+      var operatorId=e.record.get('operatorId');
       filter.setOperator(operatorId);
     } else if(e.column==3){
-      var filter = e.record.get('filter');
+      var filter=e.record.get('filter');
       try{
         filter.setValues(e.record.get('value'));
       } catch(exp){
-        var r = this.filterStore.getById(filter.getId());
+        var r=this.filterStore.getById(filter.getId());
         r.set('value',filter.getValues());
       }
     }
@@ -337,7 +345,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   updateFilterOperator : function(filter){
-    var record = this.filterStore.getById(filter.getId());
+    var record=this.filterStore.getById(filter.getId());
     if(record.get('operatorId')!=filter.getOperator().getId()){
       record.set('operatorId',filter.getOperator().getId());
     }
@@ -347,7 +355,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   updateFilterValues: function(filter){
-    var record = this.filterStore.getById(filter.getId());
+    var record=this.filterStore.getById(filter.getId());
     if(Ext.util.JSON.encode(record.get('value'))!=Ext.util.JSON.encode(filter.getValues())){
       record.set('value',filter.getValues());
     }
@@ -369,7 +377,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   operatorRenderer : function(value, metadata, record, rowIndex, colIndex, store){
-    var operator = record.get('filter').getField().getAvailableOperatorById(value);
+    var operator=record.get('filter').getField().getAvailableOperatorById(value);
     return(operator.getLabel());
   },
   /** valueRenderer
