@@ -27,10 +27,10 @@ Ext.ux.netbox.core.FilterHeaderPlugin = function(filterModel){
 Ext.ux.netbox.core.FilterHeaderPlugin.prototype = {/** @scope Ext.ux.netbox.core.FilterHeaderPlugin.prototype */
 
   /** The css class to be applied to column headers that active filters. Defaults to 'ux-filterd-column'
-    * 
+    *
     */
   filterCls: 'ux-filtered-column',
-  
+
   /** @private
     *
     */
@@ -43,30 +43,32 @@ Ext.ux.netbox.core.FilterHeaderPlugin.prototype = {/** @scope Ext.ux.netbox.core
     *
     */
   onRender: function(){
-		this.grid.getView().on("refresh", this.onRefresh, this);
-		this.updateColumnHeadings(this.grid.getView());
+    this.grid.getView().on("refresh", this.onRefresh, this);
+    this.updateColumnHeadings(this.grid.getView());
   },
 
   /** @private
     *
     */
-	onRefresh: function(view){
-		this.updateColumnHeadings(view);
-	},
+  onRefresh: function(view){
+    this.updateColumnHeadings(view);
+  },
 
   /** @private
     *
     */
-	updateColumnHeadings: function(view){
-		if(!view || !view.mainHd) return;
-
-		var hds = view.mainHd.select('td').removeClass(this.filterCls);
-
-		for(var i=0, len=view.cm.config.length; i<len; i++){
-			var filters = this.filterModel.getElementaryFiltersByFieldId(view.cm.config[i].dataIndex);
-			if(filters.length > 0)
-				hds.item(i).addClass(this.filterCls);
-		}
-	}
+  updateColumnHeadings: function(view){
+    if(!view || !view.mainHd) return;
+    var hds = view.mainHd.select('td').removeClass(this.filterCls);
+    for(var i=0, len=view.cm.config.length; i<len; i++){
+      var filters = this.filterModel.getElementaryFiltersByFieldId(view.cm.config[i].dataIndex);
+      for(var j=0;j<filters.length;j++){
+        if(filters[j].isValid()===true){
+          hds.item(i).addClass(this.filterCls);
+          break;
+        }
+      }
+    }
+  }
 
 };
