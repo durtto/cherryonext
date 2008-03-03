@@ -72,8 +72,8 @@
       assertEquals("Render con qualche cosa che non sia un array ma che non abbia value e label",String({val: "value", lab: "label"}),field.render({val: "value", lab: "label"},operator.getId()));
     }
 
-    function testGetEditor(){
-      var text=field.getEditor();
+    function testCreateEditor(){
+      var text=field.createEditor();
       assertTrue("viene tornato un Ext.ux.netbox.core.TextValuesEditor",text instanceof Ext.ux.netbox.core.TextValuesEditor);
       var store=new Ext.data.SimpleStore({fields: ['value', 'label'],
         data: [
@@ -82,12 +82,8 @@
         ["Maybe","Forse"]
       ]});
       field.setAvailableValues(store);
-      var combo=field.getEditor();
+      var combo=field.createEditor();
       assertTrue("viene tornato un Ext.ux.netbox.core.TextValuesEditor",combo instanceof Ext.ux.netbox.core.AvailableValuesEditor);
-      var combo1=field.getEditor(false);
-      assertNotEquals("The returned element was not the cached one",combo1,combo);
-      var combo1=field.getEditor();
-      assertEquals("The returned element is the cached one",combo1,combo);
     }
 
     function testRemoveOperator(){
@@ -227,6 +223,18 @@
     function testSetDefaultValues(){
       field.setDefaultValues([{value:"aaa",label:"aaa"}]);
       assertArrayEquals("testSetDefaultValues",[{value:"aaa",label:"aaa"}],field.getDefaultValues());
+    }
+
+    function testValidate(){
+      assertTrue("field.testValidate is true",field.validate([{value:"aaa",label:"aaa"}]));
+      var func=function(values){
+        if(values[0].value == "bbb")
+          return true;
+        else
+          return "not valid";
+      };
+      field.setValidate(func);
+      assertEquals("testValidate","not valid",field.validate([{value:"aaa",label:"aaa"}]));
     }
 
     function setUp(){
