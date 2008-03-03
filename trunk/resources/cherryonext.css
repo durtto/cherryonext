@@ -14,7 +14,16 @@
     background-image: url(../resources/checked.gif) !important;
 }
 
+.x-icon-invalid {
+    background-image: url(../resources/invalid.gif) !important;
+}
+
 .x-grid3-hd-row td.ux-filtered-column {
-    font-style:italic;
-    font-weight:bold;
+    font-style:italic !important;
+    font-weight:bold !important;
+}
+
+.x-grid3-row-notValid {
+    font-style:italic !important;
+    background-color:red !important;
 }
