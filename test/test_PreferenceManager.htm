@@ -26,7 +26,6 @@
     var prefManager;
     var store;
     var mockRequest;
-    var result;
 
     var fieldManager;
     var field;
@@ -36,7 +35,19 @@
     var filterObject;
     var filterObject2;
     var compositeFilterObj;
-
+    var eventPrefName;
+    var eventPrefId;
+    var result;
+    var eventResponse;
+    var eventPrefIdsArray=null;
+    var onPreferenceSaved=false;
+    var onPreferenceDeleted=false;
+    var onPreferenceSaveFailed=false;
+    var onPreferenceDeleteFailed=false;
+    var onApplyPreferenceFailed=false;
+    var onApplyDefaultPreferenceFailed=false;
+    var onLoadPreferencesFailed=false;
+    
     function provaGetFunc(){
       return compositeFilterObj;
     }
@@ -45,17 +56,50 @@
       result=pref;
     }
 
-    function onPreferenceSaved(prefName,response){
-      result=response;
+    function onPreferenceSavedFn(prefId,prefName){
+      eventPrefName=prefName;
+      eventPrefId=prefId;
+      onPreferenceSaved=true;
+    }
+    
+    function onPreferenceSaveFailedFn(prefId,prefName,response){
+      eventPrefName=prefName;
+      eventPrefId=prefId;
+      eventResponse=response;
+      onPreferenceSaveFailed=true
     }
 
-    function onPreferenceDeleted(prefName,response){
-      result=response;
+    function onPreferenceDeletedFn(prefIdsArray){
+      eventPrefIdsArray=prefIdsArray;
+      onPreferenceDeleted=true;
+    }
+    
+    function onPreferenceDeleteFailedFn(prefIdsArray,response){
+      eventPrefIdsArray=prefIdsArray;
+      eventResponse=response;
+      onPreferenceDeleteFailed=true;
+    }
+    
+    function onApplyPreferenceFailedFn(prefId,response){
+      eventPrefId=prefId;
+      eventResponse=response;
+      onApplyPreferenceFailed=true;
+    }
+    
+    function onApplyDefaultPreferenceFailedFn(response){
+      eventResponse=response;
+      onApplyDefaultPreferenceFailed=true;
+    }
+    
+    function onLoadPreferencesFailedFn(response){
+      eventResponse=response;
+      onLoadPreferencesFailed=true;
     }
 
     function testGetAllPreferences(){
 
       store=prefManager.getAllPreferences();
+      prefManager.on("loadPreferencesFailed",onLoadPreferencesFailedFn);
       store.load({params:{start:0,limit:10}});
 
       assertEquals("POST", mockRequest.method);
@@ -69,11 +113,21 @@
       mockRequest.responseText = "{totalCount: 1, preferences:[{prefId: 'prefId', prefName: 'pippo', prefDesc: 'pluto', isDefault: true}]}";
 
       Clock.tick(50);
+      assertFalse("Errore non mandato",onLoadPreferencesFailed);
       assertEquals("testGetAllPreferences risultato store", 1, store.getTotalCount());
+      store.load({params:{start:0,limit:10}});
+      mockRequest.readyState = 4;
+      mockRequest.status = 500;
+      mockRequest.responseText = "Non so di cosa sto parlando";
+      Clock.tick(50);
+      assertTrue("Mandato evento di errore",onLoadPreferencesFailed);
+      assertEquals("Status code",500,eventResponse.status);
+      assertEquals("Response text","Non so di cosa sto parlando",eventResponse.responseText);
+      
     }
 
     function testApplyDefaultPreference(){
-
+      prefManager.on("applyDefaultPreferenceFailed",onApplyDefaultPreferenceFailedFn);
       prefManager.applyDefaultPreference();
 
       assertEquals("POST", mockRequest.method);
@@ -87,6 +141,7 @@
       mockRequest.responseText = "{left:filterObject,connector:Ext.ux.netbox.core.CompositeFilter.AND,right:filterObject2}";
 
       Clock.tick(50);
+      assertFalse("Errore non mandato",onApplyDefaultPreferenceFailed);
       assertObjectEquals("testApplyDefaultPreference risultato", compositeFilterObj, result);
       result=-1;
       prefManager.applyDefaultPreference();
@@ -95,12 +150,20 @@
       mockRequest.responseText = "";
       Clock.tick(50);
       assertEquals("testApplyDefaultPreference risultato senza preference di default",-1,result);
+      prefManager.applyDefaultPreference();
+      mockRequest.readyState = 4;
+      mockRequest.status = 500;
+      mockRequest.responseText = "paraponziponzipo";
+      Clock.tick(50);
+      assertTrue("Lanciato evento di errore",onApplyDefaultPreferenceFailed);
+      assertEquals("Status code",500,eventResponse.status);
+      assertEquals("Response text","paraponziponzipo",eventResponse.responseText);
     }
 
     function testApplyPreference(){
 
       prefManager.applyPreference('prefId');
-
+      prefManager.on("applyPreferenceFailed",onApplyPreferenceFailedFn);
       assertEquals("POST", mockRequest.method);
       assertEquals("http://loadPrefURL", mockRequest.url);
       assertTrue(mockRequest.isAsync);
@@ -113,6 +176,16 @@
 
       Clock.tick(50);
       assertObjectEquals("testApplyPreference risultato", compositeFilterObj, result);
+      assertFalse("Errore non scatenato",onApplyPreferenceFailed);
+      prefManager.applyPreference('prefId');
+      mockRequest.readyState = 4;
+      mockRequest.status = 500;
+      mockRequest.responseText = "paraponziponzipo";
+      Clock.tick(50);
+      assertTrue("Lanciato evento di errore",onApplyPreferenceFailed);
+      assertEquals("Status code",500,eventResponse.status);
+      assertEquals("Response text","paraponziponzipo",eventResponse.responseText);
+      assertEquals("First event parameter","prefId",eventPrefId);
     }
 
     function testApplyPreferenceFromPage(){
@@ -124,37 +197,47 @@
 
     function testSavePreference(){
 
-      prefManager.on("preferenceSaved",onPreferenceSaved);
-      prefManager.savePreference('','pluto','pluto description',true);
+      prefManager.on("preferenceSaved",onPreferenceSavedFn);
+      prefManager.on("preferenceSaveFailed",onPreferenceSaveFailedFn);
+      prefManager.savePreference('xxxx','pluto','pluto description',true);
 
       assertEquals("POST", mockRequest.method);
       assertEquals("http://savePrefURL", mockRequest.url);
       assertTrue(mockRequest.isAsync);
       assertTrue(mockRequest.sendCalled);
-      assertEquals("testSavePreference invio parametri", "id=prova&userName=ciccio&prefId=&prefName=pluto&prefDesc=pluto%20description&prefValue=%7B%22left%22%3A%7B%22id%22%3A%22field%22%2C%22operator%22%3A%22operator%22%2C%22values%22%3A%5B%7B%22value%22%3A%22test1%22%2C%22label%22%3A%22label1%22%7D%2C%7B%22value%22%3A%22test2%22%2C%22label%22%3A%22label2%22%7D%5D%7D%2C%22connector%22%3A%22AND%22%2C%22right%22%3A%7B%22id%22%3A%22field2%22%2C%22operator%22%3A%22operator15%22%2C%22values%22%3A%5B%7B%22value%22%3A%22test3%22%2C%22label%22%3A%22label3%22%7D%5D%7D%7D&isDefault=true", mockRequest.data);
+      assertEquals("testSavePreference invio parametri", "id=prova&userName=ciccio&prefId=xxxx&prefName=pluto&prefDesc=pluto%20description&prefValue=%7B%22left%22%3A%7B%22id%22%3A%22field%22%2C%22operator%22%3A%22operator%22%2C%22values%22%3A%5B%7B%22value%22%3A%22test1%22%2C%22label%22%3A%22label1%22%7D%2C%7B%22value%22%3A%22test2%22%2C%22label%22%3A%22label2%22%7D%5D%7D%2C%22connector%22%3A%22AND%22%2C%22right%22%3A%7B%22id%22%3A%22field2%22%2C%22operator%22%3A%22operator15%22%2C%22values%22%3A%5B%7B%22value%22%3A%22test3%22%2C%22label%22%3A%22label3%22%7D%5D%7D%7D&isDefault=true", mockRequest.data);
+     
 
       mockRequest.readyState = 4;
       mockRequest.status = 200;
       mockRequest.responseText = Ext.util.JSON.encode(true);
       Clock.tick(50);
-      assertObjectEquals("testSavePreference risultato", true, result);
+      assertFalse("evento di errore non partito", onPreferenceSaveFailed);
+      assertTrue("evento di salvataggio partito",onPreferenceSaved);
+      assertEquals("preferenceSaved event called with the right parameter",'pluto',eventPrefName);
+      assertEquals("preferenceSaved event called with the right parameter 2",'xxxx',eventPrefId);
+      
     }
 
     function testSavePreferenceFailure(){
-
-      prefManager.on("preferenceSaved",onPreferenceSaved);
-      prefManager.savePreference('','pluto','pluto description',true);
-
+      prefManager.on("preferenceSaveFailed",onPreferenceSaveFailedFn);
+      prefManager.savePreference('ciccio','bombo','pluto description',false);
       mockRequest.readyState = 4;
       mockRequest.status = 500;
-      mockRequest.responseText = 'Internal Server Error';
+      mockRequest.responseText = "la rana in spagna gracida in campagna";
       Clock.tick(50);
-      assertEquals("testSavePreferenceFailure risultato", 'Internal Server Error', result);
+      assertTrue("evento di errore partito", onPreferenceSaveFailed);
+      assertFalse("evento di salvataggio non partito",onPreferenceSaved);
+      assertEquals("preferenceSaveFailed event called with the right parameter",'bombo',eventPrefName);
+      assertEquals("preferenceSaveFailed event called with the right parameter 2",'ciccio',eventPrefId);
+      assertEquals("Status code",500,eventResponse.status);
+      assertEquals("Response text","la rana in spagna gracida in campagna",eventResponse.responseText);
     }
 
     function testDeletePreferences(){
 
-      prefManager.on("preferenceDeleted",onPreferenceDeleted);
+      prefManager.on("preferenceDeleted",onPreferenceDeletedFn);
+      prefManager.on("preferenceDeleteFailed",onPreferenceDeleteFailedFn);
       prefManager.deletePreferences(['prefId','prefId2']);
 
       assertEquals("POST", mockRequest.method);
@@ -167,19 +250,25 @@
       mockRequest.status = 200;
       mockRequest.responseText = Ext.util.JSON.encode(true);
       Clock.tick(50);
-      assertObjectEquals("testDeletePreference risultato", true, result);
+      assertTrue("preferenceDeleted fired",onPreferenceDeleted);
+      assertFalse("preferenceDeleteFailed didn't fire",onPreferenceDeleteFailed);
+      assertObjectEquals("callback chiamata con i giusti parametri",['prefId','prefId2'],eventPrefIdsArray);
     }
 
     function testDeletePreferencesFailure(){
-
-      prefManager.on("preferenceDeleted",onPreferenceDeleted);
+      prefManager.on("preferenceDeleteFailed",onPreferenceDeleteFailedFn);
+      prefManager.on("preferenceDeleted",onPreferenceDeletedFn);
       prefManager.deletePreferences(['prefId']);
 
       mockRequest.readyState = 4;
       mockRequest.status = 500;
       mockRequest.responseText = 'Internal Server Error';
       Clock.tick(50);
-      assertEquals("testDeletePreferenceFailure risultato", 'Internal Server Error', result);
+      assertFalse("preferenceDeleted didn't fire",onPreferenceDeleted);
+      assertTrue("preferenceDeleteFailed fired",onPreferenceDeleteFailed);
+      assertObjectEquals("evento chiamata con i giusti parametri",['prefId'],eventPrefIdsArray);
+      assertEquals("Status code",500,eventResponse.status);
+      assertEquals("Response text","Internal Server Error",eventResponse.responseText);
     }
 
     function setUp(){
@@ -218,10 +307,18 @@
 
       mockRequest = new MockXmlHttpRequest();
       Ext.lib.Ajax.createXhrObject = function(transactionId) { return{conn:mockRequest, tId:transactionId}; }
-    }
-
-    function tearDown(){
-      result=null;
+            result=null;
+      eventPrefName=null;
+      eventPrefId=null;
+      onPreferenceSaved=false;
+      onPreferenceDeleted=false;
+      onPreferenceSaveFailed=false;
+      onPreferenceDeleteFailed=false;
+      onApplyPreferenceFailed=false;
+      onApplyDefaultPreferenceFailed=false;
+      eventResponse=null;
+      eventPrefIdsArray=null;
+      onLoadPreferencesFailed=false;
     }
 
     </script>
