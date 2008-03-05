@@ -40,7 +40,7 @@ Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,forceReload,confi
     multiSelect   : config.multiSelect
   });
   if(!config.multiSelect){
-    this.fieldCombo.on('select',this.completeEdit,this);
+    this.fieldCombo.on('select',this.completeEditLater,this);
   }
   if(forceReload){
     this.fieldCombo.on("beforequery",function(qe){ qe.combo.lastQuery = null; });
@@ -80,6 +80,19 @@ Ext.extend(Ext.ux.netbox.core.AvailableValuesEditor,Ext.ux.netbox.FilterEditor,/
     this.fieldCombo.value=val;
     this.fieldCombo.rawValueArray=rawVal;
   },
+  
+  /** This is a hack. If I stop editing on the select event, the gridpanel will scroll to the first row if there is a scrollbar.
+    * The reason is that the ComboBox will request the focus after the event, even if it's not visible 
+    * (the editor that contains the combo is already hidden)
+    * I delay the complete of the editing at the end of the browser event queue (0 milliseconds of delay), to avoid the problem
+    * @provate
+    * @ignore
+    */
+  completeEditLater: function(){
+    var task=new Ext.util.DelayedTask(this.completeEdit,this);
+    task.delay(0);
+  },
+  
   /** This method gets the value. It searches the values in the store to have, with the values, the labels. If the store is not loaded,
     * since the user didn't modify the value, it returns the original value.
     * @return {Array} An array ob objects in the format {label:..., value:...}
