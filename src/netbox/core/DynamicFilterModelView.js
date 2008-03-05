@@ -208,8 +208,8 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
         editable  : true,
         dataIndex : 'value'
       }]);
-
-    operatorCombo.on('select',cm.getCellEditor(2).completeEdit,cm.getCellEditor(2));
+    //hack to stop the editing when the user selects a new item.
+    operatorCombo.on('select',this.completeEditLater,this);
 
     cm.getCellEditorOrig=cm.getCellEditor;
     cm.filterStore=this.filterStore;
@@ -234,6 +234,20 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
       config.tbar=[];
     }
     return(config);
+  },
+  
+  /** This is a hack. If I stop editing on the select event, the gridpanel will scroll to the first row if there is a scrollbar.
+    * The reason is that the ComboBox will request the focus after the event, even if it's not visible 
+    * (the editor that contains the combo is already hidden)
+    * I delay the complete of the editing at the end of the browser event queue (0 milliseconds of delay), to avoid the problem
+    * @provate
+    * @ignore
+    */
+  completeEditLater: function(){
+    var scope=this.getColumnModel().getCellEditor(2);
+    var fn=scope.completeEdit;
+    var task=new Ext.util.DelayedTask(fn,scope);
+    task.delay(0);
   },
   /** populateFilterStore
     *
