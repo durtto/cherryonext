@@ -8,6 +8,7 @@ Ext.namespace('Ext.ux.netbox');
   * @extends Ext.menu.Menu
   * @param {Object} config
   * @config {Ext.ux.netbox.PreferenceManager} preferenceManager The mandatory preference manager
+  * @config {boolean} defaultErrorHandling True to delagate error management to the view, that simply shows the response text in a dialog. false to manage the errors on its own. Optional, default: true.
   * @class This class is a view to show the preferences managed by a preference manager. The ui is similar to the bookmark one used by browser
   * <h4> Example </h4>
   * <pre>
@@ -21,13 +22,15 @@ Ext.ux.netbox.PreferenceManagerView = function(config){
   Ext.QuickTips.init();
 
   this.preferenceManager=config.preferenceManager;
+  Ext.ux.netbox.PreferenceManagerView.superclass.constructor.call(this,config);
   this.preferenceManager.on("preferenceSaved",this.onPreferenceSaved,this);
   this.preferenceManager.on("preferenceDeleted",this.onPreferenceDeleted,this);
-  Ext.ux.netbox.PreferenceManagerView.superclass.constructor.call(this,config);
+  this.preferenceManager.on("loadPreferencesFailed",this.resetMenu,this);
+  if(config.defaultErrorHandling===undefined || config.defaultErrorHandling){
+    new Ext.ux.netbox.DefaultPreferenceManagerErrorManager(this.preferenceManager);
+  }
 
-  this.on('beforeshow',this.loadRemotePref, this, {single: true});
-
-  //this.preferenceManager.applyDefaultPreference();
+  this.on('show',this.loadRemotePref, this, {single: true});
 };
 
 Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.netbox.PreferenceManagerView.prototype */
@@ -45,6 +48,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
   nameText          : 'Name',
   descText          : 'Description',
   defaultText       : 'Default',
+  loadingText       : 'Loading...',
 
   /** loadRemotePref loading preferences from remote server
     * @private
@@ -53,19 +57,43 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     if(this.prefStore===undefined){
       this.prefStore=this.preferenceManager.getAllPreferences();
       this.prefStore.on('load', this.loadRemotePrefAsync, this);
-    }
+      this.prefStore.on('beforeload', this.beforeLoad, this);
+      this.createStableItems();
+    } 
     this.prefStore.load();
   },
+  
+  createStableItems: function(){
+    if(this.items.getCount()==0){
+      this.add(
+        {text:this.addText, tooltip:this.addTooltipText, handler:this.addPreference, scope:this},
+        {text:this.manageText, tooltip:this.manageTooltipText, handler:this.showManageDialog, scope:this},
+        '-');
+    }
+  },
+  beforeLoad: function(){
+    this.resetMenu();
+    this.getEl().mask(this.loadingText);
+  },
+  
+  resetMenu: function(){
+    if(this.getEl() && this.getEl().isMasked())
+      this.getEl().unmask();
+    for(var i=this.items.getCount()-1; i>=0;i--){
+      if(this.items.get(i).removable===true){
+        if(this.items.get(i).getEl() && this.items.get(i).getEl().isMasked())
+          this.items.get(i).getEl().unmask();
+        this.remove(this.items.get(i));
+      }
+    }
+  },
+    
 
   /** loadRemotePrefAsync
     * @private
     */
   loadRemotePrefAsync : function(){
-    this.removeAll();
-    this.add(
-      {text:this.addText, tooltip:this.addTooltipText, handler:this.addPreference, scope:this},
-      {text:this.manageText, tooltip:this.manageTooltipText, handler:this.showManageDialog, scope:this},
-      '-');
+    this.resetMenu();
     for(var i=0;i<this.prefStore.getTotalCount();i++){
       var rec=this.prefStore.getAt(i);
       var iconCls='';
@@ -77,7 +105,8 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
         tooltip: rec.get('prefDesc'),
         iconCls: iconCls,
         handler: this.applyPreference,
-        scope:   this});
+        scope:   this,
+        removable: true});
     }
   },
 
@@ -294,31 +323,69 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     * @private
     */
   onPreferenceSaved : function(prefName,response){
-    if(response==true){
-      this.prefStore.reload();
-      this.addDialog.hide();
-    }else{
-      Ext.ux.netbox.ErrorDialog.show(response);
-    }
+    this.prefStore.reload();
+    this.addDialog.hide();
   },
 
   /** onPreferenceDeleted
     * @private
     */
-  onPreferenceDeleted : function(prefIdArray,response){
-    if(response==true){
-      this.prefStore.reload();
-    }else{
-      Ext.ux.netbox.ErrorDialog.show(response);
-    }
+  onPreferenceDeleted : function(prefIdArray){
+    this.prefStore.reload();
   }
 
 });
 
+/** This one is needed to allow tooltip for Menu Items
+  */
 Ext.menu.BaseItem.prototype.onRender = function(container){
   this.el = Ext.get(this.el);
   container.dom.appendChild(this.el.dom);
   if (this.tooltip) {
    this.el.dom.qtip = this.tooltip;
+  }
+};
+
+Ext.ux.netbox.DefaultPreferenceManagerErrorManager=function(preferenceManager){
+  preferenceManager.on("applyDefaultPreferenceFailed",this.manageApplyDefaultPreferenceFailed,this);
+  preferenceManager.on("applyPreferenceFailed",this.manageApplyPreferenceFailed,this);
+  preferenceManager.on("loadPreferencesFailed",this.manageLoadPreferencesFailed,this);
+  preferenceManager.on("preferenceDeleteFailed",this.manageDeletePreferencesFailed,this);
+  preferenceManager.on("preferenceSaveFailed",this.manageSavePreferenceFailed,this);
+}
+
+Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype= {
+  failedToApplyDefaultPreferenceTitle: "Error applying default preference",
+  failedToApplyPreferenceTitle: "Error applying preference",
+  failedToSavePreferenceTitle: "Error saving preference",
+  failedToDeletePreferenceTitle: "Error deleting preference(s)",
+  failedToLoadPreferenceTitle: "Error loading preferences",
+  
+  manageApplyDefaultPreferenceFailed: function(response){
+    this.manageError(this.failedToApplyDefaultPreferenceTitle,response.responseText);
+  },
+  
+  manageApplyPreferenceFailed: function(prefId,response){
+    this.manageError(this.failedToApplyPreferenceTitle,response.responseText);
+  },
+  
+  manageSavePreferenceFailed: function(prefId,prefName,response){
+    this.manageError(this.failedToSavePreferenceTitle,response.responseText);
+  },
+  
+  manageDeletePreferencesFailed: function(prefIdsArray,response){
+    this.manageError(this.failedToDeletePreferenceTitle,response.responseText);
+  },
+  
+  manageLoadPreferencesFailed: function(response){
+    this.manageError(this.failedToLoadPreferenceTitle,response.responseText);
+  },
+  manageError: function(title,message){
+    Ext.MessageBox.show({
+           title: title,
+           msg: message,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.ERROR
+       });
   }
 };
