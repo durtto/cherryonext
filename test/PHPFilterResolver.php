@@ -258,6 +258,7 @@
       'NUMBER_LESS_OR_EQUAL'=> 'number_less_or_equal',
       'NUMBER_RANGE'=> 'number_range',
       'STRING_EQUAL'=> 'string_equals',
+      'STRING_EQUALS'=> 'string_equals', //legacy, to remove once 0.2.0 will be out
       'STRING_DIFFERENT'=> 'string_different',
       'STRING_CONTAINS'=> 'string_contains',
       'STRING_DOESNT_CONTAIN'=> 'string_doesnt_contains',
