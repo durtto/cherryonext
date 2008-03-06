@@ -7,7 +7,7 @@
 ===Changes===
 
  * Implemented enhancement [http://code.google.com/p/cherryonext/issues/detail?id=5 validation of elementary filters]
- * Fixed bug [http://code.google.com/p/cherryonext/issues/detail?id=8 ]
+ * Fixed bug [http://code.google.com/p/cherryonext/issues/detail?id=8 PHPFilterResolver.php doesn't work with Charry On Ext 0.1.1 any more]
  * Fixed bug [http://code.google.com/p/cherryonext/issues/detail?id=9 Error with StaticFilterModel if the filterModel is not named filterModel]
  * Better error management in PreferenceManager & PreferenceManagerView
  * Better management of quick filters' labels. As default it now uses the grid renderer to render the values
