@@ -301,7 +301,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     * This means that it adds the operator combo and the component that will contain the editor for the values of the filter
     */
   populateFields: function(){
-    var fields=filterModel.getFieldManager().getAllFields();
+    var fields=this.filterModel.getFieldManager().getAllFields();
     for(var i=0;i<fields.length;i++){
       this.addField(fields[i]);
     }
