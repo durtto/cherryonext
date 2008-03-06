@@ -61,7 +61,6 @@ Ext.namespace('Ext.ux.netbox');
   *   <li><b>prefValue</b> : String<p style="margin-left:1em">Value of the preference to save, encoded Json</p></li>
   *   <li><b>isDefault</b> : boolean<p style="margin-left:1em">True if it's default preference, false otherwise</p></li>
   * </ul>
-  * The page returns an output decoded with JSON. If it's true (===) it means success, otherwise it's an error message.
   * </p></li>
   * <li><b>deletePrefURL</b> : String<p style="margin-left:1em">The URL used to delete one or more selected preferences.
   * This URL must be called with the following parameters:
@@ -70,13 +69,14 @@ Ext.namespace('Ext.ux.netbox');
   *   <li><b>userName</b> : String<p style="margin-left:1em">The name of the user using the application</p></li>
   *   <li><b>prefIdArray</b> : [String]<p style="margin-left:1em">Array of preference's Id to delete</p></li>
   * </ul>
-  * The page returns an output decoded with JSON. If it's true (===) it means success, otherwise it's an error message.
   * </p></li>
   * @class This class manages user preferences. A user preference is a "state" of some objects that the user wants to save with a name. For example, he has a grid,
   *  with the column in a predefined order, with some filters applied, sorted for a certain column. He can bookmark the given situation, and associate a name 
   *  to it. The he can easilly select from that prefeences, and the grid is back to the state he saved. Since only the developer knows what is usefull to bookmark,
   *  the preferenceManager has 2 functions, a getter and a setter. The getter acquires the state to save from the application, the setter reapplies the settings returned by the getter
-  *  to come back to the saved state. The only restriction on the returned value of the getter is that it must be json encodable/decodable. To save and manage the preferences this class defines 4 ajax interfaces that the application backend must implement.
+  *  to come back to the saved state. The only restriction on the returned value of the getter is that it must be json encodable/decodable. 
+  *  To load and manage the preferences this class defines 4 ajax interfaces that the application backend must implement (See the constructor for more details)
+  *  To signal an error in the backend simply returns an error http status code (for example 500)
   * <h4>Example</h4>
   * This example suppoose that you have a grid with a filter. It saves and restores the filters and the status of the grid (size of the columns, position of the columns, sort state, hidden/visible columns)
   * <pre>
@@ -119,26 +119,26 @@ Ext.ux.netbox.PreferenceManager=function(config){
       * @param {String} prefName The name of the saved preference
       */
     preferenceSaved: true,
-    /** Fires when a preference delete fails
+    /** Fires when a preference delete failed, that is when the deletePrefURL returned an error HTTP status code (for example 500)
       * @event preferenceDeleteFailed
       * @param {Array} prefIdArray An array with the ids of all the preferences to delete.
       * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
       */
     preferenceDeleteFailed: true,
-    /** Fires when applying the default preference failed
+    /** Fires when applying the default preference failed, that is when the applyDefaultPrefURL returned an error HTTP status code (for example 500)
       * @event applyDefaultPreferenceFailed
       * @param {Array} prefIdArray An array with all the preferences to delete.
       * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
       */
     applyDefaultPreferenceFailed: true,
-    /** Fires when applying a preference failed
+    /** Fires when applying a preference failed, that is when the loadPrefURL returned an error HTTP status code (for example 500)
       * @event applyPreferenceFailed
       * @param {String} prefId The id of the preference that was not applied
       * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
       */
     applyPreferenceFailed: true,
     
-    /** Fires when saving a preference failed
+    /** Fires when saving a preference failed, that is when the savePrefURL returned an error HTTP status code (for example 500)
       * @event preferenceSaveFailed
       * @param {String} prefId The id of the preference that was not saved
       * @param {String} prefName The name of the preference that was not saved
@@ -151,7 +151,7 @@ Ext.ux.netbox.PreferenceManager=function(config){
       * @param {Array} prefIdArray An array with the ids of all the deleted preferences.
       */
     preferenceDeleted : true,
-    /** Fires when a load on the store that lists the preferences fails
+    /** Fires when a load on the store that lists the preferences fails, that is when the getAllPrefURL returned an error HTTP status code (for example 500)
       * @event loadPreferencesFailed
       * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
       */
