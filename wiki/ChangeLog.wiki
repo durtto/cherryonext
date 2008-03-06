@@ -1,6 +1,15 @@
 #summary Change Log of the cherry on ext releases
 
-==Version 0.1.2 ^Not yet released^==
+==Version 0.2.0 ^Not yet released^==
+===Incompatibilities with previous version===
+ * Changed from STRING_EQUALS to STRING_EQUAL the id of the operation = between strings
+ * Not allowd by default to have 2 equals elementary filters added using QuickFilter
+===Changes===
+
+ * Implemented enhancement [http://code.google.com/p/cherryonext/issues/detail?id=5 validation of elementary filters]
+ * Fixed bug [http://code.google.com/p/cherryonext/issues/detail?id=8 ]
+ * Fixed bug [http://code.google.com/p/cherryonext/issues/detail?id=9 Error with StaticFilterModel if the filterModel is not named filterModel]
+ * Better error management in PreferenceManager & PreferenceManagerView
  * Better management of quick filters' labels. As default it now uses the grid renderer to render the values
  * Added ability to set a default value to the filter different from the empty one
  * Fixed demos according to BlueCamel forum post
@@ -9,7 +18,6 @@
  * Added ability to add additional filters in getFilterObj method of FilterModel
  * Added more automatic tests
  * Changed default to quick filter: ignore duplicated filters
- * Added validation for the values of an elementary filter
 
 
 ==Version 0.1.1 ^Released on 2008-02-20^ ==
