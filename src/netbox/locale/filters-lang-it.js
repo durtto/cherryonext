@@ -1,4 +1,4 @@
-// $Id:$
+// $Id$
 /*
  * Italian translation
  */
@@ -32,7 +32,8 @@ if(Ext.ux.netbox.PreferenceManagerView){
       closeBtnText      : 'Chiudi',
       nameText          : 'Nome',
       descText          : 'Descrizione',
-      defaultText       : 'Default'
+      defaultText       : 'Default',
+      loadingText       : 'Caricamento in corso...'
    });
 }
 
