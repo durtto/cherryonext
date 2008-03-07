@@ -132,6 +132,7 @@ Ext.ux.netbox.PreferenceManager=function(config){
       */
     applyDefaultPreferenceFailed: true,
     /** Fires when applying a preference failed, that is when the loadPrefURL returned an error HTTP status code (for example 500)
+      * <b> NB: </b> This event is not fired when the loading of the default preference fails. Look at applyDefaultPreferenceFailed instead
       * @event applyPreferenceFailed
       * @param {String} prefId The id of the preference that was not applied
       * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
