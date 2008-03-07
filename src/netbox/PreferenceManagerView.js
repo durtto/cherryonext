@@ -346,6 +346,13 @@ Ext.menu.BaseItem.prototype.onRender = function(container){
   }
 };
 
+
+/** Build a new DefaultPreferenceManagerErrorManager
+  * @constructor
+  * @param {Ext.ux.netbox.PreferenceManager} preferenceManager The preferenceManager whose errors this class manage
+  * @class This class manages the errors of a preferencesManager by listening to the error events (see the documentation of PreferenceManager, and look at the evants that ends by failed)
+  * It shows an error dialog containing the content of the response sent by the server 
+  */
 Ext.ux.netbox.DefaultPreferenceManagerErrorManager=function(preferenceManager){
   preferenceManager.on("applyDefaultPreferenceFailed",this.manageApplyDefaultPreferenceFailed,this);
   preferenceManager.on("applyPreferenceFailed",this.manageApplyPreferenceFailed,this);
@@ -355,37 +362,74 @@ Ext.ux.netbox.DefaultPreferenceManagerErrorManager=function(preferenceManager){
 }
 
 Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype= {
+  /** Title of the error dialog when an error occurs while applying the default preference
+    * @type String
+    */
   failedToApplyDefaultPreferenceTitle: "Error applying default preference",
+  /** Title of the error dialog when an error occurs while applying a preference
+    * @type String
+    */
   failedToApplyPreferenceTitle: "Error applying preference",
+  /** Title of the error dialog when an error occurs while saving a preference
+    * @type String
+    */
   failedToSavePreferenceTitle: "Error saving preference",
+  /** Title of the error dialog when an error occurs while deleting some preferences
+    * @type String
+    */
   failedToDeletePreferenceTitle: "Error deleting preference(s)",
+  /** Title of the error dialog when an error occurs while loading the preferences
+    * @type String
+    */
   failedToLoadPreferenceTitle: "Error loading preferences",
-  
+  /** Callback of the applyDefaultPreferenceFailed event
+    * @private
+    * @ignore
+    */
   manageApplyDefaultPreferenceFailed: function(response){
     this.manageError(this.failedToApplyDefaultPreferenceTitle,response.responseText);
   },
-  
+  /** Callback of the applyPreferenceFailed event
+    * @private
+    * @ignore
+    */
   manageApplyPreferenceFailed: function(prefId,response){
     this.manageError(this.failedToApplyPreferenceTitle,response.responseText);
   },
-  
+  /** Callback of the preferenceSaveFailed event
+    * @private
+    * @ignore
+    */  
   manageSavePreferenceFailed: function(prefId,prefName,response){
     this.manageError(this.failedToSavePreferenceTitle,response.responseText);
   },
-  
+  /** Callback of the preferenceDeleteFailed event
+    * @private
+    * @ignore
+    */  
   manageDeletePreferencesFailed: function(prefIdsArray,response){
     this.manageError(this.failedToDeletePreferenceTitle,response.responseText);
   },
-  
+  /** Callback of the loadPreferencesFailed event
+    * @private
+    * @ignore
+    */  
   manageLoadPreferencesFailed: function(response){
     this.manageError(this.failedToLoadPreferenceTitle,response.responseText);
   },
+  /** This method has as input the title of the dialog and the content of the response
+    * It shows a dialog with title as title and message as content.
+    * If you want to personalize the dialog or the behaviour just overwrite this method
+    * @param {String} title The title of the dialog
+    * @param {String} message The content of the dialog
+    */
   manageError: function(title,message){
     Ext.MessageBox.show({
            title: title,
            msg: message,
            buttons: Ext.MessageBox.OK,
-           icon: Ext.MessageBox.ERROR
+           icon: Ext.MessageBox.ERROR,
+           minWidth: 200
        });
   }
 };
