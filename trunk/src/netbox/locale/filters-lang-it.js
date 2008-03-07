@@ -32,7 +32,7 @@ if(Ext.ux.netbox.PreferenceManagerView){
       closeBtnText      : 'Chiudi',
       nameText          : 'Nome',
       descText          : 'Descrizione',
-      defaultText       : 'Default',
+      defaultText       : 'Predefinita',
       loadingText       : 'Caricamento in corso...'
    });
 }
@@ -98,4 +98,14 @@ if(Ext.ux.netbox.string.StringField){
      stringListText: "lista",
      stringNotListText: "non in lista"
    });
+}
+
+if(Ext.ux.netbox.DefaultPreferenceManagerErrorManager){
+  Ext.apply(Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype, {
+     failedToApplyDefaultPreferenceTitle: "Impossibile applicare la preferenza predefinita",
+     failedToApplyPreferenceTitle: "Impossibile applicare la preferenza",
+     failedToSavePreferenceTitle: "Impossibile salvare la preferenza",
+     failedToDeletePreferenceTitle: "Impossibile eliminare le preferenze selezionate",
+     failedToLoadPreferenceTitle: "Impossibile caricare le preferenze"
+  });
 }
