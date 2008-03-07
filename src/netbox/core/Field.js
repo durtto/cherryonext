@@ -351,11 +351,11 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     *     return "The value is required";
     *   }
     * };
-    * field.setValidate(myValidateFunction);
+    * field.setValidateFn(myValidateFunction);
     * </PRE>
-    * @param {function} func The function used to validate the values on the field
+    * @param {function} func The function used to validate the values on the field. This function has only the value of the filter as parameter
     */
-  setValidate: function(func){
+  setValidateFn: function(func){
     this.validateFunc=func;
   },
   /** This method calls the validation function provided for the field. If none is supplied returns always true.
