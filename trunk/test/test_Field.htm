@@ -233,7 +233,7 @@
         else
           return "not valid";
       };
-      field.setValidate(func);
+      field.setValidateFn(func);
       assertEquals("testValidate","not valid",field.validate([{value:"aaa",label:"aaa"}]));
     }
 
