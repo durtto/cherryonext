@@ -73,14 +73,13 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
     ,initComponent:function() {
         // call parent initComponent
         Ext.ux.form.DateTime.superclass.initComponent.call(this);
-        this.validationTask = new Ext.util.DelayedTask(this.validate, this);
+
         // create DateField
         var dateConfig = Ext.apply({}, {
              id:this.id + '-date'
             ,format:this.dateFormat || Ext.form.DateField.prototype.format
             ,width:this.timeWidth
             ,selectOnFocus:this.selectOnFocus
-            ,validationEvent: false
             ,listeners:{
                   blur:{scope:this, fn:this.onBlur}
                  ,focus:{scope:this, fn:this.onFocus}
@@ -95,7 +94,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
             ,format:this.timeFormat || Ext.form.TimeField.prototype.format
             ,width:this.timeWidth
             ,selectOnFocus:this.selectOnFocus
-            ,validationEvent: false
             ,listeners:{
                   blur:{scope:this, fn:this.onBlur}
                  ,focus:{scope:this, fn:this.onFocus}
@@ -111,15 +109,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
     } // eo function initComponent
     // }}}
     // {{{
-    /** private 
-      * It buffers the validation events
-      */
-    ,filterValidation: function(e){
-        if(!e.isNavKeyPress()){
-            this.validationTask.delay(this.validationDelay);
-        }
-    }
-
     /**
      * private
      * Renders underlying DateField and TimeField and provides a workaround for side error icon bug
@@ -157,8 +146,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         // render DateField & TimeField
         this.df.render(t.child('td.ux-datetime-date'));
         this.tf.render(t.child('td.ux-datetime-time'));
-        this.df.getEl().on("keyup",this.filterValidation,this);
-        this.tf.getEl().on("keyup",this.filterValidation,this);
 
         // workaround for IE trigger misalignment bug
         if(Ext.isIE && Ext.isStrict) {
@@ -180,7 +167,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
 
         // we're rendered flag
         this.isRendered = true;
-        this.validate();
+
     } // eo function onRender
     // }}}
     // {{{
@@ -203,12 +190,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
      */
     ,initDateValue:function() {
         this.dateValue = this.otherToNow ? new Date() : new Date(1970, 0, 1, 0, 0, 0);
-    }
-    /**
-     * private initializes internal timeValue
-     */
-    ,initTimeValue:function() {
-        this.timeValue = this.otherToNow ? new Date() : new Date(1970, 0, 1, 0, 0, 0);
     }
     // }}}
     // {{{
@@ -275,7 +256,8 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
      * @return {Date/String} Returns value of this field
      */
     ,getValue:function() {
-      return(this.getDateTime());
+        // create new instance of date
+        return this.dateValue ? new Date(this.dateValue) : '';
     } // eo function getValue
     // }}}
     // {{{
@@ -435,9 +417,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
             this.setDate('');
             this.setTime('');
             this.updateValue();
-            if(this.rendered){
-              this.validate()
-            } 
             return;
         }
         val = val ? val : new Date(1970, 0 ,1, 0, 0, 0);
@@ -445,8 +424,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         if(val instanceof Date) {
             this.setDate(val);
             this.setTime(val);
-            this.dateValue=new Date(val);
-            this.timeValue=new Date(val);
+            this.dateValue = new Date(val);
         }
         else {
             da = val.split(this.dtSeparator);
@@ -456,10 +434,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
             }
         }
         this.updateValue();
-        if(this.rendered){
-          this.validate()
-        }
-
     } // eo function setValue
     // }}}
     // {{{
@@ -498,6 +472,9 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         if(d) {
             if(!(this.dateValue instanceof Date)) {
                 this.initDateValue();
+                if(!this.tf.getValue()) {
+                    this.setTime(this.dateValue);
+                }
             }
             this.dateValue.setMonth(0); // because of leap years
             this.dateValue.setFullYear(d.getFullYear());
@@ -506,6 +483,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         }
         else {
             this.dateValue = '';
+            this.setTime('');
         }
     } // eo function updateDate
     // }}}
@@ -516,50 +494,35 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
      */
     ,updateTime:function() {
         var t = this.tf.getValue();
-        if(t){
-          if (!(t instanceof Date)) {
+        if(t && !(t instanceof Date)) {
             t = Date.parseDate(t, this.tf.format);
-          }
-          if(!(this.timeValue instanceof Date)) {
-            this.initTimeValue();
-          }
-          this.timeValue.setHours(t.getHours());
-          this.timeValue.setMinutes(t.getMinutes());
-          this.timeValue.setSeconds(t.getSeconds());
-        } else {
-          this.timeValue='';
+        }
+        if(t && !this.df.getValue()) {
+            this.initDateValue();
+            this.setDate(this.dateValue);
+        }
+        if(this.dateValue instanceof Date) {
+            if(t) {
+                this.dateValue.setHours(t.getHours());
+                this.dateValue.setMinutes(t.getMinutes());
+                this.dateValue.setSeconds(t.getSeconds());
+            }
+            else {
+                this.dateValue.setHours(0);
+                this.dateValue.setMinutes(0);
+                this.dateValue.setSeconds(0);
+            }
         }
     } // eo function updateTime
     // }}}
     // {{{
-    ,getDateTime: function(){
-      if(this.dateValue instanceof Date && this.timeValue instanceof Date){
-        var dt=new Date();
-        dt.setHours(this.timeValue.getHours());
-        dt.setMinutes(this.timeValue.getMinutes());
-        dt.setSeconds(this.timeValue.getSeconds());
-        dt.setMonth(0); // because of leap years
-        dt.setFullYear(this.dateValue.getFullYear());
-        dt.setMonth(this.dateValue.getMonth());
-        dt.setDate(this.dateValue.getDate());
-        return(dt);
-      } else if(this.dateValue instanceof Date){
-        return(new Date(this.dateValue));
-      }
-      return("");
-     
-    }
     /**
      * private Updates the underlying hidden field value
      */
     ,updateHidden:function() {
         if(this.isRendered) {
-          var value="";
-          var dt=this.getDateTime();
-          if(dt instanceof Date){
-            value=dt.format(this.hiddenFormat);
-          }
-          this.el.dom.value = value;
+            var value = this.dateValue instanceof Date ? this.dateValue.format(this.hiddenFormat) : '';
+            this.el.dom.value = value;
         }
     }
     // }}}
@@ -582,31 +545,10 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
      * callse validate methods of DateField and TimeField
      */
     ,validate:function() {
-      var tValid=this.tf.validate();
-      var dValid=this.df.validate();
-      if(dValid){
-        this.df.clearInvalid();
-      }
-      if(tValid){
-        this.tf.clearInvalid();
-      }
-      if(dValid && tValid){
-         this.updateValue();
-         return(this.validateValue(this.getValue()));
-       }
-       return(false);
+        return this.df.validate() && this.tf.validate();
     } // eo function validate
     // }}}
     // {{{
-    ,markInvalid: function(msg){
-      this.df.markInvalid(msg);
-      this.tf.markInvalid(msg);
-     }
-     ,clearInvalid: function(){
-       this.df.clearInvalid();
-       this.tf.clearInvalid();
-     }
-
     /**
      * Returns renderer suitable to render this field
      * @param {Object} Column model config
