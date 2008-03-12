@@ -69,17 +69,13 @@ Ext.extend(Ext.ux.netbox.core.RangeItem,Ext.menu.Adapter,/** @scope Ext.ux.netbo
     * @ignore
     */
   getValueFrom: function(){
-    if(this.editorFrom.isValid())
-      return this.editorFrom.getValue();
-    return("");
+    return this.editorFrom.getValue();
   },
   /** getValueTo
     * @ignore
     */
   getValueTo: function(){
-    if(this.editorTo.isValid())
-      return this.editorTo.getValue();
-    return("");
+    return this.editorTo.getValue();
   },
   /** setValueFrom
     * @ignore
@@ -112,5 +108,22 @@ Ext.extend(Ext.ux.netbox.core.RangeItem,Ext.menu.Adapter,/** @scope Ext.ux.netbo
     */
   isValidTo: function(preventMark){
     return this.editorTo.isValid(preventMark);
+  },
+  /** It sets as invalid the from and to fields
+    * @private
+    * @param {String} msg The message to show to the user
+    * @ignore
+    */
+  markInvalid: function(msg){
+    this.editorFrom.markInvalid(msg);
+    this.editorTo.markInvalid(msg);
+  },
+  /** It clears the invalid mask from the from and to fields
+    * @private
+    * @ignore
+    */
+  clearInvalidFields: function(){
+    this.editorFrom.clearInvalid();
+    this.editorTo.clearInvalid();
   }
 });

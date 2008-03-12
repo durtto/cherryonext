@@ -38,8 +38,8 @@ Ext.ux.netbox.core.RangeField = function(config){
 
 Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux.netbox.core.RangeField.prototype */
 {
-  fromText : 'from: ',
-  toText   : ', to: ',
+  fromText : 'from',
+  toText   : 'to: ',
   /**
      * @cfg {String/Object} autoCreate A DomHelper element spec, or true for a default element spec (defaults to
      * {tag: "input", type: "text", size: "20", autocomplete: "off"})
@@ -56,7 +56,7 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
       return;
     }
     if(this.menu == null){
-      this.menu = new Ext.ux.netbox.core.RangeMenu(this.textCls,this.fromConfig,this.toConfig);
+      this.menu = new Ext.ux.netbox.core.RangeMenu(this.textCls,this.fromConfig,this.toConfig,this.validate.createDelegate(this));
       this.menu.on('hide', this.fireEditingCompleted, this);
     }
 
@@ -69,6 +69,7 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
     this.menu.doLayout(width-menuEl.getBorderWidth('lr')-menuEl.getPadding('lr')-menuEl.getMargins('lr'));
     this.menu.show(this.el);
     this.menu.setValue(this.rangeValue);
+    this.validate();
     
   },
   /** validateBlur
@@ -89,9 +90,9 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
     * @private
     */
   setValue: function(val){
-    valueFrom = val[0] !== undefined ? val[0] : {value:''};
-    valueTo = val[1] !== undefined ? val[1] : {value:''};
-    formattedValue=this.fromText+valueFrom.value+this.toText+valueTo.value;
+    valueFrom = val[0] !== undefined ? val[0] : {value:'',label:''};
+    valueTo = val[1] !== undefined ? val[1] : {value:'',label:''};
+    formattedValue=this.fromText+": "+valueFrom.label+", "+this.toText+": "+valueTo.label;
     Ext.ux.netbox.core.RangeField.superclass.setValue.call(this, formattedValue);
     this.rangeValue=val;
     if(this.menu!=null){
@@ -103,6 +104,26 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
     */
   fireEditingCompleted: function(){
     this.fireEvent('editingcompleted');
+  },
+  
+  /** It marks the field as invalid. It renders as invalid the from and to field too
+    * @private
+    * @param {String} msg The message to show to the user
+    * @ignore
+    */
+  markInvalid: function(msg){
+    Ext.ux.netbox.core.RangeField.superclass.markInvalid.call(this,msg);
+    if(this.menu){
+      this.menu.markInvalid(msg);
+    }
+  },
+  /** Overwrites the clearMask function to manage the masks of the from and to fields
+    */
+  clearInvalid: function(){
+    Ext.ux.netbox.core.RangeField.superclass.clearInvalid.call(this);
+    if(this.menu){
+      this.menu.clearInvalidFields();
+    }
   }
 
 });

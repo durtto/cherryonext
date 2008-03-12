@@ -369,6 +369,22 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     }else{
       return true;
     }
-  }
-
+  },
+  
+  /** Function to use as validator if an empty value is not allowed
+    * <h4> Example</h4>
+    * <pre>
+    * field.setValidateFn(field.emptyNotAllowedFn);
+    * </pre>
+    */
+  emptyNotAllowedFn: function(value){
+    if(!value)
+      return(this.emptyNotAllowed);
+    if(!value.length)
+      return(this.emptyNotAllowed);
+    return(true);
+  },
+   /** Text to show when the field is empty and this is not allowed
+    */
+  emptyNotAllowed: "Empty value not allowed"
 });
