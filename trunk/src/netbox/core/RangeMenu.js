@@ -8,15 +8,19 @@ Ext.namespace('Ext.ux.netbox.core');
   * @constructor
   * @ignore
   */
-Ext.ux.netbox.core.RangeMenu = function(textCls,fromCfg,toCfg){
+Ext.ux.netbox.core.RangeMenu = function(textCls,fromCfg,toCfg,fieldValidateFunc){
 //pluginCls,pluginClsArgs,validatorFn){
   Ext.ux.netbox.core.RangeMenu.superclass.constructor.apply(this,arguments);
   if(textCls===undefined){
     textCls = Ext.form.TextField;
   }
+  var editorFrom=new textCls(fromCfg);
+  var editorTo=new textCls(toCfg);
+  editorFrom.validate=fieldValidateFunc;
+  editorTo.validate=fieldValidateFunc;
   this.fields = new Ext.ux.netbox.core.RangeItem({
-    editorFrom: new textCls(fromCfg),
-    editorTo: new textCls(toCfg)
+    editorFrom: editorFrom,
+    editorTo: editorTo
     });
 
   this.add(this.fields);
@@ -86,5 +90,21 @@ Ext.extend(Ext.ux.netbox.core.RangeMenu, Ext.menu.Menu,/** @scope Ext.ux.netbox.
   doLayout: function(width){
     var itemEl=this.fields.getEl();
     this.fields.doLayout(width-itemEl.getBorderWidth('lr')-itemEl.getPadding('lr')-itemEl.getMargins('lr'));
+  },
+  
+  /** It sets as invalid the from and to fields
+    * @private
+    * @param {String} msg The message to show to the user
+    * @ignore
+    */
+  markInvalid: function(msg){
+    this.fields.markInvalid(msg);
+  },
+  /** It clears the invalid mask from the from and to fields
+    * @private
+    * @ignore
+    */
+  clearInvalidFields: function(){
+    this.fields.clearInvalidFields();
   }
 });

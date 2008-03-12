@@ -179,13 +179,30 @@ Ext.ux.netbox.core.Operator.prototype = {
   getDefaultValues : function(){
     return(this.getField().getDefaultValues());
   },
-  /** Validate the values of the ElementaryFilter. By default is called method validate on Field.
+  /** Validate the values of the ElementaryFilter.
+    * In this implementation:
+    * <ul>
+    * <li> if a validation function is setted on the operation it is called and the result is returned</li>
+    * <li> if this operations doesn't have a field an exception is thrown </li>
+    * <li> the field validation is invoked, and if it returns true, the optional additional validate is returned, else false is returned</li>
+    * </ul>
     * @param {Array} values The values to be validated
     * @return {boolean} true if the values are valid
     * @return {String} the message returned by the custom validator if the values are not valid
+    * @throws {String} If the field is null or undefined and the validation function is not set
     */
   validate: function(values){
-    return(this.getField().validate(values));
+    if(this.validateFn!==undefined){
+      return this.validateFn.call(this,values);
+    } 
+    if(this.getField()===undefined || this.getField()===null){
+      throw("Impossible to call the validate function on the field: is not defined. Operation id: "+this.getId());
+    }
+    var validation=this.getField().validate(values);
+    if(validation && this.additionalValidationFn){
+      validation=this.additionalValidationFn.call(this,values);
+    }
+    return(validation);
   },
   /** Returns the editor. By default it asks the editor to the field.
     * @return {Ext.Editor} The field used to edit the values of this filter
@@ -195,5 +212,46 @@ Ext.ux.netbox.core.Operator.prototype = {
       throw("Impossible to create the editor for the operator "+this.getId()+" which is without field");
     }
     return(this.getField().createEditor(this.getId()));
+  },
+  
+  /** It sets a validate function to add some validation, specific to the operation, to the basic field one
+    * @param {function} additionalValidationFn The additional validation function. It has as only parameter the value of the field.
+    * Example of usage:
+    * <PRE>
+    * var myValidateFunction=function(valuesArray){
+    *   if(valuesArray.length > 0){
+    *     if(valuesArray[0].value > 1)
+    *       return true;
+    *     else
+    *       return "The value is too small";
+    *   }else{
+    *     return "The value is required";
+    *   }
+    * };
+    * operator.addValidateFn(myValidateFunction);
+    * </PRE>
+    */
+  addValidateFn: function(additionalValidationFn){
+    this.additionalValidationFn=additionalValidationFn;
+  },
+  /** It sets a validate function that completlly override the basic field validation
+    * @param {function} validateFn The validation function. It has as only parameter the value of the field.
+    * Example of usage:
+    * <PRE>
+    * var myValidateFunction=function(valuesArray){
+    *   if(valuesArray.length > 0){
+    *     if(valuesArray[0].value > 1)
+    *       return true;
+    *     else
+    *       return "The value is too small";
+    *   }else{
+    *     return "The value is required";
+    *   }
+    * };
+    * operator.setValidateFn(myValidateFunction);
+    * </PRE>
+    */
+  setValidateFn: function(validateFn){
+    this.validateFn=validateFn;
   }
 };
