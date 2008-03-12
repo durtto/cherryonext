@@ -146,6 +146,11 @@
       filt2=field.getElementaryFilterInstance();
       assertEquals(filt2.getField(),field);
       assertEquals(filt2.getOperator(),field.getDefaultOperator());
+      operatorTmp1=new Ext.ux.netbox.core.Operator("TEST1");
+      field.addOperator(operatorTmp1);
+      filt2=field.getElementaryFilterInstance(operatorTmp1);
+      assertEquals(filt2.getField(),field);
+      assertEquals(filt2.getOperator(),operatorTmp1);
     }
 
     function testGetId(){

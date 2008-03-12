@@ -130,6 +130,30 @@
         var field=new Ext.ux.netbox.core.Field("TEST","label");
         field.addOperator(operator);
         assertTrue("testValidate",operator.validate([{value:"aaa",label:"aaa"}]));
+        var myValidateFunction=function(valuesArray){
+          if(valuesArray.length > 0){
+            return true;
+          } else {
+            return(false);
+          }
+        }
+        field.setValidateFn(myValidateFunction);
+        var addFn=function(valuesArray){
+          return(valuesArray[0].value>0);
+        }
+        operator.addValidateFn(addFn);
+        assertFalse("test validate with additional validator 1",operator.validate([]));
+        assertTrue("test validate with additional validator 2",operator.validate([{value:1,label:1}]));
+        var newValidateFunction=function(valuesArray){
+          if(valuesArray.length > 0){
+            return(valuesArray[0].value>1);
+          } else {
+            return(false);
+          }
+        }
+        operator.setValidateFn(newValidateFunction);
+        assertFalse("test validate with specific validation function 1",operator.validate([{value:1,label:1}]));
+        assertTrue("test validate with specific validation function 2",operator.validate([{value:2,label:2}]));
       }
 
       function setUp() {
