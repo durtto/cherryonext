@@ -47,31 +47,41 @@ if(Ext.ux.netbox.core.QuickFilterModelView){
 
 if(Ext.ux.netbox.core.RangeItem){
    Ext.apply(Ext.ux.netbox.core.RangeItem.prototype, {
-      fromText : 'da:',
-      toText   : 'a:'
+      fromText : 'da',
+      toText   : 'a'
    });
 }
 
 if(Ext.ux.netbox.core.RangeField){
    Ext.apply(Ext.ux.netbox.core.RangeField.prototype, {
-      fromText : 'da: ',
-      toText   : ', a: '
+      fromText : 'da',
+      toText   : 'a'
    });
 }
 
 if(Ext.ux.netbox.date.DateRangeOperator){
    Ext.apply(Ext.ux.netbox.date.DateRangeOperator.prototype, {
-      fromText : 'da: ',
-      toText   : ', a: ',
-      includeText : 'compreso'
+      fromText : 'da',
+      toText   : 'a',
+      includeText : 'compreso',
+      bothFromAndToNotEmpty: "Sia 'da' che 'a' devono essere avvalorati",
+      fromBiggerThanTo: "'da' è più grande di 'a'",
+      fromNotADate: "Da non è una data valida",
+      toNotADate: "A non è una data valida",
+      toAndFromNotADate: "Sia 'da' che 'a' non sono date valide"
    });
 }
 
 if(Ext.ux.netbox.number.NumberRangeOperator){
    Ext.apply(Ext.ux.netbox.number.NumberRangeOperator.prototype, {
-      fromText : 'da: ',
-      toText   : ', a: ',
-      includeText : 'compreso'
+      fromText : 'da',
+      toText   : 'a',
+      includeText : 'compreso',
+      bothFromAndToNotEmpty: "Sia 'da' che 'a' devono essere avvalorati",
+      fromBiggerThanTo: "'Da' è più grande di 'a'",
+      fromNotANumber: "Da non è un numero valido",
+      toNotANumber: "A non è un numero valido",
+      toAndFromNotANumber: "Sia 'Da' che 'A' non sono numeri validi"
    });
 }
 
@@ -107,5 +117,11 @@ if(Ext.ux.netbox.DefaultPreferenceManagerErrorManager){
      failedToSavePreferenceTitle: "Impossibile salvare la preferenza",
      failedToDeletePreferenceTitle: "Impossibile eliminare le preferenze selezionate",
      failedToLoadPreferenceTitle: "Impossibile caricare le preferenze"
+  });
+}
+
+if(Ext.ux.netbox.core.Field){
+  Ext.apply(Ext.ux.netbox.core.Field, {
+    emptyNotAllowed: "Valore vuoto non consentito"
   });
 }
