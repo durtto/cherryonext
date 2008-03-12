@@ -45,7 +45,7 @@
     function test_filterStringList(){
       filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_LIST", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Non c'e' neanche un elemento",0,store.getCount());
+      assertEquals("Ci sono tutti gli elementi (filtro non applicato)",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_LIST", values: [{label:"boh",value:"Patatine"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha ancora solo 1 elemento",1,store.getCount());
@@ -106,7 +106,7 @@
     function test_filterStringDoesntContains(){
       filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DOESNT_CONTAIN", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'Pietanza', operatorId: "STRING_DOESNT_CONTAIN", values: [{label:"boh",value:"'"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 5 elementi",5,store.getCount());
@@ -176,7 +176,7 @@
     function test_filterNumberGreater(){
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 0 elementi 2",0,store.getCount());
@@ -190,7 +190,7 @@
     function test_filterNumberGreaterOrEqual(){
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER_OR_EQUAL", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_GREATER_OR_EQUAL", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 0 elementi 2",0,store.getCount());
@@ -205,7 +205,7 @@
     function test_filterNumberLess(){
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 0 elementi 2",0,store.getCount());
@@ -219,7 +219,7 @@
     function test_filterNumberLessOrEqual(){
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 0 elementi 2",0,store.getCount());
@@ -234,16 +234,16 @@
     function test_filterNumberRange(){
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label: "7", value: "0"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "dddd"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 3",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "2"},{label: "7", value: "dddd"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 4",7,store.getCount());
       filterModel.setFilterObj({fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{label:"boh",value:"0.5"},{label:"boh",value:"2"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 3 elementi",3,store.getCount());
@@ -268,10 +268,10 @@
     function test_filterDateGreater(){
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 1 elemento",1,store.getCount());
@@ -281,10 +281,10 @@
     function test_filterDateGreaterOrEqual(){
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER_OR_EQUAL", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER_OR_EQUAL", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_GREATER_OR_EQUAL", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 2 elementi",2,store.getCount());
@@ -295,10 +295,10 @@
     function test_filterDateLess(){
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 5 elementi",5,store.getCount());
@@ -309,10 +309,10 @@
     function test_filterDateLessOrEqual(){
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS_OR_EQUAL", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS_OR_EQUAL", values: [{label: "7", value: "akj"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_LESS_OR_EQUAL", values: [{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 6 elementi",6,store.getCount());
@@ -322,16 +322,16 @@
     function test_filterDateRange(){
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: []});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
+      assertEquals("Ha 7 elementi",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label: "7", value: "0"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
+      assertEquals("Ha 7 elementi 2",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "dddd"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 3",0,store.getCount());
+      assertEquals("Ha 7 elementi 3",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label: "7", value: "0"},{label: "7", value: "2"},{label: "7", value: "dddd"}]});
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 4",0,store.getCount());
+      assertEquals("Ha 7 elementi 4",7,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_RANGE", values: [{label:"boh",value:now.add(Date.MONTH,-1).format('Y-m-d H:i:s')},{label:"boh",value:now.add(Date.MINUTE,-15).format('Y-m-d H:i:s')}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 5 elementi",5,store.getCount());
@@ -341,11 +341,11 @@
 
     function test_filterDatePeriod(){
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: []});
+      var fieldTmp=filterModel.getFieldManager().getFieldById('quando');
+      var filterTmp=filterModel.getElementaryFiltersByFieldId('quando')[0];
+      filterTmp.setOperator(fieldTmp.getAvailableOperatorById('DATE_EQUAL'));
+      filterTmp.setOperator(fieldTmp.getAvailableOperatorById('DATE_PERIOD'));
       localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi",0,store.getCount());
-      filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "0"}]});
-      localStoreResolver.apply(store);
-      assertEquals("Ha 0 elementi 2",0,store.getCount());
       filterModel.setFilterObj({fieldId: 'quando', operatorId: "DATE_PERIOD", values: [{label: "7", value: "LAST_YEAR"}]});
       localStoreResolver.apply(store);
       assertEquals("Ha 6 elementi",6,store.getCount());
@@ -381,7 +381,7 @@
 
     function test_filter(){
       //visto che in sostanza le singole operazioni le ho gia' testate sopra, testo gli OR e gli AND
-      filterModel.setFilterObj({left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []},
+      filterModel.setFilterObj({left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{value: "8",label:"8"},{value: "15",label:"15"}]},
         logicalOperator: "OR",
         right: {fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]}
       });
@@ -390,7 +390,7 @@
       assertTrue("C'e' l'insalata",isPietanzaThere("Insalata"));
       assertTrue("C'e' la pietanza con il nome strano",isPietanzaThere("*'.[<--non una pietanza, ma hei!, devo testare 1 po' di caratteri speciali..."));
       assertTrue("C'e' il vitello",isPietanzaThere("vitello"));
-      filterModel.setFilterObj({left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: []},
+      filterModel.setFilterObj({left: {fieldId: '#volte', operatorId: "NUMBER_RANGE", values: [{value: "8",label:"8"},{value: "15",label:"15"}]},
         logicalOperator: "AND",
         right: {fieldId: '#volte', operatorId: "NUMBER_LESS_OR_EQUAL", values: [{label:"boh",value:"0.5"}]}
       });
