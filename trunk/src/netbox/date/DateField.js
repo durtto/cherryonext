@@ -38,12 +38,22 @@ Ext.ux.netbox.date.DateField = function(id,label,format) {
   this.addOperator(periodOperator);
   this.setDefaultOperator(periodOperator);
   this.addOperator(new Ext.ux.netbox.date.DateOperator("DATE_EQUAL","=",format));
-  this.addOperator(new Ext.ux.netbox.date.DateOperator("DATE_GREATER",">",format));
-  this.addOperator(new Ext.ux.netbox.date.DateOperator("DATE_GREATER_OR_EQUAL",">=",format));
-  this.addOperator(new Ext.ux.netbox.date.DateOperator("DATE_LESS","<",format));
-  this.addOperator(new Ext.ux.netbox.date.DateOperator("DATE_LESS_OR_EQUAL","<=",format));
+  noEmptyAllowed=this.emptyNotAllowedFn.createDelegate(this);
+  var op=new Ext.ux.netbox.date.DateOperator("DATE_GREATER",">",format);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.date.DateOperator("DATE_GREATER_OR_EQUAL",">=",format);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.date.DateOperator("DATE_LESS","<",format);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.date.DateOperator("DATE_LESS_OR_EQUAL","<=",format);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
   this.addOperator(new Ext.ux.netbox.date.DateRangeOperator(format));
 }
 
 Ext.extend(Ext.ux.netbox.date.DateField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.date.DateField.prototype */{
+  
 });
