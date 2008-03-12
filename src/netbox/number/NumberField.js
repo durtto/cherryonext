@@ -26,14 +26,25 @@ Ext.ux.netbox.number.NumberField = function(id,label) {
   this.addOperator(equalOperator);
   this.setDefaultOperator(equalOperator);
   this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_NOT_EQUAL","!="));
-  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_GREATER",">"));
-  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_GREATER_OR_EQUAL",">="));
-  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_LESS","<"));
-  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_LESS_OR_EQUAL","<="));
+  noEmptyAllowed=this.emptyNotAllowedFn.createDelegate(this);
+  var op=new Ext.ux.netbox.core.Operator("NUMBER_GREATER",">");
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.core.Operator("NUMBER_GREATER_OR_EQUAL",">=");
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.core.Operator("NUMBER_LESS","<");
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.core.Operator("NUMBER_LESS_OR_EQUAL","<=");
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
   this.addOperator(new Ext.ux.netbox.number.NumberRangeOperator());
 }
 
 Ext.extend(Ext.ux.netbox.number.NumberField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.number.NumberField.prototype */{
+ 
+  
   /** This method creates an Ext.ux.netbox.core.TextValuesEditor  with a Ext.form.NumberField as field.
     * @param {String} operatorId The operatorId actually used in the filter
     * @return {Ext.Editor} The field used to edit the values of this filter
