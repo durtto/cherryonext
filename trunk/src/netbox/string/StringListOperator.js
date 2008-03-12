@@ -16,6 +16,10 @@ Ext.ux.netbox.string.StringListOperator = function(id,label) {
     * @property {Ext.Editor} editor
     */
   this.editor=null;
+  valFn=function(values){
+    return(this.getField().emptyNotAllowed(values));
+  }
+  this.addValidateFn(valFn);
 }
 
 Ext.extend(Ext.ux.netbox.string.StringListOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.string.StringListOperator.prototype */{

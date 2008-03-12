@@ -26,10 +26,19 @@ Ext.ux.netbox.string.StringField = function(id,label) {
   this.addOperator(equalOperator);
   this.setDefaultOperator(equalOperator);
   this.addOperator(new Ext.ux.netbox.core.Operator("STRING_DIFFERENT",this.stringDifferentLabel));
-  this.addOperator(new Ext.ux.netbox.string.TextFieldOperator("STRING_CONTAINS",this.containsText));
-  this.addOperator(new Ext.ux.netbox.string.TextFieldOperator("STRING_DOESNT_CONTAIN",this.doesntContainsText));
-  this.addOperator(new Ext.ux.netbox.string.TextFieldOperator("STRING_STARTS_WITH",this.startsWithText));
-  this.addOperator(new Ext.ux.netbox.string.TextFieldOperator("STRING_ENDS_WITH",this.endsWithText));
+  noEmptyAllowed=this.emptyNotAllowedFn.createDelegate(this);
+  var op=new Ext.ux.netbox.string.TextFieldOperator("STRING_CONTAINS",this.containsText);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.string.TextFieldOperator("STRING_DOESNT_CONTAIN",this.doesntContainsText);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.string.TextFieldOperator("STRING_STARTS_WITH",this.startsWithText);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
+  op=new Ext.ux.netbox.string.TextFieldOperator("STRING_ENDS_WITH",this.endsWithText);
+  op.addValidateFn(noEmptyAllowed);
+  this.addOperator(op);
 }
 
 Ext.extend(Ext.ux.netbox.string.StringField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.string.StringField.prototype */{
