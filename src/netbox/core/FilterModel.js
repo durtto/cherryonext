@@ -93,7 +93,10 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     if(filterObject.fieldId){
       var myField=this.getFieldManager().getFieldById(filterObject.fieldId);
       if(myField==null) throw ("Field "+filterObject.fieldId+" not found!");
-      var elementaryFilter=myField.getElementaryFilterInstance();
+      var operator=myField.getAvailableOperatorById(filterObject.operatorId);
+      if(operator===null)
+        operator=undefined;
+      var elementaryFilter=myField.getElementaryFilterInstance(operator);
       elementaryFilter.setFilterObj(filterObject);
       return(elementaryFilter);
     } else {
