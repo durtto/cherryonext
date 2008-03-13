@@ -103,6 +103,9 @@ Ext.extend(Ext.ux.netbox.core.ElementaryFilter,Ext.ux.netbox.core.Filter,/** @sc
     * @return {Array} The array of values for this elementaryFilter
     */
   getValues : function(){
+    if(this.values){
+      return(this.values.concat());
+    }
     return(this.values);
   },
   /** This method add a value for this elementaryFilter.
@@ -145,10 +148,11 @@ Ext.extend(Ext.ux.netbox.core.ElementaryFilter,Ext.ux.netbox.core.Filter,/** @sc
       throw("ElementaryFilter "+this.getId()+". The value of a ElementaryFilter MUST be an array!");
     }
     if(Ext.util.JSON.encode(this.values)!=Ext.util.JSON.encode(values)){
-      if(this.getOperator().validate(values)===true){
+      if(this.getOperator().validate(values)===true || this.getOperator().validate(this.getValues())!==true){
         this.values=values;
         this.fireEvent("valueChanged",this,values);
       }
+        
     }
   },
   /** This method returns a javascript object representing the elementaryFilter.<BR>

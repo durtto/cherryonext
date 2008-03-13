@@ -201,6 +201,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     this.addFormField(formField,editorComponent);
     elementaryFilterCfg.getEditor().editing=true;//hack! This is needed to fool the editor into beliving that it's doing something...
     elementaryFilterCfg.getEditor().setValue(filter.getValues());
+    elementaryFilterCfg.getEditor().startValue=filter.getValues();
     filter.on('operatorChanged',this.operatorChanged,this);
     filter.on('valueChanged',this.valueChanged,this);
     this.managedFilters.add(filter);
@@ -265,6 +266,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     editorComponent.remove(componentToRemove);
     this.addFormField(formField,editorComponent);
     elementaryFilterCfg.getEditor().editing=true;//hack! This is needed to fool the editor into beliving that it's doing something...
+    elementaryFilterCfg.getEditor().startValue=filter.getValues();
     elementaryFilterCfg.getEditor().setValue(filter.getValues());
   },
 

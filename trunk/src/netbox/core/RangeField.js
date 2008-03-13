@@ -39,7 +39,7 @@ Ext.ux.netbox.core.RangeField = function(config){
 Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux.netbox.core.RangeField.prototype */
 {
   fromText : 'from',
-  toText   : 'to: ',
+  toText   : 'to',
   /**
      * @cfg {String/Object} autoCreate A DomHelper element spec, or true for a default element spec (defaults to
      * {tag: "input", type: "text", size: "20", autocomplete: "off"})
@@ -67,8 +67,8 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
     var width=Math.max(this.wrap.getWidth(),this.minListWidth)
     menuEl.setWidth(width);
     this.menu.doLayout(width-menuEl.getBorderWidth('lr')-menuEl.getPadding('lr')-menuEl.getMargins('lr'));
-    this.menu.show(this.el);
     this.menu.setValue(this.rangeValue);
+    this.menu.show(this.el);
     this.validate();
     
   },

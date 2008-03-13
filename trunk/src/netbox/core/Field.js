@@ -272,10 +272,12 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
   },
   /** This method returns an elementaryFilter's instance of the type of this Field.
     * The operator of the elementaryFilter is the default operator of this Field.
+    * @param {Ext.ux.netbox.core.Operator} operator The operator to set on the filter. Optional. As defult the default operator is used.
+    * @throws {String} If the given operator is not in this field
     * @return {Ext.ux.netbox.core.ElementaryFilter} The elementaryFilter's instance
     */
-  getElementaryFilterInstance : function(){
-    var filter=new Ext.ux.netbox.core.ElementaryFilter(this);
+  getElementaryFilterInstance : function(operator){
+    var filter=new Ext.ux.netbox.core.ElementaryFilter(this,operator);
     return filter;
   },
   /** This method returns the id of this Field.
