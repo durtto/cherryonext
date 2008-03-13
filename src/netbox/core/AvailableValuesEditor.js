@@ -62,7 +62,7 @@ Ext.extend(Ext.ux.netbox.core.AvailableValuesEditor,Ext.ux.netbox.FilterEditor,/
     var label='';
     if(value!=undefined && value!=null && Ext.type(value)=="array"){
       if(value.length>0){
-        for(var i=0; i< value.length; i++){
+        for(var i=0; i< value.length && ((this.fieldCombo.multiSelect) || i<1); i++){
           val.push(value[i].value);
           if(value[i].label!=undefined){
             rawVal.push(value[i].label);
