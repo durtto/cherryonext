@@ -34,6 +34,7 @@ Ext.namespace('Ext.ux.netbox.date');
  */
 Ext.ux.netbox.date.DateField = function(id,label,format) {
   Ext.ux.netbox.date.DateField.superclass.constructor.call(this,id,label);
+  this.setValidateFn(this.validateDate);
   var periodOperator = new Ext.ux.netbox.date.DatePeriodOperator();
   this.addOperator(periodOperator);
   this.setDefaultOperator(periodOperator);
@@ -52,8 +53,37 @@ Ext.ux.netbox.date.DateField = function(id,label,format) {
   op.addValidateFn(noEmptyAllowed);
   this.addOperator(op);
   this.addOperator(new Ext.ux.netbox.date.DateRangeOperator(format));
+  this.format=format;
 }
 
 Ext.extend(Ext.ux.netbox.date.DateField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.date.DateField.prototype */{
   
+  validateDate: function(values){
+    for(var i=0;values && i<values.length;i++){
+      if(values[i].value!=="" && !this.checkDate(values[i].value,'Y-m-d H:i:s')){
+        return(this.checkDate(values[i].value,'Y-m-d H:i:s'));
+      }
+    }
+    return(true);
+  },
+  
+  /** Check if a date is valid.
+    * @param {String} value The string containing the date to validate
+    * @param {String} format The format of the date in the string. Optional, the default is the format of the field
+    * @return {boolean} true if the date is valid, false otherwise
+    */
+  checkDate: function(value,format){
+    if(format==undefined){
+      format=this.format;
+    }
+    var date=Date.parseDate(value,format);
+    if(!date){
+      return(false);
+    }
+    var valueTmp=date.format(format);
+    if(value!=valueTmp){
+      return(false);
+    }
+    return(true);
+  }
 });

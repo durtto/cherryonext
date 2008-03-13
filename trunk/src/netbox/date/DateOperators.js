@@ -83,7 +83,7 @@ Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scop
   convertValue: function(value){
     if(value !==null && value !== undefined && Ext.type(value)=="array"){
       if(value.length>0 && value[0].value!== undefined && value[0].label!== undefined){
-        if(this.checkDate(value[0].label) && this.checkDate(value[0].value,'Y-m-d H:i:s')){
+        if(this.getField().checkDate(value[0].label) && this.getField().checkDate(value[0].value,'Y-m-d H:i:s')){
           if(value.length==1){
             return(value);
           } else {
@@ -158,8 +158,8 @@ Ext.ux.netbox.date.DateRangeOperator = function(format) {
     if(value.length!=2){
       return(this.bothFromAndToNotEmpty);
     }
-    var fromADate=this.checkDate(value[0].value,'Y-m-d H:i:s');
-    var toADate=this.checkDate(value[1].value,'Y-m-d H:i:s');
+    var fromADate=this.getField().checkDate(value[0].value,'Y-m-d H:i:s');
+    var toADate=this.getField().checkDate(value[1].value,'Y-m-d H:i:s');
     if(!fromADate && !toADate){
       return(this.toAndFromNotADate);
     }
@@ -223,7 +223,7 @@ Ext.extend(Ext.ux.netbox.date.DateRangeOperator,Ext.ux.netbox.date.DateOperator,
       textCls: Ext.form.TextField,
       fromConfig: this.getTextFieldConfig(),
       toConfig: this.getTextFieldConfig(),
-      minListWidth: 260,
+      minListWidth: 300,
       fieldSize: 36
     });
 
@@ -241,23 +241,6 @@ Ext.extend(Ext.ux.netbox.date.DateRangeOperator,Ext.ux.netbox.date.DateOperator,
     var valueFrom=value[0] == undefined ? '' : value[0].label;
     var valueTo=value[1] == undefined ? '' : value[1].label;
     return(this.fromText+": "+valueFrom+", "+this.toText+": "+valueTo);
-  },
-  /** Check if a date is valid.
-    * @return {boolean} true if the date is valid, false otherwise
-    */
-  checkDate: function(value,format){
-    if(format==undefined){
-      format=this.format;
-    }
-    var date=Date.parseDate(value,format);
-    if(!date){
-      return(false);
-    }
-    var valueTmp=date.format(format);
-    if(value!=valueTmp){
-      return(false);
-    }
-    return(true);
   },
 
   /** It returns the config to use to create the Ext.form.TextField
@@ -316,6 +299,17 @@ Ext.ux.netbox.date.DatePeriodOperator = function() {
         ["LAST_MONTH",this.monthText],
         ["LAST_YEAR",this.yearText]
       ]});
+   var validateFn=function(value){
+     if(this.getField().emptyNotAllowedFn(value)!==true){
+       return(this.getField().emptyNotAllowedFn(value));
+     }
+     if(value[0].value!=="LAST_QUARTER" && value[0].value!=="LAST_HOUR" && value[0].value!=="LAST_DAY" 
+       && value[0].value!=="LAST_WEEK" && value[0].value!=="LAST_MONTH" && value[0].value!=="LAST_YEAR"){
+       return(this.valueNotExpected);
+     }
+     return(true);
+   }
+   this.setValidateFn(validateFn);
 }
 
 Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.date.DatePeriodOperator.prototype */{
@@ -327,6 +321,14 @@ Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/**
   dayText     : "last day",
   hourText    : "last hour",
   quarterText : "last quarter",
+  valueNotExpected: "Value not expected",
+  
+  /** Overwrite getDefaultValues function to return last day as default
+    * @return {Array} default values ([{value: "LAST_DAY", label: this.dayText}])
+    */
+  getDefaultValues : function(){
+    return([{value: "LAST_DAY", label: this.dayText}]);
+  },
 
   /** This function sets the store of the periods.
     * The store must be local, and must have the label and value column
