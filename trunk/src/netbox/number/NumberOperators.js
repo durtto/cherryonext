@@ -27,7 +27,7 @@ Ext.ux.netbox.number.NumberRangeOperator = function() {
       return(this.fromNotANumber);
     }
     
-    if(!fromANumber){
+    if(!toANumber){
       return(this.toNotANumber);
     }
     
