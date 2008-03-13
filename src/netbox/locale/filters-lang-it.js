@@ -93,7 +93,8 @@ if(Ext.ux.netbox.date.DatePeriodOperator){
       weekText    : "ultima settimana",
       dayText     : "ultimo giorno",
       hourText    : "ultima ora",
-      quarterText : "ultimo quarto d'ora"
+      quarterText : "ultimo quarto d'ora",
+      valueNotExpected: "valore non previsto"
    });
 }
 
