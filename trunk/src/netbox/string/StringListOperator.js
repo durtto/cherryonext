@@ -17,7 +17,7 @@ Ext.ux.netbox.string.StringListOperator = function(id,label) {
     */
   this.editor=null;
   valFn=function(values){
-    return(this.getField().emptyNotAllowed(values));
+    return(this.getField().emptyNotAllowedFn(values));
   }
   this.addValidateFn(valFn);
 }
@@ -30,5 +30,22 @@ Ext.extend(Ext.ux.netbox.string.StringListOperator,Ext.ux.netbox.core.Operator,/
   createEditor: function(operatorId){
     var editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getField().getAvailableValues(),this.isStoreRemote(),this.isForceReload(),{multiSelect: true});
     return editor;
+  },
+  /** This method convert an old value of an elementary filter to a new value, suitable for this operator.
+    * <B>NB:</B> if you want to return an empty operator return [].
+    * In this default implementation, if it's an array, it returns all the element of the array in the format {value:...,label:...} 
+    * an array with only the first element is returned. Otherwise it returns an empty array.
+    * @param {Array of Object} values
+    */
+  convertValue: function(values){
+    var toReturn=[];
+    if(values !==null && values !== undefined && Ext.type(values)=="array"){
+      for(var i=0;i<values.length;i++){
+        if(values[i].value!== undefined && values[i].label!== undefined){
+          toReturn.push(values[i]);
+        }
+      }
+    }
+    return(toReturn);
   }
 });
