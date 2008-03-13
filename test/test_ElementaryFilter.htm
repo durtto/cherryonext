@@ -113,7 +113,7 @@
       obtained=elementaryfilter.getFilterObj();
       assertEquals("testGetFilterObj, id ok",obtained.fieldId, "field");
       assertEquals("testGetFilterObj, operator ok", obtained.operatorId, "newOperator");
-      assertEquals("testGetFilterObj, values ok", obtained.values, values);
+      assertObjectEquals("testGetFilterObj, values ok", obtained.values, values);
     }
 
     function testSetFilterObj(){

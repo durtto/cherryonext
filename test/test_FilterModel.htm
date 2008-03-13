@@ -82,15 +82,15 @@
       filterObjectTmp=filterModel.getFilterObj();
       assertEquals("testGetFilter id",filterObject.fieldId,filterObjectTmp.fieldId);
       assertEquals("testGetFilter operator",filterObject.operatorId,filterObjectTmp.operatorId);
-      assertEquals("testGetFilter values",filterObject.values,filterObjectTmp.values);
+      assertObjectEquals("testGetFilter values",filterObject.values,filterObjectTmp.values);
     }
 
     function testGetFilter2(){
       filterModel.setFilterObj(complexExprObject);
       filterObjectTmp=filterModel.getFilterObj();
-      assertEquals("testGetFilter2 left",filterObject.fieldId,filterObjectTmp.left.fieldId);
+      assertObjectEquals("testGetFilter2 left",filterObject.fieldId,filterObjectTmp.left.fieldId);
       assertEquals("testGetFilter2 logicalOperator",Ext.ux.netbox.core.CompositeFilter.AND,filterObjectTmp.logicalOperator);
-      assertEquals("testGetFilter2 right",filterObject2.fieldId,filterObjectTmp.right.fieldId);
+      assertObjectEquals("testGetFilter2 right",filterObject2.fieldId,filterObjectTmp.right.fieldId);
     }
 
     function testGetFilterById(){
@@ -99,7 +99,7 @@
       filterTmp=filterModel.getElementaryFilterById(id);
       assertEquals("testGetFilterById id",filterObject.fieldId,filterTmp.getField().getId());
       assertEquals("testGetFilterById operator",filterObject.operatorId,filterTmp.getOperator().getId());
-      assertEquals("testGetFilterById values",filterObject.values,filterTmp.getValues());
+      assertObjectEquals("testGetFilterById values",filterObject.values,filterTmp.getValues());
     }
 
     function testGetFilterById2(){
@@ -108,7 +108,7 @@
       filterTmp=filterModel.getElementaryFilterById(id);
       assertEquals("testGetFilterById2 id",filterObject2.fieldId,filterTmp.getField().getId());
       assertEquals("testGetFilterById2 operator",filterObject2.operatorId,filterTmp.getOperator().getId());
-      assertEquals("testGetFilterById2 values",filterObject2.values,filterTmp.getValues());
+      assertObjectEquals("testGetFilterById2 values",filterObject2.values,filterTmp.getValues());
     }
 
     function testAddElementaryFilterByFieldId(){
