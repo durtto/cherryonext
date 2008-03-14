@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Field Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../ext/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../ext/ext-all-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Filter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/ElementaryFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/FilterEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/AvailableValuesEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/TextValuesEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/external/Select.js"></script>
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+    var field;
+    var savedOperator;
+
+    function testGetAvailableOperatorsWithEmptyOperators(){
+      debug("field.getAvailableOperators: "+field.getAvailableOperators());
+      assertNotNull("getAvailableOperators not null",field.getAvailableOperators());
+      assertEquals("getAvailableOperators returns an empty array",0,field.getAvailableOperators().length);
+    }
+
+    function onOperatorAdded(operator){
+      debug("Operator: "+operator);
+      savedOperator=operator;
+    }
+
+    function onOperatorRemoved(operator){
+      debug("Operator: "+operator);
+      savedOperator=operator;
+    }
+
+    function addOperator(){
+      operatorTmp=new Ext.ux.netbox.core.Operator("TEST");
+      field.addOperator(operatorTmp);
+      return operatorTmp;
+    }
+
+    function testAddOperator(){
+      field.on("operatorAdded",onOperatorAdded);
+      operator=addOperator();
+      assertEquals("Evento operatorAdded chiamato con il parametro corretto",operator,savedOperator);
+      availableOperators=field.getAvailableOperators();
+      assertEquals("Field has 1 operator",1,availableOperators.length);
+      assertEquals("The operator is the one I added",operator,availableOperators[0]);
+      assertEquals("The field of the operator is right",field,operator.getField());
+      var field1=new Ext.ux.netbox.core.Field("TEST1","label1");
+      try{
+        field1.addOperator(operator);
+        fail("Added operator of a different field and no exception thrown");
+      }catch(e){
+        assertTrue("Exception thrown",true);
+      }
+    }
+
+    function testRender(){
+      var operator=addOperator();
+      assertEquals("Render con array undefined","",field.render(undefined,operator.getId()));
+      assertEquals("Render con array null","",field.render(null,operator.getId()));
+      assertEquals("Render con array vuoto","",field.render([],operator.getId()));
+      assertEquals("Render con array non vuoto","1,2",field.render(["1","2"],operator.getId()));
+      assertEquals("Render con qualche cosa che non sia un array ma che abbia value e label","label",field.render({value: "value", label: "label"},operator.getId()));
+      assertEquals("Render con qualche cosa che non sia un array ma che non abbia value e label",String({val: "value", lab: "label"}),field.render({val: "value", lab: "label"},operator.getId()));
+    }
+
+    function testCreateEditor(){
+      var text=field.createEditor();
+      assertTrue("viene tornato un Ext.ux.netbox.core.TextValuesEditor",text instanceof Ext.ux.netbox.core.TextValuesEditor);
+      var store=new Ext.data.SimpleStore({fields: ['value', 'label'],
+        data: [
+        ["Yes","Si"],
+        ["No","No"],
+        ["Maybe","Forse"]
+      ]});
+      field.setAvailableValues(store);
+      var combo=field.createEditor();
+      assertTrue("viene tornato un Ext.ux.netbox.core.TextValuesEditor",combo instanceof Ext.ux.netbox.core.AvailableValuesEditor);
+    }
+
+    function testRemoveOperator(){
+      field.on("operatorRemoved",onOperatorRemoved);
+      operator=addOperator();
+      field.removeOperator("TEST");
+      assertEquals("Evento operatorRemoved chiamato con il parametro corretto",operator,savedOperator);
+      assertEquals("Field doesn't have operators",0,field.getAvailableOperators().length);
+      savedOperator=null;
+      try{
+        field.removeOperator("NOT_EXISTING");
+        fail("Remove operator failed without exception");
+      } catch (e){
+        assertTrue("Exception thrown",true);
+        assertNull("Metodo di callback non chiamato",savedOperator);
+      }
+    }
+
+    function testGetAvailableValues(){
+     try{
+        field.getAvailableValues();
+        fail("getAvailableValues doesn't throws an exception");
+      } catch (e){
+        assertTrue("Exception thrown",true);
+      }
+    }
+
+    function testGetAvailableOperatorById(){
+      operator=addOperator();
+      assertEquals("testgetAvailableOperatorById returns the right operator",operator,field.getAvailableOperatorById("TEST"));
+      assertNull("testgetAvailableOperatorById returns null with a non existing operator",field.getAvailableOperatorById("NOT_EXISTING"));
+    }
+
+    function testGetDefaultOperator(){
+			assertNull("testGetDefaultOperator returns null before the setDefaultOperator method is called",field.getDefaultOperator())
+			operatorTmp=new Ext.ux.netbox.core.Operator("TEST");
+			field.addOperator(operatorTmp);
+ 			field.setDefaultOperator(operatorTmp);
+ 			assertEquals("testGetDefaultOperator returns the default operator", operatorTmp, field.getDefaultOperator());
+    }
+
+    function testSetDefaultOperator(){
+      operatorTmp=new Ext.ux.netbox.core.Operator("TEST");
+      operatorTmp1=new Ext.ux.netbox.core.Operator("TEST1");
+      field.addOperator(operatorTmp1);
+      try{
+        field.setDefaultOperator(operatorTmp);
+        fail("setDefaultOperator failed without exception");
+      } catch (e){
+        assertTrue("setDefaultOperator: Exception thrown",true);
+      }
+      field.setDefaultOperator(operatorTmp1);
+      assertEquals("Default Operator is the right one", operatorTmp1, field.getDefaultOperator());
+    }
+
+    function testGetFilterInstance(){
+      operatorTmp=new Ext.ux.netbox.core.Operator("TEST");
+      field.addOperator(operatorTmp);
+      field.setDefaultOperator(operatorTmp);
+      filt2=field.getElementaryFilterInstance();
+      assertEquals(filt2.getField(),field);
+      assertEquals(filt2.getOperator(),field.getDefaultOperator());
+      operatorTmp1=new Ext.ux.netbox.core.Operator("TEST1");
+      field.addOperator(operatorTmp1);
+      filt2=field.getElementaryFilterInstance(operatorTmp1);
+      assertEquals(filt2.getField(),field);
+      assertEquals(filt2.getOperator(),operatorTmp1);
+    }
+
+    function testGetId(){
+       assertEquals("GetId works","TEST",field.getId());
+    }
+
+    function testGetLabel(){
+       assertEquals("getLabel works","label",field.getLabel());
+    }
+
+    function testGetLabel(){
+       assertEquals("getLabel works","label",field.getLabel());
+    }
+
+    function testSetAvailableValues(){
+      assertFalse("isAvailableValuesAvailable false",field.isAvailableValuesAvailable());
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      assertTrue("isAvailableValuesAvailable true",field.isAvailableValuesAvailable());
+    }
+
+    function testIsStoreRemote(){
+      try{
+        field.isStoreRemote();
+        fail("The store is not here and isStoreRemote doesn't throws an exception");
+      }catch(e){
+        assertTrue("Exception thrown",true);
+      }
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      assertTrue("field.isStoreRemote is true by default",field.isStoreRemote());
+    }
+
+    function testSetStoreRemote(){
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      field.setStoreRemote(false);
+      assertFalse("field.isStoreRemote is false",field.isStoreRemote());
+    }
+
+    function testIsForceReload(){
+      try{
+        field.isForceReload();
+        fail("The store is not here and isForceReload doesn't throws an exception");
+      }catch(e){
+        assertTrue("testIsForceReload, exception thrown",true);
+      }
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      assertFalse("field.isForceReload is false by default",field.isForceReload());
+    }
+
+    function testSetForceReload(){
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      field.setForceReload(true);
+      assertTrue("field.isForceReload is true",field.isForceReload());
+    }
+
+    function testSetDefaultValues(){
+      field.setDefaultValues([{value:"aaa",label:"aaa"}]);
+      assertArrayEquals("testSetDefaultValues",[{value:"aaa",label:"aaa"}],field.getDefaultValues());
+    }
+
+    function testValidate(){
+      assertTrue("field.testValidate is true",field.validate([{value:"aaa",label:"aaa"}]));
+      var func=function(values){
+        if(values[0].value == "bbb")
+          return true;
+        else
+          return "not valid";
+      };
+      field.setValidateFn(func);
+      assertEquals("testValidate","not valid",field.validate([{value:"aaa",label:"aaa"}]));
+    }
+
+    function setUp(){
+      field=new Ext.ux.netbox.core.Field("TEST","label");
+    }
+
+    function tearDown(){
+      delete field;
+      field=null;
+      savedOperator=null;
+    }
+    </script>
+</head>
+
+<body>
+<h1>JsUnit Field Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>
