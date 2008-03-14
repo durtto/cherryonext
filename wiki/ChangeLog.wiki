@@ -1,9 +1,10 @@
 #summary Change Log of the cherry on ext releases
 
-==Version 0.2.0 ^Not yet released^==
+==Version 0.2.0 ^2008-03-14^==
 ===Incompatibilities with previous version===
  * Changed from STRING_EQUALS to STRING_EQUAL the id of the operation = between strings
  * Not allowd by default to have 2 equals elementary filters added using QuickFilter
+ * To return an error from the backends call in the preferences manager you have to return an error http code
 ===Changes===
 
  * Implemented enhancement [http://code.google.com/p/cherryonext/issues/detail?id=5 validation of elementary filters]
