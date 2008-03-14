@@ -100,21 +100,25 @@ Ext.extend(Ext.ux.netbox.core.AvailableValuesEditor,Ext.ux.netbox.FilterEditor,/
   getValue: function() {
     var val=Ext.ux.netbox.core.AvailableValuesEditor.superclass.getValue.call(this);
     if(Ext.type(val)=='string'){
-      if(val===''){
-        return([]);
-      }
       val=val.split(',');
     }
     var toReturn=[];
     for(var i=0; i<val.length;i++){
-      var j=this.store.find('value',val[i]);
+      var findFn=function(record){
+        if(record.get("value")===val[i]){
+          return(true);
+        } else {
+          return(false);
+        }
+      }
+      var j=this.store.findBy(findFn);
       if(j<0)
         continue;
       var record=this.store.getAt(j);
       toReturn.push({label: record.get('label'), value: val[i]});
     }
     //if the user clicks on the field and then it presses Enter, the store is not loaded...
-    if(val.length>0 && toReturn.length==0)
+    if((val.length>0 && val[0]!=="") && toReturn.length==0)
       return(this.originalValue);
     else
       return toReturn;
