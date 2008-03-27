@@ -19,7 +19,7 @@
     Ext.BLANK_IMAGE_URL="../ext/resources/images/default/s.gif";
 
 //show the shares only if I have some shares in my portfolio 
-function shouldShowShares(grid,row,column){ 
+function shouldShowShares(grid,row,column,item){ 
   //if I click outside the grid, I don't want to show nothing
   if(row<0){
     return;
