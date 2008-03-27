@@ -20,6 +20,7 @@ Ext.namespace('Ext.ux.netbox');
   *  <li><b>grid</b>: Ext.grid.GridPanel <p style="margin-left:1em">The grid over which the menu is shown</p></li>
   *  <li><b>row</b>: int <p style="margin-left:1em">The row number <b>NB</b> if the user doesn't click on a row it's -1</p></li>
   *  <li><b>column</b>: int <p style="margin-left:1em">The column number <b>NB</b> if the user doesn't click on a column it's -1 (It happens if it clicks on the blank space, or if it clicks exactly over the border of a row..)</p></li>
+  *  <li><b>item</b>: Ext.menu.Item <p style="margin-left:1em">The column number <b>NB</b> The item to show/hide, or the clicked item </p></li>
   * </ul>
   * @class This class is a plugin for Ext.grid.GridPanel, and it manages the context menu on a grid. A context menu is a menu that is shown when you right click on the grid, showing actions depending on the content of the cell.
   * When the user clicks on the action, the action has a the row and the column of the cell the user clicked.<br>
@@ -92,7 +93,7 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
       var scope=itemTmp.initialConfig.scope ? itemTmp.initialConfig.scope : window;
       var visible;
       if(itemTmp.initialConfig.isToShow){
-        visible=itemTmp.initialConfig.isToShow.call(scope, grid, rowIndex, cellIndex);
+        visible=itemTmp.initialConfig.isToShow.call(scope, grid, rowIndex, cellIndex,itemTmp);
         if(visible && itemTmp.menu){
           this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
         }
@@ -106,7 +107,7 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
       if(visible){
         itemTmp.setVisible(true);
         if(itemTmp.initialConfig.handler){
-          var handler=itemTmp.initialConfig.handler.createDelegate(scope,[grid, rowIndex, cellIndex],false);
+          var handler=itemTmp.initialConfig.handler.createDelegate(scope,[grid, rowIndex, cellIndex,itemTmp],false);
           itemTmp.setHandler(handler);
         }
         isSomethingVisible=true;
