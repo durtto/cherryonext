@@ -31,7 +31,7 @@ function shouldShowShares(grid,row,column){
     return false;
 }
 
-function showShares(grid,row,column){
+function showShares(grid,row,column,item){
   var record=grid.getStore().getAt(row);
   var company = record.get('company');
   var msg ='You have <b>'+company+"</b>'s shares in your portfolio.<br>";
@@ -39,7 +39,7 @@ function showShares(grid,row,column){
   Ext.Msg.alert("Sorry, we don't know your shares' amount... for now ", msg);
 }
 
-function showDetails(grid,row,column){
+function showDetails(grid,row,column,item){
   var record=grid.getStore().getAt(row);
   var company = record.get('company');
   Ext.Msg.alert(company+' is very cool', "Marketing material here...");
