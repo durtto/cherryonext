@@ -246,31 +246,31 @@ public class FilterResolver
         {
             return fieldId + " is null";
         }
-        return fieldId + " = '" + valueStr + "'";
+        return fieldId + " = " + this.convertDate(valueStr);
     }
 
     private string date_greater(string fieldId, object[] values)
     {
         string valueStr = this.calculateValue(values);
-        return fieldId + " > '" + valueStr + "'";
+        return fieldId + " > " + this.convertDate(valueStr);
     }
 
     private string date_greater_or_equal(string fieldId, object[] values)
     {
         string valueStr = this.calculateValue(values);
-        return fieldId + " >= '" + valueStr + "'";
+        return fieldId + " >= " + this.convertDate(valueStr);
     }
 
     private string date_less(string fieldId, object[] values)
     {
         string valueStr = this.calculateValue(values);
-        return fieldId + " < '" + valueStr + "'";
+        return fieldId + " < " + this.convertDate(valueStr);
     }
 
     private string date_less_or_equal(string fieldId, object[] values)
     {
         string valueStr = this.calculateValue(values);
-        return fieldId + " <= '" + valueStr + "'";
+        return fieldId + " <= " + this.convertDate(valueStr);
     }
 
     private string date_range(string fieldId, object[] values)
@@ -288,33 +288,38 @@ public class FilterResolver
         string valueStr = this.calculateValue(values);
         if (valueStr == "LAST_YEAR")
         {
-            valueStr = "dateadd(yy,-1,getdate()) and date<=getdate()";
+            valueStr = "dateadd(yy,-1,getdate()) and " + fieldId + "<=getdate()";
         }
         else if (valueStr == "LAST_MONTH")
         {
-            valueStr = "dateadd(mm,-1,getdate()) and date<=getdate()";
+            valueStr = "dateadd(mm,-1,getdate()) and " + fieldId + "<=getdate()";
         }
         else if (valueStr == "LAST_WEEK")
         {
-            valueStr = "dateadd(ww,-1,getdate()) and date<=getdate()";
+            valueStr = "dateadd(ww,-1,getdate()) and " + fieldId + "<=getdate()";
         }
         else if (valueStr == "LAST_DAY")
         {
-            valueStr = "dateadd(dd,-1,getdate()) and date<=getdate()";
+            valueStr = "dateadd(dd,-1,getdate()) and " + fieldId + "<=getdate()";
         }
         else if (valueStr == "LAST_HOUR")
         {
-            valueStr = "dateadd(hh,-1,getdate()) and date<=getdate()";
+            valueStr = "dateadd(hh,-1,getdate()) and " + fieldId + "<=getdate()";
         }
         else if (valueStr == "LAST_QUARTER")
         {
-            valueStr = "dateadd(mi,-15,getdate()) and date<=getdate()";
+            valueStr = "dateadd(mi,-15,getdate()) and " + fieldId + "<=getdate()";
         }
         else
         {
             return ("1<>1");
         }
         return fieldId + " > " + valueStr;
+    }
+
+    private string convertDate(string valueDate)
+    {
+        return "Convert(datetime ,'" + valueDate + "',120)";
     }
 
 }
