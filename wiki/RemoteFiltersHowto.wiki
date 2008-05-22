@@ -1,5 +1,5 @@
 #summary How to implement remote filters using Cherry on Ext with PHP and C# examples
-#labels Phase-Implementation
+#labels Phase-Implementation,Featured
 
 
 In the demos, since we don't have access to a DB in a public web space, we use LocalStoreFilterResolver to filter a local store. Here I will explain how to filter remote data, and I will give an example php code to translate a filter expression to a SQL where clause (Oracle 9i or better)
