@@ -98,6 +98,12 @@ if(Ext.ux.netbox.date.DatePeriodOperator){
    });
 }
 
+if(Ext.ux.netbox.core.Field){
+  Ext.apply(Ext.ux.netbox.core.Field, {
+    emptyNotAllowed: "Valore vuoto non consentito"
+  });
+}
+
 if(Ext.ux.netbox.string.StringField){
    Ext.apply(Ext.ux.netbox.string.StringField.prototype, {
      stringEqualsLabel: "=",
@@ -107,7 +113,8 @@ if(Ext.ux.netbox.string.StringField){
      startsWithText: "inizia con",
      endsWithText: "finisce con",
      stringListText: "lista",
-     stringNotListText: "non in lista"
+     stringNotListText: "non in lista",
+     emptyNotAllowed: "Valore vuoto non consentito"
    });
 }
 
@@ -121,8 +128,4 @@ if(Ext.ux.netbox.DefaultPreferenceManagerErrorManager){
   });
 }
 
-if(Ext.ux.netbox.core.Field){
-  Ext.apply(Ext.ux.netbox.core.Field, {
-    emptyNotAllowed: "Valore vuoto non consentito"
-  });
-}
+
