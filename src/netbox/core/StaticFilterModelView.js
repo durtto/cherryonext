@@ -172,7 +172,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
       editorComponent.remove(componentToRemove);
     }
     if(operator.getValue()!==""){
-      operator.setValue("");
+      operator.clearValue();
     }
     filter.un('operatorChanged',this.operatorChanged,this);
     filter.un('valueChanged',this.valueChanged,this);
