@@ -37,7 +37,8 @@ Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,forceReload,confi
     triggerAction : 'all',
     selectOnFocus : true,
     typeAhead     : true,
-    multiSelect   : config.multiSelect
+    multiSelect   : config.multiSelect,
+    minChars      : 0
   });
   if(!config.multiSelect){
     this.fieldCombo.on('select',this.completeEditLater,this);
