@@ -61,10 +61,18 @@ Ext.ux.netbox.core.FilterModel=function(config){
     this.fieldManager=config;
   else
     this.fieldManager=new Ext.ux.netbox.core.FieldManager(config);
+  this.fieldManager.on("beforeFieldRemoved",this.onBeforeFieldRemoved,this);
 }
 
 Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.netbox.core.FilterModel.prototype */
 {
+  /** It doesn't allow the removal of a field if there are filters on that field
+  * @private
+  */
+  onBeforeFieldRemoved: function(field){
+    if(this.getElementaryFiltersByFieldId(field.getId()).length>0)
+      return(false);
+  },
   /** @private
     *
     */
