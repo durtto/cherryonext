@@ -5,7 +5,7 @@ Ext.namespace('Ext.ux.netbox.core');
 /** Creates a new FieldManager class in the Netbox Filter Framework, eventually instantiating the fields.<br>
   * <b> NB: </b> If availableValues is specified and the type of the field is string the STRING_LIST and STRING_NOT_IN_LIST operators will be added to the fields.
   * @constructor
-  * @param (Object) config The configuration options for this object. Optional, if not present an empty FieldManager is created.
+  * @param {Array of field config} config An array of configuration object for the fields in this object. Optional, if not present an empty FieldManager is created.
   * @config {String} id The id of the field (for example the id of the column)
   * @config {String} label The label of the field (for example the header of the column)
   * @config {Array} defaultValues The default values of the field in the format {value: ... , label: ...} Optional
@@ -30,7 +30,12 @@ Ext.ux.netbox.core.FieldManager=function(config){
       * @event fieldRemoved
       * @param {Ext.ux.netbox.core.Field} field The removed field
       */
-    fieldRemoved : true
+    fieldRemoved : true,
+    /** Fires before a Field is removed
+      * @event beforeFieldRemoved
+      * @param {Ext.ux.netbox.core.Field} field The field to remove. To block the event removing just returns false
+      */
+    beforeFieldRemoved : true 
   });
   /**
     * @property {Ext.util.MixedCollection} fields The list of all fields for this FieldManager
@@ -39,52 +44,14 @@ Ext.ux.netbox.core.FieldManager=function(config){
   this.fields=new Ext.util.MixedCollection(false,function(field){return(field.getId())});
   if(config!==undefined){
     for(var i=0; i< config.length; i++){
-      var field;
-      if(config[i].type===undefined){
-        config[i].type="string";
-      }
-
-      switch(config[i].type){
-        case "string":
-          field=new Ext.ux.netbox.string.StringField(config[i].id,config[i].label);
-          break;
-        case "enum":
-          field=new Ext.ux.netbox.string.EnumField(config[i].id,config[i].label);
-          break;
-        case "float":
-        case "int":
-          field=new Ext.ux.netbox.number.NumberField(config[i].id,config[i].label);
-          break;
-        case "date":
-          field=new Ext.ux.netbox.date.DateField(config[i].id,config[i].label,config[i].format);
-          break;
-        default:
-          continue;
-      }
-      if(config[i].availableValues!==undefined){
-        field.setAvailableValues(config[i].availableValues);
-        if(config[i].remoteStore!==undefined){
-          field.setStoreRemote(config[i].remoteStore);
-        }
-        if(config[i].type=="string" || config[i].type=="enum"){
-          field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_LIST',field.stringListText));
-          field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_NOT_IN_LIST',field.stringNotListText));
-        }
-      }
-      if(config[i].defaultValues!==undefined)
-        field.setDefaultValues(config[i].defaultValues);
-      if(config[i].forceReload!==undefined)
-        field.setForceReload(config[i].forceReload);
-      if(config[i].validate!==undefined)
-        field.setValidateFn(config[i].validate);
-
-      this.addField(field);
+      this.addField(config[i]);
     }
   }
 }
 
 Ext.extend(Ext.ux.netbox.core.FieldManager,Ext.util.Observable,/** @scope Ext.ux.netbox.core.FieldManager.prototype */
 {
+
   /** This method returns the list of all fields.
     * @return {Array of Ext.ux.netbox.core.Field} The collection of fields for this Filter
     */
@@ -102,21 +69,95 @@ Ext.extend(Ext.ux.netbox.core.FieldManager,Ext.util.Observable,/** @scope Ext.ux
     }
     return(field);
   },
+  
+  /** It creates a field given a field config
+    * @private
+    * @param {field config} fieldCfg. See the constructor for more details
+    * @return {Ext.ux.netbox.core.Field} the field built using
+    */
+  createFieldFromCfg: function(fieldCfg){
+    var field;
+    if(fieldCfg.type===undefined){
+      fieldCfg.type="string";
+    }
+
+    switch(fieldCfg.type){
+      case "string":
+        field=new Ext.ux.netbox.string.StringField(fieldCfg.id,fieldCfg.label);
+        break;
+      case "enum":
+        field=new Ext.ux.netbox.string.EnumField(fieldCfg.id,fieldCfg.label);
+        break;
+      case "float":
+      case "int":
+        field=new Ext.ux.netbox.number.NumberField(fieldCfg.id,fieldCfg.label);
+        break;
+      case "date":
+        field=new Ext.ux.netbox.date.DateField(fieldCfg.id,fieldCfg.label,fieldCfg.format);
+        break;
+      default:
+        return(null);
+    }
+    if(fieldCfg.availableValues!==undefined){
+      field.setAvailableValues(fieldCfg.availableValues);
+      if(fieldCfg.remoteStore!==undefined){
+        field.setStoreRemote(fieldCfg.remoteStore);
+      }
+      if(fieldCfg.type=="string" || fieldCfg.type=="enum"){
+        field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_LIST',field.stringListText));
+        field.addOperator(new Ext.ux.netbox.string.StringListOperator('STRING_NOT_IN_LIST',field.stringNotListText));
+      }
+    }
+    if(fieldCfg.defaultValues!==undefined)
+      field.setDefaultValues(fieldCfg.defaultValues);
+    if(fieldCfg.forceReload!==undefined)
+      field.setForceReload(fieldCfg.forceReload);
+    if(fieldCfg.validate!==undefined)
+      field.setValidateFn(fieldCfg.validate);
+    return(field);
+  },
   /** This method add a Field to the array in FieldManager.
     * If this succeeds the event "fieldAdded" is triggered.
-    * @param {Ext.ux.netbox.core.Field} field The Field to add
+    * @param {Ext.ux.netbox.core.Field or field config} field The Field to add
     */
   addField : function(field){
+    if(!(field instanceof Ext.ux.netbox.core.Field)){
+      field=this.createFieldFromCfg(field);
+    }
     this.fields.add(field);
     this.fireEvent("fieldAdded",field);
   },
   /** This method remove a Field from the array in FieldManager.
-    * If this succeeds the event "fieldRemoved" is triggered.
+    * If this succeeds the event "fieldRemoved" is triggered. A removal can be vetoed returning false to the beforeFieldRemoved event
+    * For example if an elementary filter exists for the given field, the FilterModel doesn't allow the removal.
     * @param {Ext.ux.netbox.core.Field} field The Field to remove
     */
   removeField : function(field){
-    if(this.fields.removeKey(field.getId()))
-    this.fireEvent("fieldRemoved",field);
+    if(this.fields.containsKey(field.getId())){
+      if(this.fireEvent("beforeFieldRemoved",field)!==false){
+        if(this.fields.removeKey(field.getId()))
+        this.fireEvent("fieldRemoved",field);
+      }
+    }
+  },
+  /** It removes all the fiels from this FieldManager
+    */
+  removeAll : function(){
+    for (var i=this.fields.items.length-1; i >= 0; i--) {
+      this.removeField(this.fields.items[i]);
+    }
+  },
+  /** It removes all the fields from the field manager
+    * and it readds the fields in the given config
+    * @param {Array of field config} config An array of configuration object for the fields in this object. Optional, if not present an empty FieldManager is created. See the constructort description for more details
+    */
+  reconfigure: function(config){
+    this.removeAll();
+    if(config!==undefined){
+      for(var i=0; i< config.length; i++){
+        this.addField(config[i]);
+      }
+    }
   }
 
 });
