@@ -363,7 +363,7 @@ Ext.extend(Ext.ux.Andrie.Select, Ext.form.ComboBox, {
 		var r = this.findRecord(this.displayField, this.getRawValue());
 		if (r){
 			this.select(this.store.indexOf(r));
-			return;
+			//return;
 		}
 		if (String(this.oldValue) != String(this.getRawValue())){
 			this.setValue(this.getRawValue());
