@@ -120,6 +120,15 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         }
     }
 
+    ,destroy: function(){
+      if(this.df.rendered){
+        this.df.destroy();
+      }
+      if(this.tf.rendered){
+        this.tf.destroy();
+      }
+      Ext.ux.form.DateTime.superclass.destroy.call(this);
+    }
     /**
      * private
      * Renders underlying DateField and TimeField and provides a workaround for side error icon bug
