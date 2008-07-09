@@ -77,7 +77,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
   },
   
   resetMenu: function(){
-    if(this.getEl() && this.getEl().isMasked())
+    if(this.getEl())
       this.getEl().unmask();
     for(var i=this.items.getCount()-1; i>=0;i--){
       if(this.items.get(i).removable===true){

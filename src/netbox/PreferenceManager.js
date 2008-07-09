@@ -214,7 +214,6 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
           url: this.getAllPrefURL
         }),
         baseParams: {id: this.id, userName: this.userName},
-        autoLoad: true,
         reader: new Ext.data.JsonReader({
           root: 'preferences',
           totalProperty: 'totalCount',
