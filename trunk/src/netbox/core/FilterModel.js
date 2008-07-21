@@ -212,13 +212,16 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
       additionalLogicalOper=Ext.ux.netbox.core.CompositeFilter.AND;
     var filter=this.getFilter();
    
-    var filterToExport;
+    var filterToExport=null;
+    if(this.getFilter()!==null)
+      
     if(filter===null) 
       filterToExport=additionalFilter;
-    else if (additionalFilter === null){
-      filterToExport=filter;
-    } else {
-      filterToExport=new Ext.ux.netbox.core.CompositeFilter(filter,additionalLogicalOper,additionalFilter);
+    else{
+      filterToExport=this._decodeFilter(this._encodeFilter(this.getFilter()));//clone the filter
+      if (additionalFilter !== null){
+        filterToExport=new Ext.ux.netbox.core.CompositeFilter(filterToExport,additionalLogicalOper,additionalFilter);
+      }
     }
     
     if(filterToExport instanceof Ext.ux.netbox.core.ElementaryFilter){
