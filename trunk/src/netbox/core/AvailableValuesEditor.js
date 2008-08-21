@@ -6,25 +6,25 @@ Ext.namespace('Ext.ux.netbox.core');
   * @class This class is used to edit a value of a elementary filter when a set of available values must be shown.
   * The values MUST be in the format [{label:..., value:...}]
   * @constructor
-  * @param {Ext.data.Store} store The store used to retrieve the data. It must have 2 columns, label (which will be used as displayField)
-  * and value (which will be used as labelField
-  * @param {boolean} remote True if the store is remote, false if the data is local (ie, if store is a Ext.data.SimpleStore)
-  * @param {boolean} forceReload True if the store is to be reloaded everytime the combo expands
-  * @config {Object} config See the parameter with the same name of Ex.ux.FilterEditor. The only added parameter in the config is multiSelect.
-  * If true more than one selection is allowed, if false the maximum number of selecte items is 1
+  * @param {Ext.data.Store} store The store used to retrieve the data.
+  * It must have 2 columns, label (which will be used as displayField) and value (which will be used as labelField).
+  * @config {Object} config See the parameter with the same name of Ex.ux.FilterEditor.
+  * Also were added in the config 4 boolean parameters: remote, forceReload,  multiSelect and caseSensitive.
+  * config.remote: true if the store is remote, false if the data is local (ie, if store is a Ext.data.SimpleStore). Dafault is false.
+  * config.forceReload: true if the store is to be reloaded everytime the combo expands. Dafault is false.
+  * config.multiSelect: true if more than one selection is allowed, false for 1. Dafault is false.
+  * config.caseSensitive: true if the value should be compared with the store's one with case sensitive. Default is false.
   * @extends Ext.ux.netbox.FilterEditor
   */
 
-Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,forceReload,config){
-  var mode;
-  if(remote){
-    mode='remote';
-  } else {
-    mode='local';
-  }
+Ext.ux.netbox.core.AvailableValuesEditor=function(store,config){
+
   if(config==undefined){
     config={};
   }
+  var mode='local';
+  if(config.remote==true)
+    mode='remote';
   if(config.multiSelect==undefined){
     config.multiSelect=false;
   }
@@ -43,9 +43,13 @@ Ext.ux.netbox.core.AvailableValuesEditor=function(store,remote,forceReload,confi
   if(!config.multiSelect){
     this.fieldCombo.on('select',this.completeEditLater,this);
   }
-  if(forceReload){
+  if(config.forceReload){
     this.fieldCombo.on("beforequery",function(qe){ qe.combo.lastQuery = null; });
   }
+  if(config.caseSensitive)
+    this.caseSensitive=true;
+  else
+    this.caseSensitive=false;
   Ext.ux.netbox.core.AvailableValuesEditor.superclass.constructor.call(this,this.fieldCombo,config);
   this.store=store;
 }
@@ -105,14 +109,7 @@ Ext.extend(Ext.ux.netbox.core.AvailableValuesEditor,Ext.ux.netbox.FilterEditor,/
     }
     var toReturn=[];
     for(var i=0; i<val.length;i++){
-      var findFn=function(record){
-        if(record.get("value")===val[i]){
-          return(true);
-        } else {
-          return(false);
-        }
-      }
-      var j=this.store.findBy(findFn);
+      var j=this.store.find('value',val[i],0,false,this.caseSensitive);
       if(j<0)
         continue;
       var record=this.store.getAt(j);

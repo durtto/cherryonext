@@ -81,6 +81,11 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @private
     */
   this.forceReload=false;
+  /** This attribute says if the value should be compared with the store's one with case sensitive. The default is false.
+    * @property {boolean} caseSensitive
+    * @private
+    */
+  this.caseSensitive=false;
   /** The default values of this Field. Optional.
     * @property {Array} defaultValues
     * @private
@@ -204,6 +209,22 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
       throw(this.getId()+" isForceReload: no store available");
     }
     return(this.forceReload);
+  },
+  /** Set the attribute that decide whether the added value should be compared with case sensitive.
+    * @param {boolean} caseSensitive True if the value should be compared with the store's one with case sensitive, false otherwise
+    */
+  setCaseSensitive: function(caseSensitive){
+    this.caseSensitive=caseSensitive;
+  },
+  /** Returns true if the added value should be compared with case sensitive. Default is false.
+    * @return {boolean} True if the value should be compared with the store's one with case sensitive, false otherwise
+    * @throws {String} If isAvailableValuesAvailable returns false this method throws an exception
+    */
+  isCaseSensitive: function(){
+    if(!this.isAvailableValuesAvailable()){
+      throw(this.getId()+" isCaseSensitive: no store available");
+    }
+    return(this.caseSensitive);
   },
   /** Add a operator to the list of available operator.
     * If this succeeds the event "operatorAdded" is triggered.
@@ -337,7 +358,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     if(!this.isAvailableValuesAvailable()){
       editor=new Ext.ux.netbox.core.TextValuesEditor();
     } else {
-      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getAvailableValues(),this.isStoreRemote(),this.isForceReload());
+      editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.getAvailableValues(),{remote: this.isStoreRemote(),forceReload: this.isForceReload(),caseSensitive: this.isCaseSensitive()});
     }
     return editor;
   },

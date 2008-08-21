@@ -12,12 +12,12 @@ Ext.namespace('Ext.ux.netbox.core');
   * There are some config options to manage the way the fields are put together. For example you can divide the fields in column, you can decide where to put the label and so on.
   * This view supports lazy initialization using staticFilter as xtype.
   * <h4> Example </h4>
-  * We are creating a static filter panel where the fields are arranged in 3 columns, the label are on the top of the operation field, 
+  * We are creating a static filter panel where the fields are arranged in 3 columns, the label are on the top of the operation field,
   * the operation field will use 33% of the space in te column, and each filter 46 pixels as height
   * <PRE>
   * var viewport = new Ext.Viewport({
   *   layout: "border",
-  *   items: [{ 
+  *   items: [{
   *     filterModel: filterModel,
   *     colsNumber:3,
   *     labelWidth: 55,
@@ -25,7 +25,7 @@ Ext.namespace('Ext.ux.netbox.core');
   *     rowSize: 46,
   *     ratio: 33,
   *     labelPad: 1,
-  *     region: "north", 
+  *     region: "north",
   *     height:150,
   *     xtype: 'staticFilter',
   *     itemCls: 'filter'
@@ -98,7 +98,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     * in the odd panels there is the field used to edit the value
     * @param {Object} config The config object that is passed to the constructor of the class as parameter
     * @return {Object} The config object to use as parameter of the superclass constructor
-    */ 
+    */
   createConfig: function(config){
     config.layout="form";
     config.frame="true";
@@ -117,8 +117,8 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
         colWidthTmp=colWidth*(this.ratio/100)*2;
       } else if(i%2===1){
         colWidthTmp=colWidth*(1-(this.ratio/100))*2;
-      } 
-      
+      }
+
       var panelCfg={
         columnWidth: colWidthTmp,
         layout: 'row-fit',
@@ -156,7 +156,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     }
     return(panelNum);
   },
-  
+
   /** Callback for the elementaryFilterRemoved event of the filter manager. It clean the value and the operator of the just removed filter.
     * @param {Ext.ux.core.netbox.FilterModel} filterModel The filterModel that fired the event
     * @param {Ext.ux.core.netbox.Filter} filter The just removed filter
@@ -197,7 +197,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
       var componentToRemove=editorComponent.items.first();
       editorComponent.remove(componentToRemove);
     }
-    
+
     this.addFormField(formField,editorComponent);
     elementaryFilterCfg.getEditor().editing=true;//hack! This is needed to fool the editor into beliving that it's doing something...
     elementaryFilterCfg.getEditor().setValue(filter.getValues());
@@ -208,7 +208,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
   },
 
   /** This method changes the editor used to edit the values of a filter (for example if the operator is changed, the editor can be changed as well).
-    * The listeners on the old editor are removed and added to the new one, 
+    * The listeners on the old editor are removed and added to the new one,
     * and then the old editor is replaced with the new one in the GUI
     * @param {Ext.Editor} The new editor to use to edit the value
     * @param {Ext.ux.netbox.core.ElementaryFilterCfg} elementaryFilterCfg The object that manages the editor actually associated with a field
@@ -217,13 +217,12 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     if(elementaryFilterCfg.getEditor()){
       elementaryFilterCfg.getEditor().un('complete',this.editingCompleted,this);
       elementaryFilterCfg.getEditor().field.un('change',this.editingCompleted,this);
-
     }
     elementaryFilterCfg.setEditor(editor);
     elementaryFilterCfg.getEditor().on('complete',this.editingCompleted,this);
     elementaryFilterCfg.getEditor().field.on('change',this.editingCompleted,this);
   },
-  
+
   /** It adds the field used to manage the values  of an elementary filter
     * @param {Ext.form.Field} formField The field that edits the values
     * @param {Ext.Container} editorComponent The field will be added to editorComponent
@@ -236,13 +235,13 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
       formField.fieldLabel='';
     }
     editorComponent.add(formField);
-    
+
     var fn=function(){
       if(editorComponent.rendered){
         formField.setWidth(editorComponent.getSize().width-4);
       }
     }
-      
+
     editorComponent.on('afterlayout',fn);
     editorComponent.doLayout();
   },
@@ -295,10 +294,12 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     var elementaryFilterCfg=this.fieldPanelMapping.find(fn);
     var field=elementaryFilterCfg.getField();
     var filters=this.filterModel.getElementaryFiltersByFieldId(field.getId());
-    filters[0].setValues(elementaryFilterCfg.getEditor().getValue());
+    if (Ext.util.JSON.encode(filters[0].getValues())!== Ext.util.JSON.encode(elementaryFilterCfg.getEditor().getValue())){
+      filters[0].setValues(elementaryFilterCfg.getEditor().getValue());
+    }
     elementaryFilterCfg.getEditor().editing=true;//it's still there.... so it's still editing...
   },
-  
+
   /** This method add all the field contained in the fieldManager associated to the filterModel.
     * This means that it adds the operator combo and the component that will contain the editor for the values of the filter
     */
@@ -363,8 +364,8 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     }
     return;
   },
-  
-  /** This method clean the view and then populate all the filters with the actual values from the filterModel. 
+
+  /** This method clean the view and then populate all the filters with the actual values from the filterModel.
     * This means that it set the operator in the operator combos  and the values in the editor from the filters in the FilterModel.
     * This method is called for example when the view is built or when the setExpression method is called on the FilteRManager
     */
@@ -383,7 +384,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     * This means that it add the operator combo and the component that will contain the editor for the values of the filter<BR>
     * This component are added at the first available place.
     * @param {Ext.ux.netbox.core.Field} field The field to add
-    */ 
+    */
   addField: function(field){
     var cfg={};
     if(this.initialConfig.labelWidth!==undefined){
@@ -473,15 +474,15 @@ Ext.ux.netbox.core.ElementaryFilterCfg.prototype=/** @scope Ext.ux.netbox.core.E
   getOperatorCombo: function(){
     return(this.operatorCombo);
   },
-  
-  /** Returns the container that will contain the field used to edit the value of the elementary filter 
+
+  /** Returns the container that will contain the field used to edit the value of the elementary filter
     * @return {Ext.Container} The returned container.
     * @ignore
     */
   getEditorComponent: function(){
     return(this.editorComponent);
   },
-  /** Returns the form field to edit the value of the elementary filter 
+  /** Returns the form field to edit the value of the elementary filter
     * @return {Ext.form.Field} The returned form field.
     * @ignore
     */

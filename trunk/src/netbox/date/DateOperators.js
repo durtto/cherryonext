@@ -355,7 +355,7 @@ Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/**
     * @return {Ext.Editor} The field used to edit the values of this filter
     */
   createEditor: function(operatorId){
-    var editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.periodStore,false);
+    var editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.periodStore);
     return editor;
   },
   /**This method convert an old value in a filter to a new value,

@@ -14,6 +14,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @config {Ext.data.Store} availableValues The store containing the available values for this field. Look at Ext.ux.netbox.core.Field.setAvailableValues for more details
   * @config {boolean} remoteStore True if the store is remote, false otherwise. Look at Ext.ux.netbox.core.Field.setStoreRemote for more details
   * @config {boolean} forceReload True if you want reload the store everytime expand the combo. Look at Ext.ux.netbox.core.Field.setForceReload for more details
+  * @config {boolean} caseSensitive True if the value should be compared with the store's one with case sensitive. Look at Ext.ux.netbox.core.Field.setCaseSensitive for more details
   * @config {function} validate The function used to validate the values of the Field. Look at Ext.ux.netbox.core.Field.setValidateFn for more details
   * @class This class manages the filter fields. You should use an instance of this class (obtained using filterModel.getFieldManager) to add or remove filter fields, or to obtain them to add or remove operators.
   * More than one filter model can have the same FieldManager, allowing to have different sets of filters, but on the same set of fields.
@@ -112,6 +113,8 @@ Ext.extend(Ext.ux.netbox.core.FieldManager,Ext.util.Observable,/** @scope Ext.ux
       field.setDefaultValues(fieldCfg.defaultValues);
     if(fieldCfg.forceReload!==undefined)
       field.setForceReload(fieldCfg.forceReload);
+    if(fieldCfg.caseSensitive!==undefined)
+      field.setCaseSensitive(fieldCfg.caseSensitive);
     if(fieldCfg.validate!==undefined)
       field.setValidateFn(fieldCfg.validate);
     return(field);

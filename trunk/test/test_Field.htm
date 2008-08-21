@@ -161,10 +161,6 @@
        assertEquals("getLabel works","label",field.getLabel());
     }
 
-    function testGetLabel(){
-       assertEquals("getLabel works","label",field.getLabel());
-    }
-
     function testSetAvailableValues(){
       assertFalse("isAvailableValuesAvailable false",field.isAvailableValuesAvailable());
       var store = new Ext.data.SimpleStore({
@@ -223,6 +219,31 @@
       field.setAvailableValues(store);
       field.setForceReload(true);
       assertTrue("field.isForceReload is true",field.isForceReload());
+    }
+
+    function testIsCaseSensitive(){
+      try{
+        field.isCaseSensitive();
+        fail("The store is not here and isCaseSensitive doesn't throws an exception");
+      }catch(e){
+        assertTrue("testIsCaseSensitive, exception thrown",true);
+      }
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      assertFalse("field.isCaseSensitive is false by default",field.isCaseSensitive());
+    }
+
+    function testSetCaseSensitive(){
+      var store = new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data : [['ciccio','bombo']]
+      });
+      field.setAvailableValues(store);
+      field.setCaseSensitive(true);
+      assertTrue("field.isCaseSensitive is true",field.isCaseSensitive());
     }
 
     function testSetDefaultValues(){

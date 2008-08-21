@@ -172,6 +172,18 @@ Ext.ux.netbox.core.Operator.prototype = {
     }
     return(this.getField().isForceReload());
   },
+  /** Returns true if the added value should be compared with case sensitive.
+    * In this default implementation it simply call the same method of the field.
+    * In this default implementation if the field for the operator is unknown, an exception is thrown.
+    * @return {boolean} True if the value should be compared with the store's one with case sensitive, false otherwise
+    * @throws {String} If isAvailableValuesAvailable returns false this method throws an exception
+    */
+  isCaseSensitive: function(){
+    if(this.getField()===undefined || this.getField()===null){
+      throw("Impossible to obtain the caseSensitive info for the operator "+this.getId()+" which is without field");
+    }
+    return(this.getField().isCaseSensitive());
+  },
   /** Returns the list of default values. By default it asks the default values to the field.
     * If you have a list of default values specific to the operator, overwrite this method.
     * @return {Array} array of default values in the format {value: ... , label: ...}
