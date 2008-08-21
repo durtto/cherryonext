@@ -112,6 +112,48 @@
         assertEquals("field isStoreRemote and operator.isSotreRemote retunrs the same value",field.isStoreRemote(),operator.isStoreRemote());
       }
 
+      function testIsForceReload(){
+        try{
+          operator.isForceReload();
+          fail("Operator without field and isForceReload doesn't throw any exception");
+        } catch (e){
+          assertTrue("Exception thrown",true);
+        }
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        var store=new Ext.data.SimpleStore({fields: ['value', 'label'],
+          data: [
+          ["Yes","Si"],
+          ["No","No"],
+          ["Maybe","Forse"]
+        ]});
+        field.setAvailableValues(store);
+        assertEquals("field isForceReload and operator.isForceReload retunrs the same value",field.isForceReload(),operator.isForceReload());
+        field.setForceReload(true);
+        assertEquals("field isForceReload and operator.isForceReload retunrs the same value",field.isForceReload(),operator.isForceReload());
+      }
+
+      function testIsCaseSensitive(){
+        try{
+          operator.isCaseSensitive();
+          fail("Operator without field and isCaseSensitive doesn't throw any exception");
+        } catch (e){
+          assertTrue("Exception thrown",true);
+        }
+        var field=new Ext.ux.netbox.core.Field("TEST","label");
+        field.addOperator(operator);
+        var store=new Ext.data.SimpleStore({fields: ['value', 'label'],
+          data: [
+          ["Yes","Si"],
+          ["No","No"],
+          ["Maybe","Forse"]
+        ]});
+        field.setAvailableValues(store);
+        assertEquals("field isCaseSensitive and operator.isCaseSensitive retunrs the same value",field.isCaseSensitive(),operator.isCaseSensitive());
+        field.setCaseSensitive(true);
+        assertEquals("field isCaseSensitive and operator.isCaseSensitive retunrs the same value",field.isCaseSensitive(),operator.isCaseSensitive());
+      }
+
       function testGetDefaultValues() {
         var field=new Ext.ux.netbox.core.Field("TEST","label");
         field.addOperator(operator);
