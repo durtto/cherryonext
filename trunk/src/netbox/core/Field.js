@@ -85,7 +85,7 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @property {boolean} caseSensitive
     * @private
     */
-  this.caseSensitive=true;
+  //this.caseSensitive=true;
   /** The default values of this Field. Optional.
     * @property {Array} defaultValues
     * @private
@@ -100,6 +100,8 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
 
 Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox.core.Field.prototype */
 {
+    caseSensitive : true,
+
   /** This method returns the default values for this Field.
     * @return {Array} The default values for this Field
     */
@@ -284,7 +286,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
       throw("The operator with the given id doesn't exist");
     } else {
       var operator=this.getAvailableOperators()[index];
-      if (operator==this.getDefaultOperator) { 
+      if (operator==this.getDefaultOperator) {
         throw("operator to remove is the DefaultOperator");
       }
       this.availableOperators.splice(index,1);
@@ -393,7 +395,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
       return true;
     }
   },
-  
+
   /** Function to use as validator if an empty value is not allowed
     * <h4> Example</h4>
     * <pre>
