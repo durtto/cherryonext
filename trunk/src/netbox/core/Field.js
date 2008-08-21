@@ -100,8 +100,11 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
 
 Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox.core.Field.prototype */
 {
+  /** This attribute says if the value should be compared with the store's one with case sensitive. The default is true.
+    * @property {boolean} caseSensitive
+    * @private
+    */
     caseSensitive : true,
-
   /** This method returns the default values for this Field.
     * @return {Array} The default values for this Field
     */
