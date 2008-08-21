@@ -81,11 +81,11 @@ Ext.ux.netbox.core.Field=function(id,labelIn,defaultValues){
     * @private
     */
   this.forceReload=false;
-  /** This attribute says if the value should be compared with the store's one with case sensitive. The default is false.
+  /** This attribute says if the value should be compared with the store's one with case sensitive. The default is true.
     * @property {boolean} caseSensitive
     * @private
     */
-  this.caseSensitive=false;
+  this.caseSensitive=true;
   /** The default values of this Field. Optional.
     * @property {Array} defaultValues
     * @private

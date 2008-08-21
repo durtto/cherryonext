@@ -13,7 +13,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * config.remote: true if the store is remote, false if the data is local (ie, if store is a Ext.data.SimpleStore). Dafault is false.
   * config.forceReload: true if the store is to be reloaded everytime the combo expands. Dafault is false.
   * config.multiSelect: true if more than one selection is allowed, false for 1. Dafault is false.
-  * config.caseSensitive: true if the value should be compared with the store's one with case sensitive. Default is false.
+  * config.caseSensitive: true if the value should be compared with the store's one with case sensitive. Default is true.
   * @extends Ext.ux.netbox.FilterEditor
   */
 

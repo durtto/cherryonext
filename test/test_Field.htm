@@ -233,7 +233,7 @@
         data : [['ciccio','bombo']]
       });
       field.setAvailableValues(store);
-      assertFalse("field.isCaseSensitive is false by default",field.isCaseSensitive());
+      assertTrue("field.isCaseSensitive is true by default",field.isCaseSensitive());
     }
 
     function testSetCaseSensitive(){
