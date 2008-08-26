@@ -311,7 +311,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
        params: {
          id: this.id,
          userName: this.userName,
-         prefId:   prefId,
+         prefId: prefId,
          prefName: prefName,
          prefDesc: prefDesc,
          prefValue: valueEnc,
@@ -359,7 +359,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
     * @ignore
     */
   _onDeleteSuccessCbk : function(response,options){
-    this.fireEvent('preferenceDeleted',options.params.prefIdArray,Ext.util.JSON.decode(response.responseText));
+    this.fireEvent('preferenceDeleted',options.params.prefIdArray);
   },
 
   /** @private
