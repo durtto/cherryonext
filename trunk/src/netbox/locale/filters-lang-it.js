@@ -3,11 +3,6 @@
  * Italian translation
  */
 
-if(Ext.ux.netbox.ErrorDialog){
-   Ext.ux.netbox.ErrorDialog.closeBtn="Chiudi";
-   Ext.ux.netbox.ErrorDialog.errorTitle="Errore";
-}
-
 if(Ext.ux.netbox.core.DynamicFilterModelView){
    Ext.apply(Ext.ux.netbox.core.DynamicFilterModelView.prototype, {
       deleteText    : 'Elimina',
