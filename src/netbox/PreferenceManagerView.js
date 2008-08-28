@@ -71,6 +71,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
         '-');
     }
   },
+
   beforeLoad: function(){
     this.resetMenu();
     this.getEl().mask(this.loadingText);
@@ -87,7 +88,6 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
       }
     }
   },
-    
 
   /** loadRemotePrefAsync
     * @private
@@ -187,7 +187,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
               xtype:      'checkbox',
               fieldLabel: this.defaultText,
               name:       'isDefault',
-              value:      isDefault
+              checked:    isDefault
           }]
         }),
 
@@ -345,7 +345,6 @@ Ext.menu.BaseItem.prototype.onRender = function(container){
    this.el.dom.qtip = this.tooltip;
   }
 };
-
 
 /** Build a new DefaultPreferenceManagerErrorManager
   * @constructor
