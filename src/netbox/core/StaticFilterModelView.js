@@ -121,7 +121,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
 
       var panelCfg={
         columnWidth: colWidthTmp,
-        layout: 'row-fit',
+        layout: 'form',
         items: null,
         plugins: {
           init: addPanelCol.createDelegate(this,[i],true)
@@ -133,7 +133,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
       }
 
     }
-    config.items=[{layout:"column", items: items }];
+    config.items=[{layout:"column", anchor: "100% 100%", items: items }];
     return(config);
   },
 
@@ -229,6 +229,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     */
   addFormField: function(formField, editorComponent){
     formField.labelSeparator='';
+    formField.anchor="100% 100%";
     if(this.initialConfig.labelAlign && this.initialConfig.labelAlign=='top'){
       formField.fieldLabel='&nbsp;';
     } else {
@@ -236,13 +237,13 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     }
     editorComponent.add(formField);
 
-    var fn=function(){
+    /*var fn=function(){
       if(editorComponent.rendered){
         formField.setWidth(editorComponent.getSize().width-4);
       }
     }
 
-    editorComponent.on('afterlayout',fn);
+    editorComponent.on('afterlayout',fn);*/
     editorComponent.doLayout();
   },
 
@@ -419,6 +420,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     this.fieldPanelMapping.add(field.getId(),elementaryFilterCfg);
     elementaryFilterCfg.getOperatorCombo().on('select',this.operatorSelected,this);
     cfg.layout="form";
+    cfg.anchor="100%";
     cfg.items=[elementaryFilterCfg.getOperatorCombo()];
     cfg.height=this.rowSize;
     this.panelColumns[choosen].add(cfg);
@@ -456,13 +458,14 @@ Ext.ux.netbox.core.ElementaryFilterCfg = function(field,rowSize,cfg){
     triggerAction : 'all',
     lazyRender    : true,
     fieldLabel    : field.getLabel(),
-    width         : 105
+    anchor        : "100% 100%"
   });
   var cfgCloned=Ext.apply({},cfg);
   cfgCloned.layout='form';
   cfgCloned.height=this.rowSize;
   cfgCloned.labelWidth=1;
   cfgCloned.labelPad=1;
+  cfgCloned.anchor="100%";
   this.editorComponent=new Ext.Panel(cfgCloned);
 }
 
