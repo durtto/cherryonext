@@ -1,5 +1,13 @@
 // $Id$
 
+String.prototype.escHtml = function(){ 
+  var i,e={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'};
+  var t=this;
+  for(i in e) 
+    t=t.replace(new RegExp(i,'g'),e[i]); 
+  return t; 
+}
+
 Ext.namespace('Ext.ux.netbox.core');
 
 /** It creates a new StaticFilterModelView.
@@ -229,21 +237,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     * @param {Ext.Container} editorComponent The field will be added to editorComponent
     */
   addFormField: function(formField, editorComponent){
-    formField.labelSeparator='';
-    if(this.initialConfig.labelAlign && this.initialConfig.labelAlign=='top'){
-      formField.fieldLabel=' ';
-    } else {
-      formField.fieldLabel='';
-    }
     editorComponent.add(formField);
-
-    var fn=function(){
-      if(editorComponent.rendered){
-        formField.setWidth(editorComponent.getSize().width-4);
-      }
-    }
-
-    editorComponent.on('afterlayout',fn);
     editorComponent.doLayout();
   },
 
@@ -440,33 +434,42 @@ Ext.reg('staticFilter',Ext.ux.netbox.core.StaticFilterModelView);
   */
 Ext.ux.netbox.core.ElementaryFilterCfg = function(field,rowSize,cfg){
   this.rowSize=rowSize;
-  var operators = [[""," "]];
+  var operators = [["","<PRE> </PRE>"]];
+  this.labelAlign=cfg.labelAlign;
   this.field=field;
   for(var i=0; i<field.getAvailableOperators().length;i++){
     operators.push([field.getAvailableOperators()[i].getId(),
-    field.getAvailableOperators()[i].getLabel()]);
+    field.getAvailableOperators()[i].getLabel().escHtml()]);
   }
   var operatorStore=new Ext.data.SimpleStore({
     fields : ['operatorId','operatorLabel'],
     data: operators
   });
-  this.operatorCombo = new Ext.form.ComboBox({
-    store         : operatorStore,
-    mode          : 'local',
-    valueField    : 'operatorId',
-    displayField  : 'operatorLabel',
-    editable      : false,
-    triggerAction : 'all',
-    lazyRender    : true,
-    fieldLabel    : field.getLabel(),
-    width         : 105,
-    anchor        : "98% 100%"
-  });
+  var comboCfg={
+      store         : operatorStore,
+      mode          : 'local',
+      valueField    : 'operatorId',
+      displayField  : 'operatorLabel',
+      editable      : false,
+      triggerAction : 'all',
+      lazyRender    : true,
+      fieldLabel    : field.getLabel(),
+      width         : 105
+  }
+  
+  if(Ext.isSafari)
+    comboCfg.anchor="90%";
+  else
+    comboCfg.anchor="98%";
+  comboCfg.anchor+=" 100%";
+  this.operatorCombo = new Ext.form.ComboBox(comboCfg);
   var cfgCloned=Ext.apply({},cfg);
   cfgCloned.layout='form';
   cfgCloned.height=this.rowSize;
   cfgCloned.labelWidth=1;
   cfgCloned.labelPad=1;
+  if(this.labelAlign!=="top")
+    cfgCloned.hideLabels=true;
   this.editorComponent=new Ext.Panel(cfgCloned);
 }
 
@@ -499,7 +502,21 @@ Ext.ux.netbox.core.ElementaryFilterCfg.prototype=/** @scope Ext.ux.netbox.core.E
     */
   setEditor: function(editor){
     this.editor=editor;
-    this.field.anchor="98%";
+    if(Ext.isSafari)
+      this.editor.field.anchor="90%";
+    else
+      this.editor.field.anchor="98%";
+    this.editor.field.labelSeparator='';
+    if(this.labelAlign=="top"){
+      if(Ext.isIE)
+        this.editor.field.fieldLabel="<pre> </pre>";//this one doesn't work in FF
+      else{
+        this.editor.field.labelStyle="white-space: pre;"; //this one doesn't work in IE6
+        this.editor.field.fieldLabel=" ";
+      }
+    } else {
+      this.editor.field.fieldLabel="";
+    }
   },
   /** It returns the editor used to manage the values of the elementary filter
     * @return {Ext.Editor} The editor used to manage the values of the elementary filter
