@@ -121,7 +121,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
 
       var panelCfg={
         columnWidth: colWidthTmp,
-        layout: 'form',
+        layout: 'anchor',
         items: null,
         plugins: {
           init: addPanelCol.createDelegate(this,[i],true)
@@ -133,7 +133,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
       }
 
     }
-    config.items=[{layout:"column", anchor: "100% 100%", items: items }];
+    config.items=[{layout:"column", items: items, anchor: "100% 100%" }];
     return(config);
   },
 
@@ -207,6 +207,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     this.managedFilters.add(filter);
   },
 
+
   /** This method changes the editor used to edit the values of a filter (for example if the operator is changed, the editor can be changed as well).
     * The listeners on the old editor are removed and added to the new one,
     * and then the old editor is replaced with the new one in the GUI
@@ -229,21 +230,20 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
     */
   addFormField: function(formField, editorComponent){
     formField.labelSeparator='';
-    formField.anchor="100% 100%";
     if(this.initialConfig.labelAlign && this.initialConfig.labelAlign=='top'){
-      formField.fieldLabel='&nbsp;';
+      formField.fieldLabel=' ';
     } else {
       formField.fieldLabel='';
     }
     editorComponent.add(formField);
 
-    /*var fn=function(){
+    var fn=function(){
       if(editorComponent.rendered){
         formField.setWidth(editorComponent.getSize().width-4);
       }
     }
 
-    editorComponent.on('afterlayout',fn);*/
+    editorComponent.on('afterlayout',fn);
     editorComponent.doLayout();
   },
 
@@ -430,6 +430,7 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
   }
 });
 
+
 Ext.reg('staticFilter',Ext.ux.netbox.core.StaticFilterModelView);
 
 /** It instantiates a new ElementaryFilterCfg
@@ -439,7 +440,7 @@ Ext.reg('staticFilter',Ext.ux.netbox.core.StaticFilterModelView);
   */
 Ext.ux.netbox.core.ElementaryFilterCfg = function(field,rowSize,cfg){
   this.rowSize=rowSize;
-  var operators = [["","&nbsp;"]];
+  var operators = [[""," "]];
   this.field=field;
   for(var i=0; i<field.getAvailableOperators().length;i++){
     operators.push([field.getAvailableOperators()[i].getId(),
@@ -458,14 +459,14 @@ Ext.ux.netbox.core.ElementaryFilterCfg = function(field,rowSize,cfg){
     triggerAction : 'all',
     lazyRender    : true,
     fieldLabel    : field.getLabel(),
-    anchor        : "100% 100%"
+    width         : 105,
+    anchor        : "98% 100%"
   });
   var cfgCloned=Ext.apply({},cfg);
   cfgCloned.layout='form';
   cfgCloned.height=this.rowSize;
   cfgCloned.labelWidth=1;
   cfgCloned.labelPad=1;
-  cfgCloned.anchor="100%";
   this.editorComponent=new Ext.Panel(cfgCloned);
 }
 
@@ -498,6 +499,7 @@ Ext.ux.netbox.core.ElementaryFilterCfg.prototype=/** @scope Ext.ux.netbox.core.E
     */
   setEditor: function(editor){
     this.editor=editor;
+    this.field.anchor="98%";
   },
   /** It returns the editor used to manage the values of the elementary filter
     * @return {Ext.Editor} The editor used to manage the values of the elementary filter
