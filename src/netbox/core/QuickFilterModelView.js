@@ -38,6 +38,7 @@ Ext.namespace('Ext.ux.netbox.core');
   *   </li>
   * </ul>
   * @config {boolean} duplicatedElementaryFiltersAllowed True to allow 2 equals elementary filter (i.e. to allow name='John' 2 times). Optional. Default false
+  * @config {boolean} isStatic True to use QuickFilter with StaticFilterModelView. Optional. Default false
   * <h4> Example </h4>
   * <pre>
   * var quickFilter= new Ext.ux.netbox.core.QuickFilterModelView({
@@ -75,12 +76,16 @@ Ext.ux.netbox.core.QuickFilterModelView=function(config){
   this.quickFilterItem=null;
   this.removeFilterItem=null;
   this.fieldsOptions=config.fieldsOptions;
-  if(config.duplicatedElementaryFiltersAllowed === undefined){
+  if(config.duplicatedElementaryFiltersAllowed===undefined){
     this.duplicatedElementaryFiltersAllowed=false;
   } else {
     this.duplicatedElementaryFiltersAllowed=config.duplicatedElementaryFiltersAllowed;
   }
-
+  if(config.isStatic===undefined){
+    this.isStatic=false;
+  } else {
+    this.isStatic=config.isStatic;
+  }
   this.stringOperDefault = ['STRING_EQUAL','STRING_DIFFERENT'];
   this.numberOperDefault = ['NUMBER_EQUAL','NUMBER_NOT_EQUAL','NUMBER_GREATER','NUMBER_GREATER_OR_EQUAL','NUMBER_LESS','NUMBER_LESS_OR_EQUAL'];
   this.dateOperDefault = ['DATE_EQUAL','DATE_GREATER','DATE_GREATER_OR_EQUAL','DATE_LESS','DATE_LESS_OR_EQUAL'];
@@ -230,6 +235,12 @@ Ext.extend(Ext.ux.netbox.core.QuickFilterModelView, Ext.util.Observable,/** @sco
             addFilter=false;
             break;
         }
+      }
+    }
+    if(this.isStatic){
+      var elementaryFilters=this.filterModel.getElementaryFiltersByFieldId(fieldId);
+      for(var i=0; i<elementaryFilters.length;i++){
+        this.filterModel.removeElementaryFilterById(elementaryFilters[i].getId());
       }
     }
     if(addFilter){
