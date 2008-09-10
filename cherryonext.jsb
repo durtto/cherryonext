@@ -32,7 +32,6 @@
     <include name="src\netbox\core\RangeMenu.js" />
     <include name="src\netbox\core\RangeItem.js" />
     <include name="src\netbox\core\LocalStoreFilterResolver.js" />
-    <include name="src\netbox\ErrorDialog.js" />
     <include name="src\netbox\ContainerMenuItem.js" />
     <include name="src\netbox\ContextMenuManager.js" />
     <include name="src\netbox\core\QuickFilterModelView.js" />
@@ -63,7 +62,6 @@
   <file name="src\netbox\core\RangeMenu.js" path="netbox\core" />
   <file name="src\netbox\core\FieldManager.js" path="netbox\core" />
   <file name="src\netbox\core\StaticFilterModelView.js" path="netbox\core" />
-  <file name="src\netbox\ErrorDialog.js" path="netbox" />
   <file name="src\netbox\ContainerMenuItem.js" path="netbox" />
   <file name="src\netbox\ContextMenuManager.js" path="netbox" />
   <file name="src\netbox\core\QuickFilterModelView.js" path="netbox\core" />
