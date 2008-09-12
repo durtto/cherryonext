@@ -43,9 +43,8 @@ Ext.ux.netbox.number.NumberField = function(id,label) {
 }
 
 Ext.extend(Ext.ux.netbox.number.NumberField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.number.NumberField.prototype */{
- 
-  
-  /** This method creates an Ext.ux.netbox.core.TextValuesEditor  with a Ext.form.NumberField as field.
+
+  /** This method creates an Ext.ux.netbox.core.TextValuesEditor with a Ext.form.NumberField as field.
     * @param {String} operatorId The operatorId actually used in the filter
     * @return {Ext.Editor} The field used to edit the values of this filter
     */
@@ -53,4 +52,5 @@ Ext.extend(Ext.ux.netbox.number.NumberField,Ext.ux.netbox.core.Field,/** @scope 
     var editor=new Ext.ux.netbox.core.TextValuesEditor(new Ext.form.NumberField({decimalPrecision: 10}));
     return editor;
   }
+
 });
