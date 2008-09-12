@@ -5,11 +5,14 @@
 
 if(Ext.ux.netbox.core.DynamicFilterModelView){
    Ext.apply(Ext.ux.netbox.core.DynamicFilterModelView.prototype, {
-      deleteText    : 'Elimina',
-      filterText    : 'Campo',
-      operatorText  : 'Operazione',
-      valueText     : 'Valore',
-      comboText     : 'Seleziona un campo'
+      deleteText        : 'Elimina',
+      filterText        : 'Campo',
+      operatorText      : 'Operazione',
+      valueText         : 'Valore',
+      comboText         : 'Seleziona un campo',
+      logicOpeAndText   : 'Verifica tutti',
+      logicOpeOrText    : 'Verifica almeno uno'
+
    });
 }
 
