@@ -62,6 +62,14 @@ Ext.ux.netbox.core.FilterModel=function(config){
   else
     this.fieldManager=new Ext.ux.netbox.core.FieldManager(config);
   this.fieldManager.on("beforeFieldRemoved",this.onBeforeFieldRemoved,this);
+  /** The logicalOperator
+    * @property {Ext.ux.netbox.core.CompositeFilter.AND or Ext.ux.netbox.core.CompositeFilter.OR}
+    * @private
+    */
+  if(config.logicalOperator===undefined)
+    this.logicalOperator=Ext.ux.netbox.core.CompositeFilter.AND;
+  else
+    this.logicalOperator=config.logicalOperator;
 }
 
 Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.netbox.core.FilterModel.prototype */
@@ -91,7 +99,7 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     if(this.getFilter()==null)
       this.filter=elementaryFilter;
     else
-      this.filter=new Ext.ux.netbox.core.CompositeFilter(this.getFilter(), Ext.ux.netbox.core.CompositeFilter.AND, elementaryFilter);
+      this.filter=new Ext.ux.netbox.core.CompositeFilter(this.getFilter(), this.logicalOperator, elementaryFilter);
     this.fireEvent("elementaryFilterAdded", this, elementaryFilter);
   },
   /** @private
@@ -211,11 +219,11 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
     if(additionalLogicalOper===undefined)
       additionalLogicalOper=Ext.ux.netbox.core.CompositeFilter.AND;
     var filter=this.getFilter();
-   
+
     var filterToExport=null;
     if(this.getFilter()!==null)
-      
-    if(filter===null) 
+
+    if(filter===null)
       filterToExport=additionalFilter;
     else{
       filterToExport=this._decodeFilter(this._encodeFilter(this.getFilter()));//clone the filter
@@ -223,7 +231,7 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
         filterToExport=new Ext.ux.netbox.core.CompositeFilter(filterToExport,additionalLogicalOper,additionalFilter);
       }
     }
-    
+
     if(filterToExport instanceof Ext.ux.netbox.core.ElementaryFilter){
       if(!filterToExport.isValid()){
         filterToExport=null;
@@ -361,6 +369,38 @@ Ext.extend(Ext.ux.netbox.core.FilterModel,Ext.util.Observable,/** @scope Ext.ux.
       }
     }
     return(elementaryFilters);
+  },
+  /** This method returns the logical operator setted in the filter model. The default is Ext.ux.netbox.core.CompositeFilter.AND
+    * @return {String} The logical operator setted
+    */
+  getLogicalOperator : function(){
+    return this.logicalOperator;
+  },
+  /** This method sets the logical operator in the filter model.
+    * @param {String} logicalOperator The logical operator to set in the filter model
+    */
+  setLogicalOperator : function(logicalOperator){
+    if(logicalOperator===Ext.ux.netbox.core.CompositeFilter.OR || logicalOperator===Ext.ux.netbox.core.CompositeFilter.AND)
+      this.logicalOperator=logicalOperator;
+      //evento?
+  },
+  /** This method calls the function with the scope on the filter passed as parameters.
+    * @param {Function} fn The function to call
+    * @param {Object} scope (optional) The scope in which to execute the function
+    * @param {Ext.ux.netbox.core.Filter} filter The filter on which execute the function
+    */
+  each: function(fn, scope, filter){
+    if(filter===undefined)
+      filter=this.getFilter();
+    if(filter==null)
+      return;
+    if(scope===undefined)
+      scope=window;
+    fn.call(scope,filter);
+    if(filter instanceof Ext.ux.netbox.core.CompositeFilter){
+      this.each(fn,scope,filter.getLeftSide());
+      this.each(fn,scope,filter.getRightSide());
+    }
   }
 
 });

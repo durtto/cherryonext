@@ -26,23 +26,24 @@ Ext.namespace('Ext.ux.netbox.core');
   * @config {Ext.ux.netbox.core.FilterModel}filterModel the filterModel whose filters must be showed
   */
 Ext.ux.netbox.core.DynamicFilterModelView=function(config){
-
   this.filterModel=config.filterModel;
   config=this.createFilterGridConfig(config);
   Ext.ux.netbox.core.DynamicFilterModelView.superclass.constructor.call(this,config);
+
+  this.populateFilterStore();
+  this.createFieldCombo();
+  this.createLogicOpeCombo();
+  this.setLogicOpeCombo();
+
   this.on('cellclick', this.removeFilter, this);
   this.on('beforeedit', this.updateOperatorStore, this);
   this.on('afteredit', this.updateFilter, this);
-
-  this.populateFilterStore();
 
   this.getFilterModel().on('elementaryFilterAdded', this.onFilterAdded, this);
   this.getFilterModel().on('elementaryFilterRemoved', this.onFilterRemoved, this);
   this.getFilterModel().on('filterChanged', this.onFilterChanged, this);
   this.getFilterModel().getFieldManager().on('fieldAdded', this.onFieldAdded, this);
   this.getFilterModel().getFieldManager().on('fieldRemoved', this.onFieldRemoved, this);
-
-  this.createFieldCombo();
 
   this.getView().getRowClass=function(record, index, rowParams, store){
     var cls = '';
@@ -56,11 +57,13 @@ Ext.ux.netbox.core.DynamicFilterModelView=function(config){
 
 Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/** @scope Ext.ux.netbox.core.DynamicFilterModelView.prototype */
 {
-  deleteText    : 'Delete',
-  filterText    : 'Field',
-  operatorText  : 'Operator',
-  valueText     : 'Value',
-  comboText     : 'Select a new field',
+  deleteText        : 'Delete',
+  filterText        : 'Field',
+  operatorText      : 'Operator',
+  valueText         : 'Value',
+  comboText         : 'Select a new field',
+  logicOpeAndText   : 'Check all',
+  logicOpeOrText    : 'Check at least one',
 
   /** getFilterModel
     * @private
@@ -109,6 +112,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     */
   onFilterChanged : function(){
     this.populateFilterStore();
+    this.setLogicOpeCombo();
   },
   /** onEditComplete
     * @private
@@ -159,6 +163,8 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
   onRender: function(container){
      Ext.ux.netbox.core.DynamicFilterModelView.superclass.onRender.call(this,container);
      this.getTopToolbar().addField(this.fieldCombo);
+     this.getTopToolbar().addSeparator();
+     this.getTopToolbar().addField(this.logicOpeCombo);
   },
   /** createFilterGridConfig addding the store etc...
     *
@@ -280,6 +286,39 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
 
     this.fieldCombo.on('select', this.addFilter, this);
   },
+  /** createLogicOpeCombo
+    *
+    */  
+  createLogicOpeCombo : function(){
+    var logicOpeStore=new Ext.data.SimpleStore({
+        fields: ['label', 'value'],
+        data: [ [this.logicOpeAndText,Ext.ux.netbox.core.CompositeFilter.AND],
+                [this.logicOpeOrText,Ext.ux.netbox.core.CompositeFilter.OR] ]
+        });
+    this.logicOpeCombo=new Ext.form.ComboBox({
+        //emptyText     : this.logicOpeText,
+        displayField    : 'label',
+        valueField      : 'value',
+        store           : logicOpeStore,
+        mode            : 'local',
+        triggerAction   : 'all',
+        selectOnFocus   : true,
+        typeAhead       : true,
+        editable        : false,
+        value           : Ext.ux.netbox.core.CompositeFilter.AND
+        });
+
+    this.logicOpeCombo.on('select', this.chgLogicOpe, this);
+  },
+  /** setLogicOpeCombo
+    *
+    *
+    */
+  setLogicOpeCombo : function(){
+    var filter=this.getFilterModel().getFilter();
+    if(filter instanceof Ext.ux.netbox.core.CompositeFilter)
+      this.logicOpeCombo.setValue(filter.getLogicalOperator());
+  },
   /** addFields
     *
     *
@@ -310,6 +349,21 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     this.fieldCombo.clearValue();
     this.filterStore.indexOfId(addedId);
     this.startEditing(this.filterStore.indexOfId(addedId),3);
+  },
+  /** chgLogicOpe
+    *
+    *
+    */
+  chgLogicOpe : function(combo, record, index){
+    var logicOpe = record.get('value');
+    this.getFilterModel().setLogicalOperator(logicOpe);
+    this.getFilterModel().each(
+      function(filter){
+        if(filter instanceof Ext.ux.netbox.core.CompositeFilter && filter.getLogicalOperator() != logicOpe){
+          filter.setLogicalOperator(logicOpe);
+        }
+      }
+    );
   },
   /** removeFilter
     *
