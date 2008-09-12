@@ -57,7 +57,7 @@ Ext.ux.netbox.date.DateField = function(id,label,format) {
 }
 
 Ext.extend(Ext.ux.netbox.date.DateField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.date.DateField.prototype */{
-  
+
   validateDate: function(values){
     for(var i=0;values && i<values.length;i++){
       if(values[i].value!=="" && !this.checkDate(values[i].value,'Y-m-d H:i:s')){
@@ -66,7 +66,7 @@ Ext.extend(Ext.ux.netbox.date.DateField,Ext.ux.netbox.core.Field,/** @scope Ext.
     }
     return(true);
   },
-  
+
   /** Check if a date is valid.
     * @param {String} value The string containing the date to validate
     * @param {String} format The format of the date in the string. Optional, the default is the format of the field

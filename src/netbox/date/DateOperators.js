@@ -36,8 +36,6 @@ Ext.ux.netbox.date.DateOperator = function(id,label,format) {
     * @property {String} format
     */
   this.format=format;
-
-  
 };
 
 Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.date.DateOperator.prototype */{
@@ -71,8 +69,6 @@ Ext.extend(Ext.ux.netbox.date.DateOperator,Ext.ux.netbox.core.Operator,/** @scop
     }
     return editor;
   },
-
-  
 
   /** This function controls if the given value is an array with at least an element. If the given element is an object
     * with the format {label: , value: } and the value is a valid date in the format Y-m-d H:i:s, it returns an array containing the first element
@@ -163,15 +159,15 @@ Ext.ux.netbox.date.DateRangeOperator = function(format) {
     if(!fromADate && !toADate){
       return(this.toAndFromNotADate);
     }
-    
+
     if(!fromADate){
       return(this.fromNotADate);
     }
-    
+
     if(!toADate){
       return(this.toNotADate);
     }
-    
+
     if(Date.parseDate(value[0].value,'Y-m-d H:i:s')>Date.parseDate(value[1].value,'Y-m-d H:i:s')){
       return(this.fromBiggerThanTo);
     }
@@ -303,7 +299,7 @@ Ext.ux.netbox.date.DatePeriodOperator = function() {
      if(this.getField().emptyNotAllowedFn(value)!==true){
        return(this.getField().emptyNotAllowedFn(value));
      }
-     if(value[0].value!=="LAST_QUARTER" && value[0].value!=="LAST_HOUR" && value[0].value!=="LAST_DAY" 
+     if(value[0].value!=="LAST_QUARTER" && value[0].value!=="LAST_HOUR" && value[0].value!=="LAST_DAY"
        && value[0].value!=="LAST_WEEK" && value[0].value!=="LAST_MONTH" && value[0].value!=="LAST_YEAR"){
        return(this.valueNotExpected);
      }
@@ -322,7 +318,7 @@ Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/**
   hourText    : "last hour",
   quarterText : "last quarter",
   valueNotExpected: "Value not expected",
-  
+
   /** Overwrite getDefaultValues function to return last day as default
     * @return {Array} default values ([{value: "LAST_DAY", label: this.dayText}])
     */
