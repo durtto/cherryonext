@@ -275,8 +275,8 @@ Ext.extend(Ext.ux.netbox.core.StaticFilterModelView,Ext.form.FormPanel,/** @scop
       editor.setValue(value);
     //}
   },
-  /**Callback of the complete event of the editor, or callback of the change event on the form field, both editong the value of the filter
-    * It get the value from the editor, and set the value to the filter
+  /**Callback of the complete event of the editor, or callback of the change event on the form field, both editing the value of the filter.
+    * It get the value from the editor, and set the value to the filter.
     * @param {Mixed} editorOrFormField. It can be the editor used to edit the value of a filter, or the form field contained in the editor
     */
   editingCompleted: function(editorOrFormField){

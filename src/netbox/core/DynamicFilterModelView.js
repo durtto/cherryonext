@@ -281,7 +281,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
         triggerAction : 'all',
         selectOnFocus : true,
         typeAhead     : true,
-        editable      : false
+        editable      : true
         });
 
     this.fieldCombo.on('select', this.addFilter, this);
@@ -296,14 +296,12 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
                 [this.logicOpeOrText,Ext.ux.netbox.core.CompositeFilter.OR] ]
         });
     this.logicOpeCombo=new Ext.form.ComboBox({
-        //emptyText     : this.logicOpeText,
         displayField    : 'label',
         valueField      : 'value',
         store           : logicOpeStore,
         mode            : 'local',
         triggerAction   : 'all',
         selectOnFocus   : true,
-        typeAhead       : true,
         editable        : false,
         value           : Ext.ux.netbox.core.CompositeFilter.AND
         });
