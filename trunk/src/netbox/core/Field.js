@@ -238,7 +238,7 @@ Ext.extend(Ext.ux.netbox.core.Field,Ext.util.Observable,/** @scope Ext.ux.netbox
     * @throw {String} If the operator is already associated to a different filter type
     */
   addOperator : function(operator){
-    if(operator.getField()!==null && operator.getField != this){
+    if(operator.getField()!==null && operator.getField()!=this){
       throw("Impossible to add the operator "+operator.getId()+" to the Field "+this.getId()+". The operator is already associated to another Field");
     }
     this.availableOperators.push(operator);
