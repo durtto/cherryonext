@@ -45,8 +45,14 @@
 
       fieldManager=new Ext.ux.netbox.core.FieldManager(filterCfg);
       filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
-      localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
       
+      localFilterResolver=new Ext.ux.netbox.core.LocalStoreFilterResolver(filterModel);
+      var quickFilter= new Ext.ux.netbox.core.QuickFilterModelView({
+        filterModel: filterModel,
+        isStatic: true
+      });
+      quickFilter.on("filterChanged",filterTable);
+      var contextMenuManager=new Ext.ux.netbox.ContextMenuManager({menu: {items:[quickFilter.getFilterMenu(),quickFilter.getRemoveFilterMenu()]}});
       // create the Grid
       var grid = new Ext.grid.GridPanel({
         store: store,
@@ -59,7 +65,7 @@
           {header: "In Portfolio", width: 85, sortable: true, renderer: inPortfolio, dataIndex: 'inPortfolio'}
         ],
         stripeRows: true,
-        plugins: [new Ext.ux.netbox.core.FilterHeaderPlugin(filterModel)],
+        plugins: [new Ext.ux.netbox.core.FilterHeaderPlugin(filterModel),contextMenuManager],
         autoExpandColumn: 'company',
         region: "center"
       });
@@ -100,7 +106,8 @@
 </head>
 <body>
 <h1> Static Filter </h1>
-<p> In this demo you can add or remove filters on the table using the form above the table and then pushing the Apply button</p>
+<p> In this demo you can add or remove filters on the table using the form above the table and then pushing the Apply button. 
+You can also right click on the table and filter using quick filter.</p>
 <div id="mettiloQui"></div>
 </body>
 </html>
