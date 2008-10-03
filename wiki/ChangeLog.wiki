@@ -1,5 +1,17 @@
 #summary Change Log of the cherry on ext releases
 
+==Version 0.3.0 ^2008-10-03^==
+===Incompatibilities with previous version===
+ * Changed signature of constructor of AvailableValuesEditor
+===Changes===
+
+ * A LOT of bug fixes
+ * Added possibility to reconfigure the fieldManager to completely change the set of the fields (thanks to donssmith)
+ * Better design of StaticFilterModelView: it now handles resizes a lot better
+ * Possibility to use quick filter in replace mode: if a filter on a given field is already existing, the quick filter view will replace this one and not one a new
+ * Possibility to specify "Match all" or "Match one" filter in Dynamic Filter Model View
+ * management of case insensitive search in fields with available values
+
 ==Version 0.2.0 ^2008-03-14^==
 ===Incompatibilities with previous version===
  * Changed from STRING_EQUALS to STRING_EQUAL the id of the operation = between strings
