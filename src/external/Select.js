@@ -540,6 +540,10 @@ Ext.extend(Ext.ux.Andrie.Select, Ext.form.ComboBox, {
     					text = r.data[this.displayField];
     				}else if(this.forceSelection){
     					continue;
+    				} else {
+    				  var r = this.findRecord(this.displayField, value);
+    				  text=value;
+    				  value=r.data[this.valueField];
     				}
     			}
     			result.push(value);
