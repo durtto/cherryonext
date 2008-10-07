@@ -439,7 +439,7 @@ Ext.ux.netbox.core.ElementaryFilterCfg = function(field,rowSize,cfg){
   this.field=field;
   for(var i=0; i<field.getAvailableOperators().length;i++){
     operators.push([field.getAvailableOperators()[i].getId(),
-    field.getAvailableOperators()[i].getLabel().escHtml()]);
+    field.getAvailableOperators()[i].getLabel()]);
   }
   var operatorStore=new Ext.data.SimpleStore({
     fields : ['operatorId','operatorLabel'],
@@ -454,7 +454,8 @@ Ext.ux.netbox.core.ElementaryFilterCfg = function(field,rowSize,cfg){
       triggerAction : 'all',
       lazyRender    : true,
       fieldLabel    : field.getLabel(),
-      width         : 105
+      width         : 105,
+      tpl           : '<tpl for="."><div class="x-combo-list-item">{[values.operatorLabel=="<PRE> </PRE>" ? values.operatorLabel : values.operatorLabel.escHtml()]}</div></tpl>'
   }
   
   if(Ext.isSafari)
