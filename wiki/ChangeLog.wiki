@@ -1,5 +1,12 @@
 #summary Change Log of the cherry on ext releases
 
+==Version 0.3.1 ^2008-10-30^==
+===Incompatibilities with previous version===
+None.
+===Changes===
+ * Fix: drop down list box lose their value in StaticFilterModelView
+ * French translation (thanks to guillaume DOT crico AT gmail.com)
+
 ==Version 0.3.0 ^2008-10-03^==
 ===Incompatibilities with previous version===
  * Changed signature of constructor of AvailableValuesEditor
