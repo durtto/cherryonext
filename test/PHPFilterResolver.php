@@ -27,7 +27,7 @@
   function string_equals($field,$value){
     $val=calculateValue($value);
     if($val===""){//in Oracle empty string and null value are the same thing
-      return($field."is null");
+      return($field." is null");
     } else {
       return($field."='".$val."'");
     } 
