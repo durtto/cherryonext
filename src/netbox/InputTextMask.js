@@ -284,7 +284,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
     },
 
     isManagedByBrowser : function(keyEvent, keycode, type){
-        if(((type=='keypress' && keyEvent.charCode===0) ||
+        if(((type=='keypress' && (keyEvent.charCode===0 || (Ext.isOpera && keyEvent.charCode==null)) ) ||
             type=='keydown') && (keycode.unicode==Ext.EventObject.TAB ||
             keycode.unicode==Ext.EventObject.RETURN ||
             keycode.unicode==Ext.EventObject.ENTER ||
@@ -318,7 +318,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
 
     getCursorPosition : function() {
         var s, e, r;
-        if(this.inputTextElement.createTextRange){
+        if(this.inputTextElement.createTextRange && !Ext.isOpera){
             r = document.selection.createRange().duplicate();
             r.moveEnd('character', this.inputTextElement.value.length);
             if(r.text === ''){
@@ -338,7 +338,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
 
     moveCursorToPosition : function(keycode, cursorPosition) {
         var p = (!keycode || (keycode && keycode.isBackspace ))? cursorPosition.start: cursorPosition.start + 1;
-        if(this.inputTextElement.createTextRange){
+        if(this.inputTextElement.createTextRange && !Ext.isOpera){
             cursorPosition.range.move('character', p);
             cursorPosition.range.select();
         } else {
