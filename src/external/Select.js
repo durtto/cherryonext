@@ -543,7 +543,9 @@ Ext.extend(Ext.ux.Andrie.Select, Ext.form.ComboBox, {
     				} else {
     				  var r = this.findRecord(this.displayField, value);
     				  text=value;
-    				  value=r.data[this.valueField];
+    				  if(r){
+    				    value=r.data[this.valueField];
+    				  }
     				}
     			}
     			result.push(value);
