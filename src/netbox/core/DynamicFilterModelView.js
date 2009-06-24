@@ -431,7 +431,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     *
     */
   imageRenderer : function(value, metadata, record, rowIndex, colIndex, store){
-    return('<img class="x-menu-item-icon x-icon-delete" style="cursor: pointer" src="'+Ext.BLANK_IMAGE_URL+'"/>');
+    return('<img class="x-menu-item-icon x-icon-delete" style="position: static; cursor: pointer" src="'+Ext.BLANK_IMAGE_URL+'"/>');
   },
   /** fieldRenderer
     *
