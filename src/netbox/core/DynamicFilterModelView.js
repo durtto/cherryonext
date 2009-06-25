@@ -383,7 +383,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
       var operators=[];
       for(var i=0; i<field.getAvailableOperators().length;i++){
         operators.push([field.getAvailableOperators()[i].getId(),
-                        field.getAvailableOperators()[i].getLabel()]);
+                        field.getAvailableOperators()[i].getLabel().escHtml()]);
       }
       this.operatorStore.loadData(operators, false);
     }
