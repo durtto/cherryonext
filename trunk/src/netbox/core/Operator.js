@@ -114,7 +114,10 @@ Ext.ux.netbox.core.Operator.prototype = {
       var myValidateFunc=this.validate;
       var myValidateScope=this;
       myField.validateValue=function(value){
-        if(originalFunc.call(this,myField.value)===false)
+        var val=myField.value;
+    	  if(myField.value===undefined || myField.value===null)
+    		  val="";
+        if(originalFunc.call(this,val)===false)
           return false;
         var retval=myValidateFunc.call(myValidateScope,editor.getValue());
         if(retval===true)
