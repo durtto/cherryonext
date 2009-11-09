@@ -231,7 +231,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     config.colModel=cm;
     config.cm=cm;
     config.clicksToEdit=1;
-    config.autoExpandColumn='3';
+    config.autoExpandColumn=cm.getColumnId('3');
     config.enableColumnHide=false;
     config.enableColumnMove=false;
     config.enableColumnResize=false;
