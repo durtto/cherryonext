@@ -26,7 +26,7 @@ Ext.ux.netbox.core.RangeItem = function(config){
   Ext.ux.netbox.core.RangeItem.superclass.constructor.apply(this,[this.panel,config]);
 }
 
-Ext.extend(Ext.ux.netbox.core.RangeItem,Ext.menu.Item,{/** @scope Ext.ux.netbox.core.RangeItem.prototype */{
+Ext.extend(Ext.ux.netbox.core.RangeItem,Ext.menu.Item,{/** @scope Ext.ux.netbox.core.RangeItem.prototype */
   /** @ignore*/
   fromText : 'from',
   /** @ignore*/
