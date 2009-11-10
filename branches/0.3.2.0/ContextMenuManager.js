@@ -104,6 +104,7 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
           visible=this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
         }
       }
+      itemTmp.parentMenu = this.menu;
       if(visible){
         itemTmp.setVisible(true);
         if(itemTmp.initialConfig.handler){
