@@ -9,40 +9,41 @@ Ext.namespace('Ext.ux.netbox.core');
   * @ignore
   */
 Ext.ux.netbox.core.RangeMenu = function(textCls,fromCfg,toCfg,fieldValidateFunc){
-//pluginCls,pluginClsArgs,validatorFn){
-  Ext.ux.netbox.core.RangeMenu.superclass.constructor.apply(this,arguments);
   if(textCls===undefined){
     textCls = Ext.form.TextField;
+    textCls.anchor = "100%";
   }
-  var editorFrom=new textCls(fromCfg);
-  var editorTo=new textCls(toCfg);
-  editorFrom.validate=fieldValidateFunc;
-  editorTo.validate=fieldValidateFunc;
-  this.fields = new Ext.ux.netbox.core.RangeItem({
-    editorFrom: editorFrom,
-    editorTo: editorTo
-    });
+  this.editorFrom=new textCls(fromCfg);
+  this.editorTo=new textCls(toCfg);
+  this.editorFrom.validate=fieldValidateFunc;
+  this.editorTo.validate=fieldValidateFunc;
 
-  this.add(this.fields);
-  this.fields.on("keyup",this.onKeyUp,this);
-  this.addEvents({'update': true});
-  this.on('show',this.disableKeyNav,this);
+  this.editorFrom.fieldLabel=this.fromText;
+  this.editorTo.fieldLabel=this.toText;
+
+  this.initComponent();
+
+  Ext.ux.netbox.core.RangeMenu.superclass.constructor.apply(this,arguments);
 };
 
 Ext.extend(Ext.ux.netbox.core.RangeMenu, Ext.menu.Menu,/** @scope Ext.ux.netbox.core.RangeMenu.prototype */{
-  /** @ignore */
-  disableKeyNav: function(){
-    if(this.keyNav){
-      this.keyNav.disable();
-    }
-    if(Ext.isGecko){
-      var div=this.getEl();
-      div.setStyle("overflow", "auto");
-      var text=div.select(".x-form-text");
-      text.each(function(el){
-        el.dom.select();
-      });
-    }
+
+  fromText : 'from',  
+  toText   : 'to',
+
+  hideOnClick: false,
+  layout: "form",
+  labelWidth: 38,
+  style: {'background-image': 'none'},
+
+  initComponent: function () {
+       Ext.apply(this, {items: [this.editorFrom, this.editorTo]});
+       Ext.ux.netbox.core.RangeMenu.superclass.initComponent.call(this);
+       this.addEvents({'update': true});
+       var items = this.items.items;
+       for (var i = 0; i < items.length; i++) {
+           items[i].on("keyup", this.onKeyUp, this);
+       }
   },
   /** setValue
     * @ignore
@@ -56,14 +57,22 @@ Ext.extend(Ext.ux.netbox.core.RangeMenu, Ext.menu.Menu,/** @scope Ext.ux.netbox.
     } else if (data.length==1) {
       from=data[0].label;
     }
-    this.fields.setValueTo(to);
-    this.fields.setValueFrom(from);
+    if(to==="") {
+        this.editorTo.setRawValue("");
+    }else {
+	this.editorTo.setValue(to);
+    }
+    if (from==="") {
+        this.editorFrom.setRawValue("");
+    } else {
+        this.editorFrom.setValue(from);
+    }
 
     this.fireEvent("update", this);
   },
   /** onKeyUp
     * @ignore
-    */
+    */  
   onKeyUp: function(event){
     if(event.getKey() == event.ENTER && this.isValid()){
       this.hide(true);
@@ -72,39 +81,34 @@ Ext.extend(Ext.ux.netbox.core.RangeMenu, Ext.menu.Menu,/** @scope Ext.ux.netbox.
   },
   /** getValue
     * @ignore
-    */
+    */  
   getValue: function(){
-    var result = [{value: this.fields.getValueFrom(),label:this.fields.getValueFrom()} ,
-    {value: this.fields.getValueTo(),label:this.fields.getValueTo()} ];
+    var result = [{value: this.editorFrom.getValue(), label: this.editorFrom.getValue()}, 
+                  {value: this.editorTo.getValue(), label: this.editorTo.getValue()}];
     return result;
   },
   /** isValid
     * @ignore
-    */
+    */ 
   isValid: function(){
-    return(this.fields.isValidFrom() && this.fields.isValidTo());
+    return (this.editorFrom.isValid() && this.editorTo.isValid());
   },
-  /** doLayout
-    * @ignore
-    */
-  doLayout: function(width){
-    var itemEl=this.fields.getEl();
-    this.fields.doLayout(width-itemEl.getBorderWidth('lr')-itemEl.getPadding('lr')-itemEl.getMargins('lr'));
-  },
-  
-  /** It sets as invalid the from and to fields
+   /** It sets as invalid the from and to fields
     * @private
     * @param {String} msg The message to show to the user
     * @ignore
     */
   markInvalid: function(msg){
-    this.fields.markInvalid(msg);
+    this.editorFrom.markInvalid(msg);
+    this.editorTo.markInvalid(msg);
   },
-  /** It clears the invalid mask from the from and to fields
+   /** It clears the invalid mask from the from and to fields
     * @private
     * @ignore
-    */
+    */ 
   clearInvalidFields: function(){
-    this.fields.clearInvalidFields();
+    this.editorFrom.clearInvalid();
+    this.editorTo.clearInvalid();
   }
+
 });
