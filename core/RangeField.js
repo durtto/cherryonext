@@ -32,6 +32,8 @@ Ext.ux.netbox.core.RangeField = function(config){
 }
 
 Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux.netbox.core.RangeField.prototype */{
+  fromText    : 'from',
+  toText      : 'to',
   /**
      * @cfg {String/Object} autoCreate A DomHelper element spec, or true for a default element spec (defaults to
      * {tag: "input", type: "text", size: "20", autocomplete: "off"})
@@ -39,7 +41,7 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
   defaultAutoCreate : {tag: "input", type: "text", size: "20", autocomplete: "off"},
   readOnly: true,
   rangeValue: null,
-  
+   
   initComponent: function () {
 	Ext.ux.netbox.core.RangeField.superclass.initComponent.call(this);
   },
