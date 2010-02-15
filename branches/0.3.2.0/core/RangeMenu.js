@@ -35,7 +35,13 @@ Ext.extend(Ext.ux.netbox.core.RangeMenu, Ext.menu.Menu,/** @scope Ext.ux.netbox.
   layout: "form",
   labelWidth: 38,
   style: {'background-image': 'none'},
-
+  // Needed as it is defined into a MenuLayout but not into the FormLayout
+  // that we use for this RangeMenu
+  layoutConfig: {  
+	doAutoSize : function () {
+	}
+  },
+  
   initComponent: function () {
        Ext.apply(this, {items: [this.editorFrom, this.editorTo]});
        Ext.ux.netbox.core.RangeMenu.superclass.initComponent.call(this);
