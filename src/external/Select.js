@@ -337,7 +337,7 @@ Ext.extend(Ext.ux.Andrie.Select, Ext.form.ComboBox, {
 				}
 			}
 		}else{
-			this.onEmptyResults();
+			this.collapse();
 		}
 		//this.el.focus();
 	},
