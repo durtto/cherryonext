@@ -43,15 +43,8 @@ if(Ext.ux.netbox.core.QuickFilterModelView){
    });
 }
 
-if(Ext.ux.netbox.core.RangeItem){
-   Ext.apply(Ext.ux.netbox.core.RangeItem.prototype, {
-      fromText : 'da',
-      toText   : 'a'
-   });
-}
-
-if(Ext.ux.netbox.core.RangeField){
-   Ext.apply(Ext.ux.netbox.core.RangeField.prototype, {
+if(Ext.ux.netbox.core.RangeMenu){
+   Ext.apply(Ext.ux.netbox.core.RangeMenu.prototype, {
       fromText : 'da',
       toText   : 'a'
    });

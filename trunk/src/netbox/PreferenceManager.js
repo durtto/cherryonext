@@ -225,7 +225,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
           ]
         })
       });
-      this.store.on("loadexception",this._loadExceptionCbk,this);
+      this.store.on("exception",this._loadExceptionCbk,this);
       this.store.setDefaultSort('prefName');
     }
     return this.store;
