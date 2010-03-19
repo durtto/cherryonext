@@ -27,12 +27,14 @@ Ext.namespace('Ext.ux.netbox.core');
   */
 Ext.ux.netbox.core.DynamicFilterModelView=function(config){
   this.filterModel=config.filterModel;
+
+  this.createFieldCombo();
+  this.createLogicOpeCombo();
+
   config=this.createFilterGridConfig(config);
   Ext.ux.netbox.core.DynamicFilterModelView.superclass.constructor.call(this,config);
 
   this.populateFilterStore();
-  this.createFieldCombo();
-  this.createLogicOpeCombo();
   this.setLogicOpeCombo();
 
   this.on('cellclick', this.removeFilter, this);
@@ -160,12 +162,6 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     }
     this.view.focusCell(ed.row, ed.col);
   },
-  onRender: function(container){
-     Ext.ux.netbox.core.DynamicFilterModelView.superclass.onRender.call(this,container);
-     this.getTopToolbar().addField(this.fieldCombo);
-     this.getTopToolbar().addSeparator();
-     this.getTopToolbar().addField(this.logicOpeCombo);
-  },
   /** createFilterGridConfig addding the store etc...
     *
     */
@@ -231,7 +227,7 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     config.colModel=cm;
     config.cm=cm;
     config.clicksToEdit=1;
-    config.autoExpandColumn='3';
+    config.autoExpandColumn=cm.getColumnId('3');
     config.enableColumnHide=false;
     config.enableColumnMove=false;
     config.enableColumnResize=false;
@@ -239,6 +235,11 @@ Ext.extend(Ext.ux.netbox.core.DynamicFilterModelView,Ext.grid.EditorGridPanel,/*
     if(config.tbar==undefined){
       config.tbar=[];
     }
+
+    config.tbar.push(this.fieldCombo);
+    config.tbar.push("-");
+    config.tbar.push(this.logicOpeCombo);
+    
     return(config);
   },
   

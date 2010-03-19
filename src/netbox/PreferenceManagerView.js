@@ -337,7 +337,6 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
 });
 
 /** This one is needed to allow tooltip for Menu Items
-  */
 Ext.menu.BaseItem.prototype.onRender = function(container){
   this.el = Ext.get(this.el);
   container.dom.appendChild(this.el.dom);
@@ -345,6 +344,7 @@ Ext.menu.BaseItem.prototype.onRender = function(container){
    this.el.dom.qtip = this.tooltip;
   }
 };
+  */
 
 /** Build a new DefaultPreferenceManagerErrorManager
   * @constructor
