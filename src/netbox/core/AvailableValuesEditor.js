@@ -8,7 +8,7 @@ Ext.namespace('Ext.ux.netbox.core');
   * @constructor
   * @param {Ext.data.Store} store The store used to retrieve the data.
   * It must have 2 columns, label (which will be used as displayField) and value (which will be used as labelField).
-  * @config {Object} config See the parameter with the same name of Ex.ux.FilterEditor.
+  * @config {Object} config See the parameter with the same name of Ext.ux.FilterEditor.
   * Also were added in the config 4 boolean parameters: remote, forceReload,  multiSelect and caseSensitive.
   * config.remote: true if the store is remote, false if the data is local (ie, if store is a Ext.data.SimpleStore). Dafault is false.
   * config.forceReload: true if the store is to be reloaded everytime the combo expands. Dafault is false.

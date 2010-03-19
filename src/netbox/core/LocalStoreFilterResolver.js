@@ -1,6 +1,6 @@
 // $Id$
 
-Ext.namespace('Ex.ux.netbox.core');
+Ext.namespace('Ext.ux.netbox.core');
 
 /** Build a new LocalStoreFilterResolver.
   * @param {Ext.ux.netbox.core.FilterModel} filterModel The filterModel whose filter must be applied to the store
