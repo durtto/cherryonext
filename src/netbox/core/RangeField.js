@@ -39,7 +39,7 @@ Ext.extend(Ext.ux.netbox.core.RangeField,Ext.form.TriggerField,/** @scope Ext.ux
      * {tag: "input", type: "text", size: "20", autocomplete: "off"})
      */  
   defaultAutoCreate : {tag: "input", type: "text", size: "20", autocomplete: "off"},
-  readOnly: true,
+  editable: false,
   rangeValue: null,
    
   initComponent: function () {
