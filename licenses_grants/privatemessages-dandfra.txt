@@ -60,3 +60,38 @@ I'll bring some updates to the component in the near future. Stay tuned!
 We used your multi select in our code. Can we redistribute Ext.ux.Andrie.Select?
 (using LGPL v3 or later, which is the same license used by Ext). Thanks[/quote]
 
+================================================================================
+ Yesterday (2010-04-08), 05:32 PM
+	
+dandfra  
+Ext User
+ 	
+Join Date: Jun 2007
+Location: Trento, Italy
+Posts: 115
+
+ @woodstocktm
+First of all thanks for your contribution 
+
+Before adding to the repository, is it ok for you to license it using LGPL v2 or later? (If yes a copy of your answer with license information will be added in the repository).
+
+Ciao and thanks again
+      
+  #18          
+ Yesterday (2010-04-08), 05:56 PM
+woodstocktm  
+Ext User
+ 	
+Join Date: Apr 2010
+Location: Bonn, Germany
+Posts: 2
+
+
+Sure it's ok! 
+
+So it is ok for me to license the above mentioned small contribution using LGPL v2 or later, right? I hope that's it 
+
+Cheers,
+
+Thorsten
+
