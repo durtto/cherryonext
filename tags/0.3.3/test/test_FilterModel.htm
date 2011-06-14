@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit FilterModel Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../ext/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../ext/ext-all-debug.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/netbox/FilterEditor.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Filter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/ElementaryFilter.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/CompositeFilter.js"></script>    
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FieldManager.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/FilterModel.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/TextFieldOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringListOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/number/NumberOperators.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/date/DateOperators.js"></script>
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+    var fieldManager;
+    var field;
+    var operator;
+    var operator15;
+    var stringResult="";
+    var filterModel;
+    var filterObject;
+    var filterObject2;
+    var complexExprObject;
+
+    function onAddElementaryFilter(){
+      stringResult="elementaryFilterAdded";
+    }
+
+    function onRemoveElementaryFilter(){
+      stringResult="elementaryFilterRemoved";
+    }
+
+    function onChangeFilter(){
+      stringResult="filterChanged";
+    }
+
+    function testGetFieldManager(){
+      assertEquals("testGetFieldManager",fieldManager,filterModel.getFieldManager());
+    }
+
+    function testGetFilter3(){
+      assertNull("testGetFilter",filterModel.getFilter());
+    }
+
+    function testSetFilter(){
+      filterModel.on("filterChanged",onChangeFilter);
+      filterModel.setFilterObj(filterObject);
+      assertEquals("testSetFilter evento OK","filterChanged",stringResult);
+    }
+
+    function testSetFilter2(){
+      filterModel.on("filterChanged",onChangeFilter);
+      filterModel.setFilterObj(complexExprObject);
+      assertEquals("testSetFilter2 evento OK","filterChanged",stringResult);
+      var expr=filterModel.getFilter();
+      assertEquals("Connettore OK", Ext.ux.netbox.core.CompositeFilter.AND,  expr.getLogicalOperator());
+      assertEquals("Tipo del filtro a sinistra OK","field",expr.getLeftSide().getField().getId());
+      assertEquals("Operazione del filtro a sinistra OK","operator",expr.getLeftSide().getOperator().getId());
+      assertEquals("Valore del filtro a sinistra OK",'[{"value":"test1","label":"label1"},{"value":"test2","label":"label2"}]',Ext.util.JSON.encode(expr.getLeftSide().getValues()));
+      assertEquals("Tipo del filtro a dx OK","field2",expr.getRightSide().getField().getId());
+      assertEquals("Operazione del filtro a dx OK","operator15",expr.getRightSide().getOperator().getId());
+      assertEquals("Valore del filtro a dx OK",'[{"value":"test3","label":"label3"}]',Ext.util.JSON.encode(expr.getRightSide().getValues()));
+    }
+
+    function testGetFilter(){
+      filterModel.setFilterObj(filterObject);
+      filterObjectTmp=filterModel.getFilterObj();
+      assertEquals("testGetFilter id",filterObject.fieldId,filterObjectTmp.fieldId);
+      assertEquals("testGetFilter operator",filterObject.operatorId,filterObjectTmp.operatorId);
+      assertObjectEquals("testGetFilter values",filterObject.values,filterObjectTmp.values);
+    }
+
+    function testGetFilter2(){
+      filterModel.setFilterObj(complexExprObject);
+      filterObjectTmp=filterModel.getFilterObj();
+      assertObjectEquals("testGetFilter2 left",filterObject.fieldId,filterObjectTmp.left.fieldId);
+      assertEquals("testGetFilter2 logicalOperator",Ext.ux.netbox.core.CompositeFilter.AND,filterObjectTmp.logicalOperator);
+      assertObjectEquals("testGetFilter2 right",filterObject2.fieldId,filterObjectTmp.right.fieldId);
+    }
+
+    function testGetFilterById(){
+      id=filterModel.addElementaryFilter(filterObject);
+      assertNull("testGetFilterById null OK",filterModel.getElementaryFilterById("nonEsiste"));
+      filterTmp=filterModel.getElementaryFilterById(id);
+      assertEquals("testGetFilterById id",filterObject.fieldId,filterTmp.getField().getId());
+      assertEquals("testGetFilterById operator",filterObject.operatorId,filterTmp.getOperator().getId());
+      assertObjectEquals("testGetFilterById values",filterObject.values,filterTmp.getValues());
+    }
+
+    function testGetFilterById2(){
+      filterModel.setFilterObj(complexExprObject);
+      id=filterModel.addElementaryFilter(filterObject2);
+      filterTmp=filterModel.getElementaryFilterById(id);
+      assertEquals("testGetFilterById2 id",filterObject2.fieldId,filterTmp.getField().getId());
+      assertEquals("testGetFilterById2 operator",filterObject2.operatorId,filterTmp.getOperator().getId());
+      assertObjectEquals("testGetFilterById2 values",filterObject2.values,filterTmp.getValues());
+    }
+
+    function testAddElementaryFilterByFieldId(){
+      filterModel.on("elementaryFilterAdded",onAddElementaryFilter);
+      filterModel.addElementaryFilterByFieldId("field");
+      assertEquals("testAddElementaryFilterByFieldId evento OK","elementaryFilterAdded",stringResult);
+    }
+
+    function testAddElementaryFilterByFieldId2(){
+      filterModel.setFilterObj(complexExprObject);
+      filterModel.on("elementaryFilterAdded",onAddElementaryFilter);
+      filterModel.addElementaryFilterByFieldId("field2");
+      assertEquals("testAddElementaryFilterByFieldId2 evento OK","elementaryFilterAdded",stringResult);
+    }
+
+    function testAddElementaryFilter(){
+      filterModel.on("elementaryFilterAdded",onAddElementaryFilter);
+      filterModel.addElementaryFilter(filterObject);
+      assertEquals("testAddElementaryFilter evento OK","elementaryFilterAdded",stringResult);
+    }
+
+    function testAddElementaryFilter2(){
+      filterModel.setFilterObj(complexExprObject);
+      filterModel.on("elementaryFilterAdded",onAddElementaryFilter);
+      filterModel.addElementaryFilter(filterObject2);
+      assertEquals("testAddElementaryFilter2 evento OK","elementaryFilterAdded",stringResult);
+    }
+
+    function testRemoveFilterById(){
+      filterModel.on("elementaryFilterRemoved",onRemoveElementaryFilter);
+      id=filterModel.addElementaryFilter(filterObject);
+      filterModel.removeElementaryFilterById(id);
+      assertEquals("testRemoveFilterById event OK","elementaryFilterRemoved",stringResult);
+      assertNull("testRemoveFilterById filter removed OK",filterModel.getElementaryFilterById(id));
+    }
+
+    function testRemoveFilterById2(){
+      filterModel.setFilterObj(complexExprObject);
+      filterModel.on("elementaryFilterRemoved",onRemoveElementaryFilter);
+      id=filterModel.addElementaryFilter(filterObject2);
+      filterModel.removeElementaryFilterById(id);
+      assertEquals("testRemoveFilterById2 event OK","elementaryFilterRemoved",stringResult);
+      assertNull("testRemoveFilterById2 filter removed OK",filterModel.getElementaryFilterById(id));
+    }
+
+    function testConstructorByConfig(){
+      var fieldManager1=new Ext.ux.netbox.core.FieldManager([
+        {id: 'test0',label: 'test0'}
+      ]);
+      var filterModel2=new Ext.ux.netbox.core.FilterModel([
+        {id: 'test0',label: 'test0'}
+      ]);
+      assertEquals("testConstructorByConfig id", fieldManager1.getFieldById('test0').getId(), filterModel2.getFieldManager().getFieldById('test0').getId());
+      assertEquals("testConstructorByConfig label", fieldManager1.getFieldById('test0').getLabel(), filterModel2.getFieldManager().getFieldById('test0').getLabel());
+    }
+
+    function setUp(){
+      fieldManager=new Ext.ux.netbox.core.FieldManager();
+      filterModel=new Ext.ux.netbox.core.FilterModel(fieldManager);
+      field=new Ext.ux.netbox.core.Field("field");
+      field2=new Ext.ux.netbox.core.Field("field2");
+      operator=new Ext.ux.netbox.core.Operator("operator");
+      operator15=new Ext.ux.netbox.core.Operator("operator15");
+      field.addOperator(operator);
+      field2.addOperator(operator15);
+      field.setDefaultOperator(operator);
+      field2.setDefaultOperator(operator15);
+      fieldManager.addField(field);
+      fieldManager.addField(field2);
+      val1={value: "test1", label: "label1"};
+      val2={value: "test2", label: "label2"};
+      val3={value: "test3", label: "label3"};
+      filterObject={fieldId:"field", operatorId:"operator", values: [val1,val2]};
+      filterObject2={fieldId:"field2", operatorId:"operator15", values: [val3]};
+      complexExprObject={left:filterObject,logicalOperator:Ext.ux.netbox.core.CompositeFilter.AND,right:filterObject2};
+    }
+
+    function tearDown(){
+      fieldManager=null;
+      field=null;
+      field2=null;
+      operator=null;
+      filterModel=null;
+      stringResult=null;
+      filterObject=null;
+      filterObject2=null;
+    }
+
+    </script>
+</head>
+
+<body>
+<h1>JsUnit FilterModel Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>

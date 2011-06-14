@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>JsUnit Operation Tests</title>
+    <link rel="stylesheet" type="text/css" href="jsunit/css/jsUnitStyle.css">
+    <link rel="stylesheet" type="text/css" href="../ext/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../ext/ext-all-debug.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Operator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/core/Field.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/TextFieldOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/StringListOperator.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../src/netbox/string/EnumField.js"></script>
+    <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+        var stringFilterType = null;
+
+        function verifyContained(id,operationsArray){
+          for(var i=0; i<operationsArray.length; i++){
+            if (operationsArray[i].getId() == id)
+              return(true);
+          }
+          return(false);
+        }
+        
+        function testConstructor(){
+          assertEquals("Default operation STRING_EQUAL",stringField.getDefaultOperator().getId(),"STRING_EQUAL");
+          assertTrue("STRING_EQUAL contained",verifyContained("STRING_EQUAL",stringField.getAvailableOperators()));
+          assertTrue("STRING_DIFFERENT contained",verifyContained("STRING_DIFFERENT",stringField.getAvailableOperators()));
+        }
+        
+
+        
+        function setUp() {
+          stringField=new Ext.ux.netbox.string.EnumField("TEST");
+        }
+        
+      function tearDown(){
+        delete stringFilterType;
+        stringFilterType=null;
+      }
+    </script>
+</head>
+
+<body>
+<h1>JsUnit Operation Tests</h1>
+
+<p>This page contains tests for the JsUnit Framework. To see them, take a look at the source.</p>
+</body>
+</html>
