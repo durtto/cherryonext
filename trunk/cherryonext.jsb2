@@ -1,9 +1,10 @@
 {
     "projectName": "Cherry On Ext",
     "deployDir": "cherryonext",
-    "licenseText": "Copyright (c) 2007 - 2011, CherryOnExt Team\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n\n\n * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n     * Redistributions in binary form must reproduce the above copyright\n\n\n\n\n\n notice, this list of conditions and the following disclaimer in the\n      documentation and/or other materials provided with the distribution.\n    * Neither the name of the CherryOnExt Team nor the\n      names of its contributors may be used to endorse or promote products\n      derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL CherryOnExt Team BE LIABLE FOR ANY\nDIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\nON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",    "pkgs": [{
-    	"name": "Cherry On Ext",
-    	"file": "cherryonext.js",
+    "licenseText": " Copyright (c) 2007 - 2011, CherryOnExt Team\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n    * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n    * Redistributions in binary form must reproduce the above copyright\n      notice, this list of conditions and the following disclaimer in the\n      documentation and/or other materials provided with the distribution.\n    * Neither the name of the CherryOnExt Team nor the\n      names of its contributors may be used to endorse or promote products\n      derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL CherryOnExt Team BE LIABLE FOR ANY\nDIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\nON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+    "pkgs": [{
+    	"name": "Cherry On Ext external",
+    	"file": "pkgs/cherryonext-externals.js",
     	"isDebug": false,
         "fileIncludes": [{
           "text": "RowFitLayout.js",
@@ -14,7 +15,12 @@
         },{
           "text": "DateTime.js",
             "path": "src/external/"
+        }]
         },{
+        "name": "Cherry On Ext core",
+    	"file": "pkgs/cherryonext-core.js",
+    	"isDebug": false,
+        "fileIncludes": [{
           "text": "Operator.js",
             "path": "src/netbox/core/"
         },{
@@ -110,10 +116,10 @@
         }]
     },{
         "name": "Cherry On Ext All",
-        "file": "cherryonext-all.js",
+        "file": "cherryonext.js",
         "isDebug": true,
         "includeDeps": true,
-        "pkgDeps": ["cherryonext.js"],
+        "pkgDeps": ["pkgs/cherryonext-externals.js","pkgs/cherryonext-core.js"],
         "fileIncludes": []
     }],
     "resources": [{
