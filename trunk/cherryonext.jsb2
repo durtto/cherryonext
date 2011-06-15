@@ -1,0 +1,136 @@
+{
+    "projectName": "Cherry On Ext",
+    "deployDir": "cherryonext",
+    "licenseText": "Copyright (c) 2007 - 2011, CherryOnExt Team\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n\n\n * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n     * Redistributions in binary form must reproduce the above copyright\n\n\n\n\n\n notice, this list of conditions and the following disclaimer in the\n      documentation and/or other materials provided with the distribution.\n    * Neither the name of the CherryOnExt Team nor the\n      names of its contributors may be used to endorse or promote products\n      derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\nANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\nWARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL CherryOnExt Team BE LIABLE FOR ANY\nDIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\nLOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\nON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",    "pkgs": [{
+    	"name": "Cherry On Ext",
+    	"file": "cherryonext.js",
+    	"isDebug": false,
+        "fileIncludes": [{
+          "text": "RowFitLayout.js",
+            "path": "src/external/"
+        },{
+          "text": "Select.js",
+            "path": "src/external/"
+        },{
+          "text": "DateTime.js",
+            "path": "src/external/"
+        },{
+          "text": "Operator.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "Field.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "Filter.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "ElementaryFilter.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "CompositeFilter.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "FieldManager.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "FilterModel.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "DynamicFilterModelView.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "StaticFilterModelView.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "FilterEditor.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "AvailableValuesEditor.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "TextValuesEditor.js",
+            "path": "src/netbox/core/string/"
+        },{
+          "text": "TextFieldOperator.js",
+            "path": "src/netbox/core/string/"
+        },{
+          "text": "StringListOperator.js",
+            "path": "src/netbox/core/string/"
+        },{
+          "text": "StringField.js",
+            "path": "src/netbox/core/string/"
+        },{
+          "text": "EnumField.js",
+            "path": "src/netbox/core/string/"
+        },{
+          "text": "NumberOperators.js",
+            "path": "src/netbox/core/number/"
+        },{
+          "text": "NumberField.js",
+            "path": "src/netbox/core/number/"
+        },{
+          "text": "DateTextEditor.js",
+            "path": "src/netbox/core/date/"
+        },{
+          "text": "DateOperators.js",
+            "path": "src/netbox/core/date/"
+        },{
+          "text": "DateField.js",
+            "path": "src/netbox/core/date/"
+        },{
+          "text": "RangeField.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "RangeMenu.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "RangeItem.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "LocalStoreFilterResolver.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "QuickFilterModelView.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "FilterHeaderPlugin.js",
+            "path": "src/netbox/core/"
+        },{
+          "text": "ContainerMenuItem.js",
+            "path": "src/netbox/"
+        },{
+          "text": "ContextMenuManager.js",
+            "path": "src/netbox/"
+        },{
+          "text": "PreferenceManager.js",
+            "path": "src/netbox/"
+        },{
+          "text": "PreferenceManagerView.js",
+            "path": "src/netbox/"
+        }]
+    },{
+        "name": "Cherry On Ext All",
+        "file": "cherryonext-all.js",
+        "isDebug": true,
+        "includeDeps": true,
+        "pkgDeps": ["cherryonext.js"],
+        "fileIncludes": []
+    }],
+    "resources": [{
+        "src": "src/",
+        "dest": "src/",
+        "filters": ".*//.js"
+    },{
+        "src": "demo/",
+        "dest": "demo/",
+        "filters": ".*[//.html|//.jpg|//.png|//.gif|//.css|//.js|//.php]"
+    },{
+        "src": "resources/",
+        "dest": "resources/",
+        "filters": ".*"
+    },{
+        "src": "LICENSE.txt",
+        "dest": "LICENSE.txt",
+        "filters": ".*"
+    }]
+}
