@@ -1,0 +1,97 @@
+################################################################################
+Folder :	Inbox
+################################################################################
+
+================================================================================
+From :	kx
+To :	dandfra
+Date :	2008-02-14 09:40
+Title :	Re: What is the license of Ext.ux.layout.RowFitLayout?
+--------------------------------------------------------------------------------
+[QUOTE=dandfra]We are developing some features over ext (look at [url]http://code.google.com/p/cherryonext/[/url], we didn't upload the code yet to solve some licensing issue, but we can send you a tarball if you need it...)
+We used your layout in our code. Can we redistribute Ext.ux.layout.RowFitLayout?
+(using LGPL v3 or later, which is the same license used by Ext). Thanks[/QUOTE]
+
+Hello Sanjiv,
+
+Unfortunately, I haven't received notification from Ext forum about your message. Sorry for the delay.
+
+Thank you for the interest in my plugin. You can use it or modify freely. (If you'd like, you can use it under the terms of LGPL.)
+
+I guess it may require some re-write (at least renaming, at a time it's name doesn't seems for me to be an apt one). AFAIR, I listed some issues in the plugin thread.
+
+If want to give a credit for my work, you can mention that your layout plugin is based on (or contains parts of) the original work by Kirill Hryapin.
+
+Good luck with your project!
+
+
+With best regards,
+Kirill Hryapin
+
+================================================================================
+From :	jsakalos
+To :	dandfra
+Date :	2008-02-19 10:45
+Title :	Re: Can we use your DateTimeField in Cherry on Ext?
+--------------------------------------------------------------------------------
+Yes, you can use it for purpose you describe.
+Cheers,
+saki
+[quote=dandfra]Hi, 
+we released yesterday the cherry on ext library (look in the Ext 2.0 forum for user extensions and plugins) 
+I think that your DateTimeField widget can be a very good solution to edit date and time values inside filters in the library. The license of the library is LGPL v 3 (exactly as your plugin). 
+I read on the header of the file that we need your permission to release it with our library, and so I'm asking for your permission. 
+If you want we can send you a tarball with the alpha (very alpha) state of our work with your class. We will aknowledge the ownership of the class to you in the main page of the project (in the thanks section) and in the header of the main distrubution file.[/quote]
+
+================================================================================
+From :	andrei.neculau
+To :	dandfra
+Date :	2008-03-02 09:34
+Title :	Re: License of Ext.ux.Andrie.Select
+--------------------------------------------------------------------------------
+I think I've already replied to you, to an email request.
+
+Just to be sure: The compoment/plugin is public domain (GPL)
+Just use it! The only mandatory thing is to provide credentials (name, url, email)
+
+I'll bring some updates to the component in the near future. Stay tuned!
+
+[quote=dandfra]We are developing some features over ext (look at [URL]http://code.google.com/p/cherryonext/[/URL], we didn't upload the code yet to solve some licensing issue like this one, but we can send you a tarball if you need it...)
+We used your multi select in our code. Can we redistribute Ext.ux.Andrie.Select?
+(using LGPL v3 or later, which is the same license used by Ext). Thanks[/quote]
+
+================================================================================
+ Yesterday (2010-04-08), 05:32 PM
+	
+dandfra  
+Ext User
+ 	
+Join Date: Jun 2007
+Location: Trento, Italy
+Posts: 115
+
+ @woodstocktm
+First of all thanks for your contribution 
+
+Before adding to the repository, is it ok for you to license it using LGPL v2 or later? (If yes a copy of your answer with license information will be added in the repository).
+
+Ciao and thanks again
+      
+  #18          
+ Yesterday (2010-04-08), 05:56 PM
+woodstocktm  
+Ext User
+ 	
+Join Date: Apr 2010
+Location: Bonn, Germany
+Posts: 2
+
+
+Sure it's ok! 
+
+So it is ok for me to license the above mentioned small contribution using LGPL v2 or later, right? I hope that's it 
+
+Cheers,
+
+Thorsten
+
