@@ -1,4 +1,4 @@
-// $Id:$
+// $Id$
 
 Ext.namespace('Ext.ux.netbox.string');
 
