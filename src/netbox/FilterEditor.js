@@ -1,20 +1,17 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox');
-
 /** For a description of the parameters look at the documentation of Ext.Editor
   * @class This class extends Editor to allow an object as value (i.e. objects that String() translate into [object Object]. The 2 changes rows 
   * are documented using this comment: <pre>//<-- changed</pre>
   * @constructor
   */
-Ext.ux.netbox.FilterEditor = function(field,config){
-  Ext.ux.netbox.FilterEditor.superclass.constructor.call(this,field,config);
-};
+Ext.define('Ext.ux.netbox.FilterEditor', {
+	extend: 'Ext.grid.plugin.CellEditing',
+	constructor: function(field,config) {
+	  this.field=field;
+	  Ext.ux.netbox.FilterEditor.superclass.constructor.call(this,config);
+	},
 
-Ext.extend(Ext.ux.netbox.FilterEditor,Ext.grid.GridEditor,/** @scope Ext.ux.netbox.FilterEditor.prototype */
-{
-  /** This is absolutely equal to the method of GridEditor, but it calls this.setValue and not this.field.setValue
-    */
   startEdit : function(el, value){
     if(this.editing){
         this.completeEdit();
@@ -47,8 +44,7 @@ Ext.extend(Ext.ux.netbox.FilterEditor,Ext.grid.GridEditor,/** @scope Ext.ux.netb
     this.show();
   },
 
-  /** This is absolutely equal to the method of GridEditor, but it calls Ext.util.JSON.encode and not String to compare the values
-    */
+  
   completeEdit : function(remainVisible){
     if(!this.editing){
       return;
@@ -58,7 +54,7 @@ Ext.extend(Ext.ux.netbox.FilterEditor,Ext.grid.GridEditor,/** @scope Ext.ux.netb
       v = this.startValue;
       this.cancelEdit(true);
     }
-    if(Ext.util.JSON.encode(v) === Ext.util.JSON.encode(this.startValue) && this.ignoreNoChange){//<-- changed
+    if(Ext.JSON.encode(v) === Ext.JSON.encode(this.startValue) && this.ignoreNoChange){//<-- changed
       this.editing = false;
       this.hide();
       return;

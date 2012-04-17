@@ -1,20 +1,4 @@
-// $Id$
-
-/** Create a new RangeField
-  * A range field is a widget used to edit ranges. It's a trigger field that has in the popup 2 Ext.form.TextField (or classes derived by a TextField)
-  * to allow the user to enter the from and the to end points of a range 
-  * @extends Ext.form.TriggerField
-  * @constructor
-  * @param {Object} config Configuration options
-  * <ul>
-  *   <li> fromConfig The config for the from object</li>
-  *   <li> toConfig The config for the from object</li>
-  *   <li> textCls The Class to use as from and to (for example Ext.form.TextField)</li>
-  *   <li> minListWidth The min width (in pixel) of the popup. Optional. Default 20 </li>
-  *   <li> fieldSize The size of the field (in number of characters). Optional. Default 20</li>
-  * </ul>
-  */
-Ext.define('Ext.ux.netbox.core.RangeField', {
+Ext.define('Ext.ux.netbox.core.RangeEditor', {
 	extend: 'Ext.form.field.Trigger',
 	constructor: function(config) {
 	  this.textCls=config.textCls;

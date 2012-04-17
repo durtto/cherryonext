@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox');
-
 /** It creates a new input text mask.
  * @class InputTextMask is a plugin for Ext.form.TextField, used to add an input mask to the field.
  * Mask Individual Character Usage:
@@ -26,49 +24,48 @@ Ext.namespace('Ext.ux.netbox');
  * @param (String) mask The input mask defining string
  * @param (boolean) clearWhenInvalid True to clear the mask when the field blurs and the text is invalid. Optional, default is true.
  */
-Ext.ux.netbox.InputTextMask = function(mask,clearWhenInvalid) {
+Ext.define('Ext.ux.netbox.InputTextMask', {
+	constructor: function(mask,clearWhenInvalid) {
 
-    if(clearWhenInvalid === undefined){
-      this.clearWhenInvalid = true;
-    }else{
-      this.clearWhenInvalid = clearWhenInvalid;
-    }
-    this.rawMask = mask;
-    this.viewMask = '';
-    this.maskArray = [];
-    var mai = 0;
-    var regexp = '';
-    for(var i=0; i<mask.length; i++){
-        if(regexp){
-            if(regexp == 'X'){
-                regexp = '';
-            }
-            if(mask.charAt(i) == 'X'){
-                this.maskArray[mai] = regexp;
-                mai++;
-                regexp = '';
-            } else {
-                regexp += mask.charAt(i);
-            }
-        } else if(mask.charAt(i) == 'X'){
-            regexp += 'X';
-            this.viewMask += '_';
-        } else if(mask.charAt(i) == '9' || mask.charAt(i) == 'L' || mask.charAt(i) == 'l' || mask.charAt(i) == 'A') {
-            this.viewMask += '_';
-            this.maskArray[mai] = mask.charAt(i);
-            mai++;
-        } else {
-            this.viewMask += mask.charAt(i);
-            this.maskArray[mai] = RegExp.escape(mask.charAt(i));
-            mai++;
-        }
-    }
-
-    this.specialChars = this.viewMask.replace(/(L|l|9|A|_|X)/g,'');
-};
-
-Ext.ux.netbox.InputTextMask.prototype = {
-
+	    if(clearWhenInvalid === undefined){
+	      this.clearWhenInvalid = true;
+	    }else{
+	      this.clearWhenInvalid = clearWhenInvalid;
+	    }
+	    this.rawMask = mask;
+	    this.viewMask = '';
+	    this.maskArray = [];
+	    var mai = 0;
+	    var regexp = '';
+	    for(var i=0; i<mask.length; i++){
+	        if(regexp){
+	            if(regexp == 'X'){
+	                regexp = '';
+	            }
+	            if(mask.charAt(i) == 'X'){
+	                this.maskArray[mai] = regexp;
+	                mai++;
+	                regexp = '';
+	            } else {
+	                regexp += mask.charAt(i);
+	            }
+	        } else if(mask.charAt(i) == 'X'){
+	            regexp += 'X';
+	            this.viewMask += '_';
+	        } else if(mask.charAt(i) == '9' || mask.charAt(i) == 'L' || mask.charAt(i) == 'l' || mask.charAt(i) == 'A') {
+	            this.viewMask += '_';
+	            this.maskArray[mai] = mask.charAt(i);
+	            mai++;
+	        } else {
+	            this.viewMask += mask.charAt(i);
+	            this.maskArray[mai] = RegExp.escape(mask.charAt(i));
+	            mai++;
+	        }
+	    }
+	
+	    this.specialChars = this.viewMask.replace(/(L|l|9|A|_|X)/g,'');
+	},
+	
     init : function(field) {
         this.field = field;
 
@@ -132,7 +129,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
         } else if(maskKey == 'A'){
             return keycode.pressedKey.match(/[A-Za-z0-9]/);
         } else if(maskKey){
-            return (keycode.pressedKey.match(new RegExp(maskKey)));
+            return (keycode.pressedKey.match(Ext.create('RegExp',maskKey)));
         }
         return(null);
     },
@@ -195,7 +192,7 @@ Ext.ux.netbox.InputTextMask.prototype = {
 
     startTask : function(setOldCursor){
       if(this.task===undefined){
-        this.task=new Ext.util.DelayedTask(this.managePaste,this);
+        this.task=Ext.create('Ext.util.DelayedTask',this.managePaste,this);
       }
       if(setOldCursor!== false){
         this.oldCursorPos=this.getCursorPosition();
@@ -395,12 +392,12 @@ Ext.ux.netbox.InputTextMask.prototype = {
         cursorPosition.dec = function(){cursorPosition.start--;cursorPosition.end--;};
         return(cursorPosition);
     }
-};
+});
 
 Ext.applyIf(RegExp, {
-  escape : function(str) {
-    return str.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
-  }
-});
+	  escape : function(str) {
+	    return str.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
+	  }
+	});
 
 Ext.ux.InputTextMask=Ext.ux.netbox.InputTextMask;

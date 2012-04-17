@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox');
-
 /** Creates a new PreferenceManager.
   * @constructor
   * @extends Ext.util.Observable
@@ -108,113 +106,59 @@ Ext.namespace('Ext.ux.netbox');
   * });
   * </pre>
   */
-Ext.ux.netbox.PreferenceManager=function(config){
+Ext.define('Ext.ux.netbox.PreferenceManager', {
+	extend: 'Ext.util.Observable',
+	constructor: function(config) {
+	  Ext.ux.netbox.PreferenceManager.superclass.constructor.call(this,config);
 
-  Ext.ux.netbox.PreferenceManager.superclass.constructor.call(this,config);
-
-  this.addEvents(/** @scope Ext.ux.netbox.PreferenceManager.prototype */{
-    /** Fires when a preference is saved
-      * @event preferenceSaved
-      * @param {String} prefId The id of the preference that was saved
-      * @param {String} prefName The name of the saved preference
-      */
-    preferenceSaved: true,
-    /** Fires when a preference delete failed, that is when the deletePrefURL returned an error HTTP status code (for example 500)
-      * @event preferenceDeleteFailed
-      * @param {Array} prefIdArray An array with the ids of all the preferences to delete.
-      * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
-      */
-    preferenceDeleteFailed: true,
-    /** Fires when applying the default preference failed, that is when the applyDefaultPrefURL returned an error HTTP status code (for example 500)
-      * @event applyDefaultPreferenceFailed
-      * @param {Array} prefIdArray An array with all the preferences to delete.
-      * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
-      */
-    applyDefaultPreferenceFailed: true,
-    /** Fires when applying a preference failed, that is when the loadPrefURL returned an error HTTP status code (for example 500)
-      * <b> NB: </b> This event is not fired when the loading of the default preference fails. Look at applyDefaultPreferenceFailed instead
-      * @event applyPreferenceFailed
-      * @param {String} prefId The id of the preference that was not applied
-      * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
-      */
-    applyPreferenceFailed: true,
-    
-    /** Fires when saving a preference failed, that is when the savePrefURL returned an error HTTP status code (for example 500)
-      * @event preferenceSaveFailed
-      * @param {String} prefId The id of the preference that was not saved
-      * @param {String} prefName The name of the preference that was not saved
-      * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
-      */
-    preferenceSaveFailed: true,
-    
-    /** Fires when a preference is deleted
-      * @event preferenceDeleted
-      * @param {Array} prefIdArray An array with the ids of all the deleted preferences.
-      */
-    preferenceDeleted : true,
-    /** Fires when a load on the store that lists the preferences fails, that is when the getAllPrefURL returned an error HTTP status code (for example 500)
-      * @event loadPreferencesFailed
-      * @param {XMLHttpRequest} response The response of the ajax method. See <a HREF="http://www.w3.org/TR/XMLHttpRequest/"> XMLHttpRequest reference </a> for more details
-      */
-    loadPreferencesFailed: true
-  });
-  /** The id of the preference manager. It's used by the backend to select only the preferences of this preferencesManager, if there are more than one.
-    * The tern (id, userName, preferenceId) should be unique.
-    * @type String
-    */
-  this.id=config.id;
-  /** The name of the user that owns the prefereces
-    * @type String
-    */
-  this.userName=config.userName;
-  /** The setter function that applies the preference restoring the state of the object
-    * @type Function
-    */
-  this.setFn=config.setFn;
-  /** The getter function that returns the state of the object
-    * @type Function
-    */
-  this.getFn=config.getFn;
-  /** The scope of the getter and setter function
-    * @type Object
-    */
-  this.fnScope=config.fnScope;
-  /** The URL used to get all the preferences by user
-    * @type String
-    */
-  this.getAllPrefURL=config.getAllPrefURL;
-  /** The URL used to apply the default preference
-    * @type String
-    */
-  this.applyDefaultPrefURL=config.applyDefaultPrefURL;
-  /** The URL used to load a specified preference
-    * @type String
-    */
-  this.loadPrefURL=config.loadPrefURL;
-  /** The URL used to save a specified preference
-    * @type String
-    */
-  this.savePrefURL=config.savePrefURL;
-  /** The URL used to delete a specified preference
-    * @type String
-    */
-  this.deletePrefURL=config.deletePrefURL;
-}
-
-Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.ux.netbox.PreferenceManager.prototype */
-{
-  /** This method returns a store that loads the preferences by userName.
-    * The store returned has these columns: prefName, prefDesc, isDefault
-    * @return {Ext.data.Store} store The store contains all of a user's preferences
-    */
+	  this.addEvents({
+	    
+	    preferenceSaved: true,
+	    
+	    preferenceDeleteFailed: true,
+	    
+	    applyDefaultPreferenceFailed: true,
+	    
+	    applyPreferenceFailed: true,
+	    
+	    
+	    preferenceSaveFailed: true,
+	    
+	    
+	    preferenceDeleted : true,
+	    
+	    loadPreferencesFailed: true
+	  });
+	  
+	  this.id=config.id;
+	  
+	  this.userName=config.userName;
+	  
+	  this.setFn=config.setFn;
+	  
+	  this.getFn=config.getFn;
+	  
+	  this.fnScope=config.fnScope;
+	  
+	  this.getAllPrefURL=config.getAllPrefURL;
+	  
+	  this.applyDefaultPrefURL=config.applyDefaultPrefURL;
+	  
+	  this.loadPrefURL=config.loadPrefURL;
+	  
+	  this.savePrefURL=config.savePrefURL;
+	  
+	  this.deletePrefURL=config.deletePrefURL;
+  },
+	
   getAllPreferences : function(){
     if(this.store === undefined){
-      this.store = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
+      this.store = Ext.create('Ext.data.Store',{
+        proxy: Ext.create('Ext.data.HttpProxy',{
           url: this.getAllPrefURL
         }),
         baseParams: {id: this.id, userName: this.userName},
-        reader: new Ext.data.JsonReader({
+        reader: Ext.create('Ext.data.JsonReader',{
           root: 'preferences',
           totalProperty: 'totalCount',
           fields: [
@@ -231,38 +175,30 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
     return this.store;
   },
   
-  /** @private
-    * @ignore
-    */
+  
   _loadExceptionCbk: function(proxy, request, response){
     this.fireEvent("loadPreferencesFailed",response);
   },
 
-  /** This method returns the default preference by userName.
-    * @return {void}
-    */
+  
   applyDefaultPreference : function(){
     Ext.Ajax.request({
        url: this.applyDefaultPrefURL,
-       success: this.applyDefaultPreferenceCbk.createDelegate(this),
-       failure: this.errorFunction.createDelegate(this),
+       success: Ext.bind(this.applyDefaultPreferenceCbk,this),
+       failure: Ext.bind(this.errorFunction,this),
        params: {
          id: this.id,
          userName: this.userName}
     });
   },
 
-  /** This method loads the preference selected.
-    * @param {String} prefName The name of the preference
-    * @param {Object} prefValue The value of preferences in JSON format
-    * @return {void}
-    */
+  
   applyPreference : function(prefId,prefValue){
     if(prefValue===undefined){
       Ext.Ajax.request({
          url: this.loadPrefURL,
-         success: this.applyPreferenceCbk.createDelegate(this),
-         failure: this.errorFunction.createDelegate(this),
+         success: Ext.bind(this.applyPreferenceCbk,this),
+         failure: Ext.bind(this.errorFunction,this),
          params: {
            id: this.id,
            userName: this.userName,
@@ -273,39 +209,23 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
     }
   },
   
-  /** This method applies the default preference, it it exist
-    * @param {Object} response The XMLHttpRequest object containing the preference.
-    * @param {Object} options The parameter to the request call.
-    * @return {void}
-    * @private
-    */
+  
   applyDefaultPreferenceCbk : function(response,options){
     if(response.responseText!=""){
       this.applyPreferenceCbk(response,options);
     }
   },
 
-  /** This method converts decodes the responseText using JSON and then it calls the setter function.
-    * @param {Object} response The XMLHttpRequest object containing the preference.
-    * @param {Object} options The parameter to the request call.
-    * @return {void}
-    * @private
-    */
+  
   applyPreferenceCbk : function(response,options){
-    var pref=Ext.util.JSON.decode(response.responseText);
+    var pref=Ext.JSON.decode(response.responseText);
     this.setFn.call(this.fnScope,pref);
   },
 
-  /** The method that saves the preference.
-    * @param {String} prefId The id of the preference to save
-    * @param {String} prefName The name of the preference to save
-    * @param {String} prefDesc The description of the preference
-    * @param {boolean} isDefault True if it's default preference
-    * @return {String} output decoded with JSON. If it's true (===) it means success, otherwise it's an error message
-    */
+  
   savePreference : function(prefId,prefName,prefDesc,isDefault){
     var values=this.getFn.call(this.fnScope);
-    var valueEnc=Ext.util.JSON.encode(values);
+    var valueEnc=Ext.JSON.encode(values);
     var cfg={
        url: this.savePrefURL,
        params: {
@@ -317,30 +237,23 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
          prefValue: valueEnc,
          isDefault: isDefault
        },
-       success: this._onSaveSuccessCbk.createDelegate(this),
-       failure: this._onSaveFailureCbk.createDelegate(this)
+       success: Ext.bind(this._onSaveSuccessCbk,this),
+       failure: Ext.bind(this._onSaveFailureCbk,this)
     };
     Ext.Ajax.request(cfg);
   },
 
-  /** @private
-    * @ignore
-    */
+  
   _onSaveSuccessCbk : function(response,options){
     this.fireEvent('preferenceSaved',options.params.prefId,options.params.prefName);
   },
 
-  /** @private
-    * @ignore
-    */
+  
   _onSaveFailureCbk : function(response,options){
     this.fireEvent('preferenceSaveFailed',options.params.prefId, options.params.prefName,response);
   },
 
-  /** This method deletes the preference selected.
-    * @param {Array} prefIdArray Array of preference's Id to delete
-    * @return {String} output decoded with JSON. If it's true (===) it means success, otherwise it's an error message
-    */
+  
   deletePreferences : function(prefIdArray){
     var cfg={
        url: this.deletePrefURL,
@@ -349,29 +262,23 @@ Ext.extend(Ext.ux.netbox.PreferenceManager, Ext.util.Observable,/** @scope Ext.u
          userName: this.userName,
          prefIdArray: prefIdArray
        },
-       success: this._onDeleteSuccessCbk.createDelegate(this),
-       failure: this._onDeleteFailureCbk.createDelegate(this)
+       success: Ext.bind(this._onDeleteSuccessCbk,this),
+       failure: Ext.bind(this._onDeleteFailureCbk,this)
     };
     Ext.Ajax.request(cfg);
   },
 
-  /** @private
-    * @ignore
-    */
+  
   _onDeleteSuccessCbk : function(response,options){
     this.fireEvent('preferenceDeleted',options.params.prefIdArray);
   },
 
-  /** @private
-    * @ignore
-    */
+  
   _onDeleteFailureCbk : function(response,options){
     this.fireEvent('preferenceDeleteFailed',options.params.prefIdArray,response);
   },
   
-  /** @private
-    * @ignore
-    */
+  
   errorFunction : function(response,options){
     if(options.params.prefId===undefined){
       this.fireEvent('applyDefaultPreferenceFailed',response);

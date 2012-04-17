@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox.core');
-
 /** It create a new composite filter
   * @class The class implements composite filter, for example (A=1 AND B=2) OR C=3 is a composite filter.
   * Since the logical operators (AND,OR) are binary operator, a composite filter has 2 sides (the left and the right one), and the logical operator between the 2.
@@ -14,71 +12,59 @@ Ext.namespace('Ext.ux.netbox.core');
   * @throws {String} If the logical operator is unknown.
   * @extends Ext.ux.netbox.core.Filter
   */
-Ext.ux.netbox.core.CompositeFilter = function (left, logicalOperator, right){
-  Ext.ux.netbox.core.CompositeFilter.superclass.constructor.call(this);
-  this.addEvents(/** @scope Ext.ux.netbox.core.CompositeFilter.prototype */{
-    /** Fires when the left side of the filter is changed
-      * @event leftSideChanged
-      * @param {Ext.ux.netbox.core.CompositeFilter} filter The composite filter that fires the event
-      */
-    leftSideChanged : true,
-    /** Fires when the right side of the filter is changed
-      * @event rightSideChanged
-      * @param {Ext.ux.netbox.core.CompositeFilter} filter The composite filter that fires the event
-      */
-    rightSideChanged : true,
-    /** Fires when the logical operator is changed
-      * @event operatorChanged
-      * @param {Ext.ux.netbox.core.CompositeFilter} filter The composite filter that fires the event
-      */
-    operatorChanged : true
-  });
-  /** The left side of the composite filter
-    * @type Ext.ux.netbox.core.Filter
-    * @private
-    */
-  this.left;
-  this.setLeftSide(left);
-  /** The logical operator between the left and the right side of the composite filter
-    * @type String
-    * @private
-    */
-  this.logicalOperator;
-  this.setLogicalOperator(logicalOperator);
-  /** The right side of the composite filter
-    * @type Ext.ux.netbox.core.Filter
-    * @private
-    */
-  this.right;
-  this.setRightSide(right);
-}
-
-/** @ignore
-  */
-Ext.ux.netbox.core.CompositeFilter.OR="OR";
-/** @ignore
-  */
-Ext.ux.netbox.core.CompositeFilter.AND="AND";
-
-Ext.extend(Ext.ux.netbox.core.CompositeFilter, Ext.ux.netbox.core.Filter,/** @scope Ext.ux.netbox.core.CompositeFilter.prototype */
-{
-  /** A constant representing the AND logical operator. This is a static property of CompositeFilter
-    * @type String
-    */
-  //here only to generate documentation
-  AND: Ext.ux.netbox.core.CompositeFilter.AND,
+Ext.define('Ext.ux.netbox.core.CompositeFilter', {
+	extend: 'Ext.ux.netbox.core.Filter',
+	constructor: function(left, logicalOperator, right) {
+	  Ext.ux.netbox.core.CompositeFilter.superclass.constructor.call(this);
+	  this.addEvents({
+		    /** Fires when the left side of the filter is changed
+		      * @event leftSideChanged
+		      * @param {Ext.ux.netbox.core.CompositeFilter} filter The composite filter that fires the event
+		      */
+	    leftSideChanged : true,
+	    /** Fires when the right side of the filter is changed
+	      * @event rightSideChanged
+	      * @param {Ext.ux.netbox.core.CompositeFilter} filter The composite filter that fires the event
+	      */
+	    rightSideChanged : true,
+	    /** Fires when the logical operator is changed
+	      * @event operatorChanged
+	      * @param {Ext.ux.netbox.core.CompositeFilter} filter The composite filter that fires the event
+	      */
+	    operatorChanged : true
+	  });
+	  /** The left side of the composite filter
+	    * @type Ext.ux.netbox.core.Filter
+	    * @private
+	    */
+	  this.left;
+	  this.setLeftSide(left);
+	  /** The logical operator between the left and the right side of the composite filter
+	    * @type String
+	    * @private
+	    */
+	  this.logicalOperator;
+	  this.setLogicalOperator(logicalOperator);
+	  /** The right side of the composite filter
+	    * @type Ext.ux.netbox.core.Filter
+	    * @private
+	    */
+	  this.right;
+	  this.setRightSide(right);
+	},
   
-  /** A constant representing the OR logical operator. This is a static property of CompositeFilter
-    * @type String
-    */
   //here only to generate documentation
-  OR: Ext.ux.netbox.core.CompositeFilter.OR,
+  AND: "AND",
+  
+  
+  //here only to generate documentation
+  OR: "OR",
   
   /** This method sets the logical operator of this composite filter and fires the event operatorChanged.
-    * The logical operator must be one among <em>Ext.ux.netbox.core.CompositeFilter.AND</em> and <em>Ext.ux.netbox.core.CompositeFilter.OR</em>. If not an exception is thrown.
-    * @param {String} logicalOperator The logical operator
-    * @throws {String} If the logical operator is unknown
-    */
+   * The logical operator must be one among <em>Ext.ux.netbox.core.CompositeFilter.AND</em> and <em>Ext.ux.netbox.core.CompositeFilter.OR</em>. If not an exception is thrown.
+   * @param {String} logicalOperator The logical operator
+   * @throws {String} If the logical operator is unknown
+   */
   setLogicalOperator : function(logicalOperator){
     if (logicalOperator!=Ext.ux.netbox.core.CompositeFilter.AND && logicalOperator!=Ext.ux.netbox.core.CompositeFilter.OR) {
       throw("Unknown logical operator : "+logicalOperator);
@@ -87,55 +73,55 @@ Ext.extend(Ext.ux.netbox.core.CompositeFilter, Ext.ux.netbox.core.Filter,/** @sc
     this.fireEvent("operatorChanged",this);
   },
   /** This method returns the logical operator of this composite filter.
-    * @return {String} The logical operator
-    */
+   * @return {String} The logical operator
+   */
   getLogicalOperator : function(){
     return(this.logicalOperator);
   },
   /** This method sets the right side of a composite filter and fires the event rightSideChanged.
-    * @param {Ext.ux.netbox.core.Filter} right The new right side.
-    */
+   * @param {Ext.ux.netbox.core.Filter} right The new right side.
+   */
   setRightSide : function(right){
     this.right=right;
     this.fireEvent("rightSideChanged",this);
   },
   /** This method returns the right side of this composite filter.
-    * @return {Ext.ux.netbox.core.Filter} The right side of this composite filter
-    */
+   * @return {Ext.ux.netbox.core.Filter} The right side of this composite filter
+   */
   getRightSide : function (){
     return(this.right);
   },
   /** This method sets the left side of this composite filter and fires the event leftSideChanged.
-    * @param {Ext.ux.netbox.core.Filter} left The new left side.
-    */
+   * @param {Ext.ux.netbox.core.Filter} left The new left side.
+   */
   setLeftSide : function(left){
     this.left=left;
     this.fireEvent("leftSideChanged",this);
   },
   /** This method returns the left side of this composite filter.
-    * @return {Ext.ux.netbox.core.Filter} The left side of this composite filter
-    */
+   * @return {Ext.ux.netbox.core.Filter} The left side of this composite filter
+   */
   getLeftSide : function(){
     return(this.left);
   },
   /** This method sets the current composite filter.
-    * @param {Object} filter {left : Ext.ux.netbox.core.Filter, logicalOperator : String, right : Ext.ux.netbox.core.Filter}
-    */
+   * @param {Object} filter {left : Ext.ux.netbox.core.Filter, logicalOperator : String, right : Ext.ux.netbox.core.Filter}
+   */
   setFilterObj : function(filter){
     this.setLeftSide(filter.left);
     this.setLogicalOperator(filter.logicalOperator);
     this.setRightSide(filter.right);
   },
   /** This method returns a javascript object representing the composite filter.
-    * @return {Object} {left : Ext.ux.netbox.core.Filter, logicalOperator : String, right : Ext.ux.netbox.core.Filter}
-    */
+   * @return {Object} {left : Ext.ux.netbox.core.Filter, logicalOperator : String, right : Ext.ux.netbox.core.Filter}
+   */
   getFilterObj : function(){
     return {left:this.getLeftSide(), logicalOperator:this.getLogicalOperator(), right:this.getRightSide()};
   },
   /** This method returns an elementary filter by Id. If not found returns null.
-    * @param {String} id The id of the elemenatry filter
-    * @return {Ext.ux.netbox.core.ElementaryFilter} The elemenatry filter with the given id or null if elemenatry filter is not found
-    */
+   * @param {String} id The id of the elemenatry filter
+   * @return {Ext.ux.netbox.core.ElementaryFilter} The elemenatry filter with the given id or null if elemenatry filter is not found
+   */
   getElementaryFilterById : function(id){
     var toReturn=this.getLeftSide().getElementaryFilterById(id);
     if(toReturn!=null)
@@ -145,9 +131,9 @@ Ext.extend(Ext.ux.netbox.core.CompositeFilter, Ext.ux.netbox.core.Filter,/** @sc
     return null;
   },
   /** This method returns an array of elemenatry filter with the same fieldId. If not found returns an empty array.
-    * @param {String} fieldId The id of the field
-    * @return {Array of Ext.ux.netbox.core.ElementaryFilter} The array of elemenatry filters with the same fieldId or an empty array If not found
-    */
+   * @param {String} fieldId The id of the field
+   * @return {Array of Ext.ux.netbox.core.ElementaryFilter} The array of elemenatry filters with the same fieldId or an empty array If not found
+   */
   getElementaryFiltersByFieldId : function(fieldId){
     var toReturn=this.getLeftSide().getElementaryFiltersByFieldId(fieldId);
     if(this.getRightSide()!=null)
@@ -156,3 +142,9 @@ Ext.extend(Ext.ux.netbox.core.CompositeFilter, Ext.ux.netbox.core.Filter,/** @sc
   }
 
 });
+
+Ext.ux.netbox.core.CompositeFilter.OR="OR";
+
+Ext.ux.netbox.core.CompositeFilter.AND="AND";
+
+

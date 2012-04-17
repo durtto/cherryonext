@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox.date');
-
 /** It instantiates a new DateOperator.
   * @class This is the general class for all DateOperators (with the exception of DatePeriodOperator)<BR>
   * <B>NB:</B> The value of a date operator (ie: value[0].value) will be always in the following format: Y-m-d H:i:s
@@ -135,133 +133,62 @@ Ext.extend(Ext.ux.netbox.date.DateRangeEditor,Ext.ux.netbox.FilterEditor,/** @sc
   * @extends Ext.ux.netbox.date.DateOperator
   * @param {String} format See format parameter of DateField
   */
-Ext.ux.netbox.date.DateRangeOperator = function(format) {
-  Ext.ux.netbox.date.DateRangeOperator.superclass.constructor.call(this,"DATE_RANGE",this.includeText,format);
-  this.mapping={
-    d: '99',
-    m: '99',
-    Y: '9999',
-    y: '99',
-    H: '99',
-    i: '99',
-    s: '99'
-  }
-  var validateFn=function(value){
-    var isOk=this.getField().emptyNotAllowedFn(value);
-    if(isOk!==true){
-      return(isOk);
-    }
-    if(value.length!=2){
-      return(this.bothFromAndToNotEmpty);
-    }
-    var fromADate=this.getField().checkDate(value[0].value,'Y-m-d H:i:s');
-    var toADate=this.getField().checkDate(value[1].value,'Y-m-d H:i:s');
-    if(!fromADate && !toADate){
-      return(this.toAndFromNotADate);
-    }
-
-    if(!fromADate){
-      return(this.fromNotADate);
-    }
-
-    if(!toADate){
-      return(this.toNotADate);
-    }
-
-    if(Date.parseDate(value[0].value,'Y-m-d H:i:s')>Date.parseDate(value[1].value,'Y-m-d H:i:s')){
-      return(this.fromBiggerThanTo);
-    }
-    return(true);
-  }
-  this.setValidateFn(validateFn);
-}
-
-Ext.extend(Ext.ux.netbox.date.DateRangeOperator,Ext.ux.netbox.date.DateOperator,/** @scope Ext.ux.netbox.date.DateRangeOperator.prototype */{
-  /** Label of the from field
-    * @type {String}
-    */
-  fromText    : 'from',
-  /** Label of the to field
-    * @type {String}
-    */
-  toText      : 'to',
-  /** Label of the operator
-    * @type {String}
-    */
-  includeText : 'between',
-  /** Error text when there is only a value and not 2
-    * @type {String}
-    */
-  bothFromAndToNotEmpty: "Both 'from' and 'to' must have a value",
-  /** Error text when from is bigger than to
-    * @type {String}
-    */
-  fromBiggerThanTo: "From is bigger than to",
-  /** Error text when from is not a valid date
-    * @type {String}
-    */
-  fromNotADate: "From is not a valid date",
-  /** Error text when to is not a valid date
-    * @type {String}
-    */
-  toNotADate: "To is not a valid date",
-  /** Error text when both to and from are not valid dates
-    * @type {String}
-    */
-  toAndFromNotADate: "From and to are not valid dates",
-
-  /** This method creates an editor used to edit the range of dates.
-    * @param {String} operatorId The operatorId actually used in the filter
-    * @return {Ext.Editor} The field used to edit the values of this filter
-    */
+Ext.define('Ext.ux.netbox.date.DateOperator', {
+	extend: 'Ext.ux.netbox.core.Operator',
+	constructor: function(id,label,format) {
+	  Ext.ux.netbox.date.DateOperator.superclass.constructor.call(this,id,label,format);
+	  
+	  this.editor=null;
+	  
+	  this.format=format;
+  },
+	
   createEditor: function(operatorId){
-    var field=new Ext.ux.netbox.core.RangeField({
-      textCls: Ext.form.TextField,
-      fromConfig: this.getTextFieldConfig(),
-      toConfig: this.getTextFieldConfig(),
-      minListWidth: 300,
-      fieldSize: 36
-    });
-
-    var editor=new Ext.ux.netbox.date.DateRangeEditor(field,{format: this.format});
-    field.on("editingcompleted",editor.completeEdit,editor);
+    var editor;
+    var splittedFormat=this.format.split(" ");
+    if(splittedFormat.length > 1){
+      var dateTimeField=Ext.create('Ext.ux.form.DateTime',{
+                dateFormat: splittedFormat[0],
+                dateConfig: {
+                  altFormats: 'Y-m-d|Y-n-d'
+                },
+                otherToNow: false,
+                timeFormat: splittedFormat[1],
+                timeConfig: {
+                  altFormats: 'H:i:s'
+                }
+              });
+      editor=Ext.create('Ext.ux.netbox.date.DateTextEditor',dateTimeField,{format: this.format});
+    }else{
+      editor=Ext.create('Ext.ux.netbox.date.DateTextEditor',Ext.create('Ext.form.DateField',{
+                format: splittedFormat[0],
+                allowBlank: false
+              }),
+              {format: this.format}
+            );
+    }
     return editor;
   },
-  /** This function returns a string rendering the values. The format is da: (value[0].label), a: (value[1].label).
-    * If the value doesn't have any of the elements, "" is used.
-    * @param {Array} value The value to render
-    * @return {String} The rendered value
-    * @private
-    */
-  render: function(value){
-    var valueFrom=value[0] == undefined ? '' : value[0].label;
-    var valueTo=value[1] == undefined ? '' : value[1].label;
-    return(this.fromText+": "+valueFrom+", "+this.toText+": "+valueTo);
-  },
 
-  /** It returns the config to use to create the Ext.form.TextField
-    * It's composed by a plugin that register a quickTip and by a InputTextMask with the right mask as plugin,
-    * and by a function that check if the date is valid
-    * @private
-    * @return {Object} An object with 2 elements, a plugin field with an array as value, containing an inputMask and a plugin that create a quickTip, and a function that validates the dates
-    */
-  getTextFieldConfig: function(){
-    return({plugins: [new Ext.ux.netbox.InputTextMask(this.calculateMask(), true)]});
-  },
-  /** This method, given the format, returns a mask to use
-    * in the InputTextMask for the given format
-    * @return {String} The format to use
-    */
-  calculateMask: function(){
-	  var maskTmp='';
-    for(var i=0; i<this.format.length;i++){
-      if(this.mapping[this.format.charAt(i)]){
-        maskTmp+=this.mapping[this.format.charAt(i)];
-      }else{
-        maskTmp+=this.format.charAt(i);
+  
+  convertValue: function(value){
+    if(value !==null && value !== undefined && Ext.type(value)=="array"){
+      if(value.length>0 && value[0].value!== undefined && value[0].label!== undefined){
+        if(this.getField().checkDate(value[0].label) && this.getField().checkDate(value[0].value,'Y-m-d H:i:s')){
+          if(value.length==1){
+            return(value);
+          } else {
+            return([value[0]]);
+          }
+        }
       }
     }
-    return(maskTmp);
+    return([]);
+  },
+
+  
+  getFormat : function(){
+    return this.format;
   }
 });
 
@@ -280,36 +207,33 @@ Ext.extend(Ext.ux.netbox.date.DateRangeOperator,Ext.ux.netbox.date.DateOperator,
   * @extends Ext.ux.netbox.core.Operator
   * @param {String} format See format parameter of DateField
   */
-Ext.ux.netbox.date.DatePeriodOperator = function() {
-  Ext.ux.netbox.date.DatePeriodOperator.superclass.constructor.call(this,"DATE_PERIOD",this.periodText);
-  /** Store used to show the available values
-    * @property {Ext.data.Store} periodStore
-    * @private
-    */
-  this.periodStore=new Ext.data.SimpleStore({fields: ['value', 'label'],
-      data: [
-        ["LAST_QUARTER",this.quarterText],
-        ["LAST_HOUR",this.hourText],
-        ["LAST_DAY",this.dayText],
-        ["LAST_WEEK",this.weekText],
-        ["LAST_MONTH",this.monthText],
-        ["LAST_YEAR",this.yearText]
-      ]});
-   var validateFn=function(value){
-     if(this.getField().emptyNotAllowedFn(value)!==true){
-       return(this.getField().emptyNotAllowedFn(value));
-     }
-     if(value[0].value!=="LAST_QUARTER" && value[0].value!=="LAST_HOUR" && value[0].value!=="LAST_DAY"
-       && value[0].value!=="LAST_WEEK" && value[0].value!=="LAST_MONTH" && value[0].value!=="LAST_YEAR"){
-       return(this.valueNotExpected);
-     }
-     return(true);
-   }
-   this.setValidateFn(validateFn);
-}
-
-Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/** @scope Ext.ux.netbox.date.DatePeriodOperator.prototype */{
-
+Ext.define('Ext.ux.netbox.date.DatePeriodOperator', {
+	extend: 'Ext.ux.netbox.core.Operator',
+	constructor: function(config) {
+	  Ext.ux.netbox.date.DatePeriodOperator.superclass.constructor.call(this,"DATE_PERIOD",this.periodText);
+	  
+	  this.periodStore=Ext.create('Ext.data.SimpleStore',{fields: ['value', 'label'],
+	      data: [
+	        ["LAST_QUARTER",this.quarterText],
+	        ["LAST_HOUR",this.hourText],
+	        ["LAST_DAY",this.dayText],
+	        ["LAST_WEEK",this.weekText],
+	        ["LAST_MONTH",this.monthText],
+	        ["LAST_YEAR",this.yearText]
+	      ]});
+	   var validateFn=function(value){
+	     if(this.getField().emptyNotAllowedFn(value)!==true){
+	       return(this.getField().emptyNotAllowedFn(value));
+	     }
+	     if(value[0].value!=="LAST_QUARTER" && value[0].value!=="LAST_HOUR" && value[0].value!=="LAST_DAY"
+	       && value[0].value!=="LAST_WEEK" && value[0].value!=="LAST_MONTH" && value[0].value!=="LAST_YEAR"){
+	       return(this.valueNotExpected);
+	     }
+	     return(true);
+	   }
+	   this.setValidateFn(validateFn);
+	},
+	
   periodText  : "period",
   yearText    : "last year",
   monthText   : "last month",
@@ -319,48 +243,22 @@ Ext.extend(Ext.ux.netbox.date.DatePeriodOperator,Ext.ux.netbox.core.Operator,/**
   quarterText : "last quarter",
   valueNotExpected: "Value not expected",
 
-  /** Overwrite getDefaultValues function to return last day as default
-    * @return {Array} default values ([{value: "LAST_DAY", label: this.dayText}])
-    */
+  
   getDefaultValues : function(){
     return([{value: "LAST_DAY", label: this.dayText}]);
   },
 
-  /** This function sets the store of the periods.
-    * The store must be local, and must have the label and value column
-    * The default store is the following:
-    * <PRE>
-    * new Ext.data.SimpleStore({fields: ['value', 'label'],
-    *  data: [
-    *    ["LAST_YEAR","last year"],
-    *    ["LAST_MONTH","last month"],
-    *    ["LAST_WEEK","last week"],
-    *    ["LAST_DAY","last day"],
-    *    ["LAST_HOUR","last hour"],
-    *    ["LAST_QUARTER","last quarter"]
-    *  ]});
-    * </PRE>
-    *@param {Ext.data.Store} store The store that contains the available periods
-    */
+  
   setPeriods: function(store){
     this.periodStore=store;
     this.editor=null;
   },
-  /** This method retruns an Ext.ux.netbox.core.AvailableValuesEditor used to edit the periods.
-    * @param {String} operatorId The operatorId actually used in the filter
-    * @return {Ext.Editor} The field used to edit the values of this filter
-    */
+  
   createEditor: function(operatorId){
-    var editor=new Ext.ux.netbox.core.AvailableValuesEditor(this.periodStore);
+    var editor=Ext.create('Ext.ux.netbox.core.AvailableValuesEditor',this.periodStore);
     return editor;
   },
-  /**This method convert an old value in a filter to a new value,
-    * suitable for this operator. If the given value is an array, with at least one element,
-    * this element is an object with {label:...,value:...} and the value is in the period store,
-    * an array with the first element is returned, an empty array otherwise.
-    * @param {Object} value The value to convert
-    * @return {Array} The converted value
-    */
+  
   convertValue: function(value){
     if(value !==null && value !== undefined && Ext.type(value)=="array"){
       if(value.length>0 && value[0].value!== undefined && value[0].label!== undefined){

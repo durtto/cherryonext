@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox');
-
 /** It takes in input an object with an attribute, the menu (Ext.menu.Menu )to show as context menu
   * or directly the config object as described below.<br>
   * The items that populate the menu must have the following two custom properties passed in the config:
@@ -57,35 +55,30 @@ Ext.namespace('Ext.ux.netbox');
   * @param {Object} config Configuration options
   * @config {Ext.menu.Menu} menu The mandatory menu or a config object for instantiate the menu
   */
-Ext.ux.netbox.ContextMenuManager=function(config){
-
-  this.menu=config.menu;
+Ext.define('Ext.ux.netbox.ContextMenuManager', {
+	constructor: function(config) {
+	  this.menu=config.menu;  
+  },  
   
-};
-
-Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuManager.prototype */
-{
-  
-  /** Plugin init function. It will be called automatically by the grid, with the grid itself as parameter
-    * It simply adds the needed listeners, and store the grid as a property of this class
-    * @param {Ext.grid.Grid} gridPanel The grid on which the menu should be displayed
-    */
   init: function(gridPanel){
     this.gridPanel=gridPanel;
-    this.gridPanel.on("contextmenu",this.onContextmenu,this);
+    this.gridPanel.on("cellcontextmenu",this.onCellcontextmenuEvent,this);
   },
-  /** Method called when you press the right mouse button on a table cell
-    * @private
-    */
-  onCellcontextmenu : function(grid, rowIndex, cellIndex, e, menu){
-    var menuUndefined=false;
+  
+  onCellcontextmenuEvent : function(grid, cell, rowIndex, cellIndex, e){
+	  this.onCellcontextmenu(grid, cell, rowIndex, cellIndex, e, null);
+  },
+  
+  onCellcontextmenu : function(grid, cell, rowIndex, cellIndex, e, menu){
+	var menuUndefined=false;
     if(!menu){
-      menuUndefined=true;
-      if(!(this.menu instanceof Ext.menu.Menu)){
-        this.menu=new Ext.menu.Menu(this.menu);
-      }
-      menu=this.menu;
-    }
+        menuUndefined=true;
+	    if(!(this.menu instanceof Ext.menu.Menu)){
+	     this.menu=Ext.create('Ext.menu.Menu',this.menu);
+	    }
+	    menu=this.menu;
+    }   
+
     e.stopEvent();
     var isSomethingVisible=false;
     for(var i=0;i<menu.items.getCount();i++){
@@ -95,19 +88,19 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
       if(itemTmp.initialConfig.isToShow){
         visible=itemTmp.initialConfig.isToShow.call(scope, grid, rowIndex, cellIndex,itemTmp);
         if(visible && itemTmp.menu){
-          this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
+          this.onCellcontextmenu(grid, cell, rowIndex, cellIndex, e, itemTmp.menu);
         }
       } else {
         if(!itemTmp.menu){
           visible = (rowIndex >=0 && cellIndex>=0);
         } else {
-          visible=this.onCellcontextmenu(grid, rowIndex, cellIndex, e, itemTmp.menu);
+          visible=this.onCellcontextmenu(grid, cell, rowIndex, cellIndex, e, itemTmp.menu);
         }
       }
       if(visible){
         itemTmp.setVisible(true);
         if(itemTmp.initialConfig.handler){
-          var handler=itemTmp.initialConfig.handler.createDelegate(scope,[grid, rowIndex, cellIndex,itemTmp],false);
+          var handler=Ext.bind(itemTmp.initialConfig.handler,scope,[grid, rowIndex, cellIndex,itemTmp],false);
           itemTmp.setHandler(handler);
         }
         isSomethingVisible=true;
@@ -115,16 +108,14 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
         itemTmp.setVisible(false);
       }
     }
-    if(isSomethingVisible && menuUndefined){
+    if(isSomethingVisible){
       this.menu.showAt([e.getPageX(),e.getPageY()]);
     }
     return isSomethingVisible;
   },
 
-  /** Method called when you press the right mouse button on a table but out of cell
-    * @private
-    */
-  onContextmenu : function(e){
+  
+  onContextmenu : function(grid, e, cell, recordIndex, cellIndex){
     var t = e.getTarget();
     var header = this.gridPanel.getView().findHeaderIndex(t);
     if(header !== false){
@@ -141,4 +132,4 @@ Ext.ux.netbox.ContextMenuManager.prototype=/** @scope Ext.ux.netbox.ContextMenuM
     this.onCellcontextmenu(this.gridPanel,row,col,e);
   }
 
-};
+});

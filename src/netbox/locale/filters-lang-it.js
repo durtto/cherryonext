@@ -50,6 +50,13 @@ if(Ext.ux.netbox.core.RangeMenu){
    });
 }
 
+if(Ext.ux.netbox.core.RangeField){
+	  Ext.apply(Ext.ux.netbox.core.RangeField.prototype, {
+	     fromText : 'da',
+	     toText   : 'a '
+	  });
+	}
+
 if(Ext.ux.netbox.date.DateRangeOperator){
    Ext.apply(Ext.ux.netbox.date.DateRangeOperator.prototype, {
       fromText : 'da',
@@ -103,7 +110,7 @@ if(Ext.ux.netbox.string.StringField){
      doesntContainsText: "non contiene",
      startsWithText: "inizia con",
      endsWithText: "finisce con",
-     stringListText: "lista",
+     stringListText: "in lista",
      stringNotListText: "non in lista",
      emptyNotAllowed: "Valore vuoto non consentito"
    });
@@ -119,4 +126,57 @@ if(Ext.ux.netbox.DefaultPreferenceManagerErrorManager){
   });
 }
 
+if(Ext.ux.netbox.date.RangeEditor){
+  Ext.apply(Ext.ux.netbox.date.RangeEditor.prototype, {
+	  fromText    : 'da',
+	  toText      : 'a'
+  });
+}
+
+if(Ext.ux.netbox.date.DateField){
+  Ext.apply(Ext.ux.netbox.date.DateField.prototype, {
+      periodText  : "periodo",
+      yearText    : "ultimo anno",
+      monthText   : "ultimo mese",
+      weekText    : "ultima settimana",
+      dayText     : "ultimo giorno",
+      hourText    : "ultima ora",
+      quarterText : "ultimo quarto d'ora",
+      valueNotExpected: "valore non previsto"
+  });
+}
+
+if(Ext.ux.netbox.string.EnumField){
+  Ext.apply(Ext.ux.netbox.string.EnumField.prototype, {
+	     stringEqualsLabel: "=",
+	     stringDifferentLabel: "!=",
+	     containsText: "contiene",
+	     doesntContainsText: "non contiene",
+	     startsWithText: "inizia con",
+	     endsWithText: "finisce con",
+	     stringListText: "in lista",
+	     stringNotListText: "non in lista",
+	     emptyNotAllowed: "Valore vuoto non consentito"
+  });
+}
+
+if(Ext.ux.netbox.number.EnumIntField){
+  Ext.apply(Ext.ux.netbox.number.EnumIntField.prototype, {
+	     stringEqualsLabel: "=",
+	     stringDifferentLabel: "!=",
+	     containsText: "contiene",
+	     doesntContainsText: "non contiene",
+	     startsWithText: "inizia con",
+	     endsWithText: "finisce con",
+	     stringListText: "in lista",
+	     stringNotListText: "non in lista",
+	     emptyNotAllowed: "Valore vuoto non consentito"
+  });
+}
+
+if(Ext.ux.netbox.date.DateTimeEditor){
+	  Ext.apply(Ext.ux.netbox.date.DateTimeEditor.prototype, {
+		  selectText: "Chiudi"
+	  });
+}
 

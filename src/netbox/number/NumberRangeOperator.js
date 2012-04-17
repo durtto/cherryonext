@@ -1,10 +1,3 @@
-// $Id$
-
-/** It instantiates a new NumberRangeOperator
-  * @class This is the class that implements the range operator between 2 numbers. The id of the operator is NUMBER_RANGE
-  * @constructor
-  * @extends Ext.ux.netbox.core.Operator
-  */
 Ext.define('Ext.ux.netbox.number.NumberRangeOperator', {
 	extend: 'Ext.ux.netbox.core.Operator',
 	constructor: function(opType) {
@@ -64,18 +57,6 @@ Ext.define('Ext.ux.netbox.number.NumberRangeOperator', {
       return(value.match(RegExp));
     }
     return(false);
-  },
-
-  
-  createEditor: function(operatorId){
-    var field=Ext.create('Ext.ux.netbox.core.RangeField',{
-      textCls: Ext.form.NumberField,
-      fromConfig: {},
-      toConfig: {}
-    });
-    var editor=Ext.create('Ext.ux.netbox.FilterEditor',field);
-    field.on("editingcompleted",editor.completeEdit,editor);
-    return editor;
   },
 
   render: function(value){

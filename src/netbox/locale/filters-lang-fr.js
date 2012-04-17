@@ -1,6 +1,8 @@
 /**
  * CherryOnExt fr locale.
  */
+
+
 if(Ext.ux.netbox.core.DynamicFilterModelView){
   Ext.apply(Ext.ux.netbox.core.DynamicFilterModelView.prototype, {
      deleteText        : 'Supprimer',
@@ -12,6 +14,8 @@ if(Ext.ux.netbox.core.DynamicFilterModelView){
      logicOpeOrText    : 'Vérifier au moins un'
   });
 }
+
+
 if(Ext.ux.netbox.PreferenceManagerView){
   Ext.apply(Ext.ux.netbox.PreferenceManagerView.prototype, {
      addText           : 'Ajouter un préférence',
@@ -39,7 +43,7 @@ if(Ext.ux.netbox.core.QuickFilterModelView){
   });
 }
 
-if(Ext.ux.netbox.core.RangeItem){
+if(Ext.ux.netbox.core.RangeMenu){
   Ext.apply(Ext.ux.netbox.core.RangeItem.prototype, {
      fromText : 'de',
      toText   : 'à'
@@ -113,13 +117,65 @@ if(Ext.ux.netbox.string.StringField){
 }
 
 if(Ext.ux.netbox.DefaultPreferenceManagerErrorManager){
+	Ext.apply(Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype,{
+	    failedToApplyDefaultPreferenceTitle: "Erreur : impossible d\'appliquer la préférence par défaut",
+	    failedToApplyPreferenceTitle: "Erreur : impossible d\'appliquer la préférence",
+	    failedToSavePreferenceTitle: "Erreur : impossible de sauver la préférence",
+	    failedToDeletePreferenceTitle: "Erreur : impossible de supprimer la préférence sélectionnée",
+	    failedToLoadPreferenceTitle: "Erreur : impossibile de charger les préférences"
+	 });
+}
 
-Ext.apply(Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype,
-{
-    failedToApplyDefaultPreferenceTitle: "Erreur : impossible d\'appliquer la préférence par défaut",
-    failedToApplyPreferenceTitle: "Erreur : impossible d\'appliquer la préférence",
-    failedToSavePreferenceTitle: "Erreur : impossible de sauver la préférence",
-    failedToDeletePreferenceTitle: "Erreur : impossible de supprimer la préférence sélectionnée",
-    failedToLoadPreferenceTitle: "Erreur : impossibile de charger les préférences"
- });
+if(Ext.ux.netbox.date.RangeEditor){
+  Ext.apply(Ext.ux.netbox.date.RangeEditor.prototype, {
+	     fromText : 'de',
+	     toText   : 'à'
+  });
+}
+
+if(Ext.ux.netbox.date.DateField){
+  Ext.apply(Ext.ux.netbox.date.DateField.prototype, {
+	     periodText  : "période",
+	     yearText    : "l\'année dernière",
+	     monthText   : "le mois dernier",
+	     weekText    : "la semainne dernière",
+	     dayText     : "hier",
+	     hourText    : "cette dernière heure",
+	     quarterText : "ce dernier quart-d\'heure",
+	     valueNotExpected: "Valeur non reconnue"
+  });
+}
+
+if(Ext.ux.netbox.string.EnumField){
+  Ext.apply(Ext.ux.netbox.string.EnumField.prototype, {
+	    stringEqualsLabel: "=",
+	    stringDifferentLabel: "!=",
+	    containsText: "contient",
+	    doesntContainsText: "ne contient pas",
+	    startsWithText: "commence par",
+	    endsWithText: "fini par",
+	    stringListText: "dans",
+	    stringNotListText: "n\'est pas dans",
+	    emptyNotAllowed: "Valeur vide non authorisée"
+  });
+}
+
+if(Ext.ux.netbox.number.EnumIntField){
+  Ext.apply(Ext.ux.netbox.number.EnumIntField.prototype, {
+	    stringEqualsLabel: "=",
+	    stringDifferentLabel: "!=",
+	    containsText: "contient",
+	    doesntContainsText: "ne contient pas",
+	    startsWithText: "commence par",
+	    endsWithText: "fini par",
+	    stringListText: "dans",
+	    stringNotListText: "n\'est pas dans",
+	    emptyNotAllowed: "Valeur vide non authorisée"
+  });
+}
+
+if(Ext.ux.netbox.date.DateTimeEditor){
+	  Ext.apply(Ext.ux.netbox.date.DateTimeEditor.prototype, {
+		  selectText: "Fermer"
+	  });
 }

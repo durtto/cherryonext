@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox.core');
-
 /** Build a new LocalStoreFilterResolver.
   * @param {Ext.ux.netbox.core.FilterModel} filterModel The filterModel whose filter must be applied to the store
   * @param {Object} mapping A mapping to use instead of the default one.
@@ -45,60 +43,44 @@ Ext.namespace('Ext.ux.netbox.core');
   * </PRE>
   * @constructor
   */
-Ext.ux.netbox.core.LocalStoreFilterResolver = function(filterModel, mapping) {
-  /** This is the mapping used to verify if a value matches a single condition
-    * @property {Object} mapping
-    * @private
-    */
-  this.mapping=null;
-  if(mapping==undefined){
-    this.mapping={
-      NUMBER_EQUAL: {fn: this.filterNumberEqual, scope: this},
-      NUMBER_NOT_EQUAL: {fn: this.filterNumberDifferent, scope: this},
-      NUMBER_GREATER: {fn: this.filterNumberGreater, scope: this},
-      NUMBER_GREATER_OR_EQUAL: {fn: this.filterNumberGreaterOrEqual, scope: this},
-      NUMBER_LESS: {fn: this.filterNumberLess, scope: this},
-      NUMBER_LESS_OR_EQUAL: {fn: this.filterNumberLessOrEqual, scope: this},
-      NUMBER_RANGE: {fn: this.filterNumberRange, scope: this},
-      STRING_EQUAL: {fn: this.filterStringEquals, scope: this},
-      STRING_DIFFERENT: {fn: this.filterStringDifferent, scope: this},
-      STRING_CONTAINS: {fn: this.filterStringContains, scope: this},
-      STRING_DOESNT_CONTAIN: {fn: this.filterStringDoesntContains, scope: this},
-      STRING_STARTS_WITH: {fn: this.filterStringStartsWith, scope: this},
-      STRING_ENDS_WITH: {fn: this.filterStringEndsWith, scope: this},
-      STRING_LIST: {fn: this.filterList, scope: this},
-      STRING_NOT_IN_LIST: {fn: this.filterNotInList, scope: this},
-      DATE_EQUAL:{fn: this.filterDateEqual, scope: this},
-      DATE_GREATER:{fn: this.filterDateGreater, scope: this},
-      DATE_GREATER_OR_EQUAL:{fn: this.filterDateGreaterOrEqual, scope: this},
-      DATE_LESS:{fn: this.filterDateLess, scope: this},
-      DATE_LESS_OR_EQUAL:{fn: this.filterDateLessOrEqual, scope: this},
-      DATE_RANGE:{fn: this.filterDateRange, scope: this},
-      DATE_PERIOD:{fn: this.filterDatePeriod, scope: this}
-    };
-  }
-  /** This is the filterModel whose filters will be used to filter the store
-    * @property {Ext.ux.netbox.core.FilterModel} filterModel
-    * @private
-    */
-  this.filterModel=filterModel;
-}
-
-Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
-
-  /** This is used to escape the characters that have a special meaning in a regular expression pattern
-    * For example the '[','+' etc...
-    * @param {String} s The string to escape,
-    * @private
-    */
+Ext.define('Ext.ux.netbox.core.LocalStoreFilterResolver', {
+	constructor: function(filterModel, mapping) {
+	  
+	  this.mapping=null;
+	  if(mapping==undefined){
+	    this.mapping={
+	      NUMBER_EQUAL: {fn: this.filterNumberEqual, scope: this},
+	      NUMBER_NOT_EQUAL: {fn: this.filterNumberDifferent, scope: this},
+	      NUMBER_GREATER: {fn: this.filterNumberGreater, scope: this},
+	      NUMBER_GREATER_OR_EQUAL: {fn: this.filterNumberGreaterOrEqual, scope: this},
+	      NUMBER_LESS: {fn: this.filterNumberLess, scope: this},
+	      NUMBER_LESS_OR_EQUAL: {fn: this.filterNumberLessOrEqual, scope: this},
+	      NUMBER_RANGE: {fn: this.filterNumberRange, scope: this},
+	      STRING_EQUAL: {fn: this.filterStringEquals, scope: this},
+	      STRING_DIFFERENT: {fn: this.filterStringDifferent, scope: this},
+	      STRING_CONTAINS: {fn: this.filterStringContains, scope: this},
+	      STRING_DOESNT_CONTAIN: {fn: this.filterStringDoesntContains, scope: this},
+	      STRING_STARTS_WITH: {fn: this.filterStringStartsWith, scope: this},
+	      STRING_ENDS_WITH: {fn: this.filterStringEndsWith, scope: this},
+	      STRING_LIST: {fn: this.filterList, scope: this},
+	      STRING_NOT_IN_LIST: {fn: this.filterNotInList, scope: this},
+	      DATE_EQUAL:{fn: this.filterDateEqual, scope: this},
+	      DATE_GREATER:{fn: this.filterDateGreater, scope: this},
+	      DATE_GREATER_OR_EQUAL:{fn: this.filterDateGreaterOrEqual, scope: this},
+	      DATE_LESS:{fn: this.filterDateLess, scope: this},
+	      DATE_LESS_OR_EQUAL:{fn: this.filterDateLessOrEqual, scope: this},
+	      DATE_RANGE:{fn: this.filterDateRange, scope: this},
+	      DATE_PERIOD:{fn: this.filterDatePeriod, scope: this}
+	    };
+	  }
+	  
+	  this.filterModel=filterModel;
+	},
+	
   escapeRegExp: function(s){
     return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
   },
-  /** This is used to return a standard value from the array of values with format {value: , label: }
-    * @param {Object} value The value of the filter.
-    * @return {String} A string value to use to match the filter
-    * @private
-    */
+  
   calcolateValue: function(value){
     if(value.length==0){
       return("");
@@ -106,12 +88,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
       return(value[0].value);
     }
   },
-  /** This is used to return a standard number value from the array of values with format {value: , label: }
-    * @param {Object} value The value of the filter.
-    * @return {Number} A number value to use to match the filter
-    * @throws {String} When it's unable to parse the given value to a number
-    * @private
-    */
+  
   calcolateValueNumber: function(value){
     if(value.length==0){
       throw("Not a number");
@@ -123,12 +100,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
       return(val);
     }
   },
-  /** This is used to return a standard date value from the array of values with format {value: , label: }
-    * @param {Object} value The value of the filter.
-    * @return {Date} A date value to use to match the filter
-    * @throws {String} When it's unable to parse the given value to a Date
-    * @private
-    */
+  
   calcolateValueDate: function(value){
     if(value.length==0){
       throw("Not a date");
@@ -140,30 +112,15 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
       return(date);
     }
   },
-  /** This is the standard implementation of the STRING_EQUAL filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterStringEquals: function(record, value,column){
     return(record.get(column)===this.calcolateValue(value));
   },
-  /** This is the standard implementation of the STRING_DIFFERENT filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterStringDifferent: function(record, value,column){
     return(!this.filterStringEquals(record, value,column));
   },
-  /** This is the standard implementation of the STRING_LIST filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise. If value is an empty array it doesn't match
-    */
+  
   filterList:  function(record, value,column){
     for(var i=0; i<value.length;i++){
       if(this.filterStringEquals(record, [value[i]],column)){
@@ -172,64 +129,33 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(false);
   },
-  /** This is the standard implementation of the STRING_LIST filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise. If value is an empty array it matches all the records
-    */
+  
   filterNotInList:  function(record, value,column){
     return(!this.filterList(record, value,column));
   },
-  /** This is the standard implementation of the STRING_STARTS_WITH filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterStringStartsWith: function(record, value,column){
     var val=this.escapeRegExp(this.calcolateValue(value));
-    var pattern = new RegExp('^' + val,'');
+    var pattern = Ext.create('RegExp','^' + val,'');
     return(record.get(column).match(pattern)!==null);
   },
-  /** This is the standard implementation of the STRING_ENDS_WITH filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterStringEndsWith: function(record, value,column){
     var val=this.escapeRegExp(this.calcolateValue(value));
-    var pattern = new RegExp(val+'$','');
+    var pattern = Ext.create('RegExp',val+'$','');
     return(record.get(column).match(pattern)!==null);
   },
-  /** This is the standard implementation of the STRING_CONTAINS filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterStringContains: function(record, value,column){
     var val=this.escapeRegExp(this.calcolateValue(value));
-    var pattern = new RegExp('.*'+val+'.*','');
+    var pattern = Ext.create('RegExp','.*'+val+'.*','');
     return(record.get(column).match(pattern)!==null);
   },
-  /** This is the standard implementation of the STRING_DOESNT_CONTAIN filter match.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterStringDoesntContains:function(record, value,column){
     return(!this.filterStringContains(record, value,column));
   },
-  /** This is the standard implementation of the NUMBER_EQUAL filter match.
-    * When it's unable to parse the given value as a number or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberEqual: function(record, value,column){
     var val;
     try {
@@ -239,23 +165,11 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(record.get(column)===val);
   },
-  /** This is the standard implementation of the NUMBER_NOT_EQUAL filter match.
-    * When it's unable to parse the given value as a number or when the input is an empty array it returns true.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberDifferent:function(record, value,column){
     return(!this.filterNumberEqual(record, value,column));
   },
-  /** This is the standard implementation of the NUMBER_GREATER filter match.
-    * When it's unable to parse the given value as a number or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberGreater: function(record, value,column){
     var val;
     try {
@@ -265,13 +179,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(record.get(column)>val);
   },
-  /** This is the standard implementation of the NUMBER_LESS_OR_EQUAL filter match.
-    * When it's unable to parse the given value as a number or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberLessOrEqual: function(record, value,column){
     var val;
     try {
@@ -281,13 +189,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(!this.filterNumberGreater(record, value,column));
   },
-  /** This is the standard implementation of the NUMBER_LESS filter match.
-    * When it's unable to parse the given value as a number or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberLess: function(record, value,column){
     var val;
     try {
@@ -297,13 +199,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(record.get(column) < val);
   },
-  /** This is the standard implementation of the NUMBER_GREATER_OR_EQUAL filter match.
-    * When it's unable to parse the given value as a number or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberGreaterOrEqual: function(record, value,column){
     var val;
     try {
@@ -313,14 +209,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(!this.filterNumberLess(record, value,column));
   },
-  /** This is the standard implementation of the NUMBER_RANGE filter match. The 2 range values are included.
-    * When it's unable to parse any of the 2 given values as a number or when the input is an empty array it returns false.
-    * If the number of given values id different from 2, it returns false
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterNumberRange: function(record, value,column){
     if(value.length!=2){
       return(false);
@@ -329,13 +218,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     var matchUpper=this.filterNumberLessOrEqual(record,[value[1]],column);
     return(matchLower && matchUpper);
   },
-  /** This is the standard implementation of the DATE_EQUAL filter match.
-    * When it's unable to parse the given value as a date or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDateEqual: function(record, value,column){
     var date;
     try {
@@ -345,13 +228,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(record.get(column).getTime()==date.getTime());
   },
-  /** This is the standard implementation of the DATE_GREATER filter match.
-    * When it's unable to parse the given value as a date or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDateGreater: function(record, value,column){
     var date;
     try {
@@ -361,13 +238,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(record.get(column).getTime()>date.getTime());
   },
-  /** This is the standard implementation of the DATE_LESS_OR_EQUAL filter match.
-    * When it's unable to parse the given value as a date or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDateLessOrEqual: function(record, value,column){
     var val;
     try {
@@ -377,13 +248,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(!this.filterDateGreater(record, value,column));
   },
-  /** This is the standard implementation of the DATE_LESS filter match.
-    * When it's unable to parse the given value as a date or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDateLess: function(record, value,column){
     var date;
     try {
@@ -393,13 +258,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(record.get(column).getTime() < date.getTime());
   },
-  /** This is the standard implementation of the DATE_GREATER_OR_EQUAL filter match.
-    * When it's unable to parse the given value as a date or when the input is an empty array it returns false.
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDateGreaterOrEqual: function(record, value,column){
     var date;
     try {
@@ -409,14 +268,7 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     }
     return(!this.filterDateLess(record, value,column));
   },
-  /** This is the standard implementation of the DATE_RANGE filter match. The 2 range values are included.
-    * When it's unable to parse any of the 2 given values as a dates or when the input is an empty array it returns false.
-    * If the number of given values id different from 2, it returns false
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDateRange: function(record, value,column){
     if(value.length!=2){
       return(false);
@@ -425,19 +277,12 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     var matchUpper=this.filterDateLessOrEqual(record,[value[1]],column);
     return(matchLower && matchUpper);
   },
-  /** This is the standard implementation of the DATE_PERIOD filter match.
-    * If the input is empty array it returns false, otherwise it verifies if the value is between now  and now -the period
-    * If the given period is not among LAST_YEAR, LAST_MONTH, LAST_WEEK, LAST_DAY, LAST_HOUR, LAST_QUARTER it returns false
-    * @param {Ext.data.Record} record The record to match against the value
-    * @param {Array of Object} value The value to match against the filter
-    * @param {String} column The column of the record to match
-    * @return {boolean} true if it matches, false otherwise
-    */
+  
   filterDatePeriod: function(record, value,column){
     if(value.length!=1){
       return(false);
     }
-    var upper=new Date();
+    var upper=Ext.create('Date');
     upperValue={label: upper.format('Y-m-d H:i:s'),value:upper.format('Y-m-d H:i:s')};
     var lower;
     if(value[0].value==='LAST_YEAR'){
@@ -458,26 +303,11 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
     var lowerValue={label: lower.format('Y-m-d H:i:s'),value:lower.format('Y-m-d H:i:s')};
     return(this.filterDateRange(record, [lowerValue,upperValue],column));
   },
-  /** This function is used for apply the setted filter on store.<br>
-    * Example:
-    * <PRE>
-    * localFilterResolver.apply(store)
-    * </PRE>
-    * @param {Ext.data.Store} store The store that is filtered
-    */
+  
   apply : function(store){
     store.filterBy(this.filter,this);
   },
-  /** This function must be used as the first argument of the filterBy store method to perform the filtering.
-    * Example:
-    * <PRE>
-    * store.filterBy(localStoreFilterResolver.filter,localStoreFilterResolver)
-    * </PRE>
-    * @param {Ext.data.Record} record The record to filter against the given filterObject (as returned by filterModel.getFilterObj)
-    * @param {String} id The id of the record
-    * @param {Object} filterObj The record is matched against this filterObj. This parameter is optional. The defualt is this.filterMAnager.getFilterObj()
-    * @return {boolean} true id the record matches, false otherwise
-    */
+  
   filter: function(record,id,filterObj){
     if(filterObj==undefined)
       filterObj=this.filterModel.getFilterObj();
@@ -501,4 +331,4 @@ Ext.ux.netbox.core.LocalStoreFilterResolver.prototype = {
       return(ret);
     }
   }
-}
+});
