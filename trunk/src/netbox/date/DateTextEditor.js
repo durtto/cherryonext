@@ -1,26 +1,21 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox.date');
-
 /** It instantiates a new DateTextEditor
   * @class This class extends Ext.ux.netbox.FilterEditor to manage dates as value.
   * For a description of the parameters look at the documentation of Ext.Editor.
   * @constructor
   * @extends Ext.ux.netbox.FilterEditor
   */
-Ext.ux.netbox.date.DateTextEditor = function(field,config){
-  Ext.ux.netbox.date.DateTextEditor.superclass.constructor.call(this,field,config);
-  if(config.format==undefined){
-    config.format='Y-m-d H:i:s';
-  }
-  this.format=config.format;
-}
-
-Ext.extend(Ext.ux.netbox.date.DateTextEditor,Ext.ux.netbox.FilterEditor,/** @scope Ext.ux.netbox.date.DateTextEditor.prototype */{
-
-  /** This method gets the value. If the value inserted by the user is not a valid date, an empty array is returned.
-   */
-
+Ext.define('Ext.ux.netbox.date.DateTextEditor', {
+	extend: 'Ext.ux.netbox.FilterEditor',
+	constructor: function(field,config) {
+	  Ext.ux.netbox.date.DateTextEditor.superclass.constructor.call(this,field,config);
+	  if(config.format==undefined){
+	    config.format='Y-m-d H:i:s';
+	  }
+	  this.format=config.format;
+	},
+  
   getValue: function() {
     var val=Ext.ux.netbox.date.DateTextEditor.superclass.getValue.call(this);
     

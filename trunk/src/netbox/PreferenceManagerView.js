@@ -1,7 +1,5 @@
 // $Id$
 
-Ext.namespace('Ext.ux.netbox');
-
 /** Creates a new PreferenceManagerView. It takes as input a config object, usefull to config this component.
   * The only mandatory attribute added is PreferenceManager.
   * @constructor
@@ -17,24 +15,23 @@ Ext.namespace('Ext.ux.netbox');
   * toolbar.add({text: 'Preference', menu: prefManagView});
   * </pre>
   */
-Ext.ux.netbox.PreferenceManagerView = function(config){
+Ext.define('Ext.ux.netbox.PreferenceManagerView', {
+	extend: 'Ext.menu.Menu',
+	constructor: function(config) {
+	  Ext.QuickTips.init();
 
-  Ext.QuickTips.init();
+	  this.preferenceManager=config.preferenceManager;
+	  Ext.ux.netbox.PreferenceManagerView.superclass.constructor.call(this,config);
+	  this.preferenceManager.on("preferenceSaved",this.onPreferenceSaved,this);
+	  this.preferenceManager.on("preferenceDeleted",this.onPreferenceDeleted,this);
+	  this.preferenceManager.on("loadPreferencesFailed",this.resetMenu,this);
+	  if(config.defaultErrorHandling===undefined || config.defaultErrorHandling){
+		  Ext.create('Ext.ux.netbox.DefaultPreferenceManagerErrorManager',this.preferenceManager);
+	  }
 
-  this.preferenceManager=config.preferenceManager;
-  Ext.ux.netbox.PreferenceManagerView.superclass.constructor.call(this,config);
-  this.preferenceManager.on("preferenceSaved",this.onPreferenceSaved,this);
-  this.preferenceManager.on("preferenceDeleted",this.onPreferenceDeleted,this);
-  this.preferenceManager.on("loadPreferencesFailed",this.resetMenu,this);
-  if(config.defaultErrorHandling===undefined || config.defaultErrorHandling){
-    new Ext.ux.netbox.DefaultPreferenceManagerErrorManager(this.preferenceManager);
-  }
-
-  this.on('show',this.loadRemotePref, this, {single: true});
-};
-
-Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.netbox.PreferenceManagerView.prototype */
-{
+	  this.on('show',this.loadRemotePref, this, {single: true});
+  },
+	
   addText           : 'Add preference',
   addTooltipText    : 'Save the actual configuration',
   manageText        : 'Manage preferences',
@@ -50,9 +47,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
   defaultText       : 'Default',
   loadingText       : 'Loading...',
 
-  /** loadRemotePref loading preferences from remote server
-    * @private
-    */
+  
   loadRemotePref : function(){
     if(this.prefStore===undefined){
       this.prefStore=this.preferenceManager.getAllPreferences();
@@ -89,9 +84,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     }
   },
 
-  /** loadRemotePrefAsync
-    * @private
-    */
+  
   loadRemotePrefAsync : function(){
     this.resetMenu();
     for(var i=0;i<this.prefStore.getTotalCount();i++){
@@ -110,16 +103,12 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     }
   },
 
-  /** addPreference Opens dialog for save the preference
-    * @private
-    */
+  
   addPreference : function(){
     this.showAddDialog('','','',false);
   },
 
-  /** managePreference Opens dialog for modify the preference
-    * @private
-    */
+  
   managePreference : function(){
     selModel=this.manageGridPanel.getSelectionModel();
     record=selModel.getSelected();
@@ -127,9 +116,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
       this.showAddDialog(record.get('prefId'),record.get('prefName'),record.get('prefDesc'),record.get('isDefault'));
   },
 
-  /** deletePreferences Method for delete the selected preferences
-    * @private
-    */
+  
   deletePreferences : function(){
     selModel=this.manageGridPanel.getSelectionModel();
     records=selModel.getSelections();
@@ -142,12 +129,10 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     }
   },
   
-  /** showAddDialog Create dialog for add or modify the preference
-    * @private
-    */
+  
   showAddDialog : function(prefId,prefName,prefDesc,isDefault){
     if(!this.addDialog){
-      this.addDialog = new Ext.Window({
+      this.addDialog = Ext.create('Ext.window.Window',{
         width:       400,
         height:      160,
         minWidth:    400,
@@ -158,7 +143,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
         modal:       true,
         shadow:      true,
 
-        items: this.addForm = new Ext.form.FormPanel({
+        items: this.addForm = Ext.create('Ext.form.FormPanel',{
           labelWidth: 75,
           border:     false,
           bodyStyle: 'background-color:transparent;padding:10px; ',
@@ -215,12 +200,10 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     this.addDialog.show();
   },
 
-  /** showManageDialog Create dialog for manage the preferences
-    * @private
-    */
+  
   showManageDialog : function(){
     if(!this.manageDialog){
-      this.manageDialog = new Ext.Window({
+      this.manageDialog = Ext.create('Ext.window.Window',{
         title:       this.manageText,
         width:       600,
         height:      300,
@@ -232,7 +215,7 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
         modal:       true,
         shadow:      true,
 
-        items: this.manageGridPanel = new Ext.grid.GridPanel({
+        items: this.manageGridPanel = Ext.create('Ext.grid.Panel',{
           store:   this.prefStore,
           border:  false,
           enableColumnHide: false,
@@ -291,24 +274,18 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     this.manageDialog.show();
   },
 
-  /** imageRenderer
-    * @private
-    */
+  
   imageRenderer : function(value, metadata, record, rowIndex, colIndex, store){
     if(value==true)
       return('<img class="x-menu-item-icon x-icon-checked" src="'+Ext.BLANK_IMAGE_URL+'"/>');
   },
 
-  /** applyPreference setting preference
-    * @private
-    */
+  
   applyPreference : function(item, event){
     this.preferenceManager.applyPreference(item.getId());
   },
 
-  /** savePreference saving preference
-    * @private
-    */
+  
   savePreference : function(){
     var prefId = this.addForm.findById('prefId');
     var prefName = this.addForm.findById('prefName');
@@ -319,32 +296,19 @@ Ext.extend(Ext.ux.netbox.PreferenceManagerView, Ext.menu.Menu,/** @scope Ext.ux.
     }
   },
 
-  /** onPreferenceSaved
-    * @private
-    */
+  
   onPreferenceSaved : function(prefName,response){
     this.prefStore.reload();
     this.addDialog.hide();
   },
 
-  /** onPreferenceDeleted
-    * @private
-    */
+  
   onPreferenceDeleted : function(prefIdArray){
     this.prefStore.reload();
   }
 
 });
 
-/** This one is needed to allow tooltip for Menu Items
-Ext.menu.BaseItem.prototype.onRender = function(container){
-  this.el = Ext.get(this.el);
-  container.dom.appendChild(this.el.dom);
-  if (this.tooltip) {
-   this.el.dom.qtip = this.tooltip;
-  }
-};
-  */
 
 /** Build a new DefaultPreferenceManagerErrorManager
   * @constructor
@@ -352,76 +316,45 @@ Ext.menu.BaseItem.prototype.onRender = function(container){
   * @class This class manages the errors of a preferencesManager by listening to the error events (see the documentation of PreferenceManager, and look at the evants that ends by failed)
   * It shows an error dialog containing the content of the response sent by the server 
   */
-Ext.ux.netbox.DefaultPreferenceManagerErrorManager=function(preferenceManager){
-  preferenceManager.on("applyDefaultPreferenceFailed",this.manageApplyDefaultPreferenceFailed,this);
-  preferenceManager.on("applyPreferenceFailed",this.manageApplyPreferenceFailed,this);
-  preferenceManager.on("loadPreferencesFailed",this.manageLoadPreferencesFailed,this);
-  preferenceManager.on("preferenceDeleteFailed",this.manageDeletePreferencesFailed,this);
-  preferenceManager.on("preferenceSaveFailed",this.manageSavePreferenceFailed,this);
-}
-
-Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype= {
-  /** Title of the error dialog when an error occurs while applying the default preference
-    * @type String
-    */
+Ext.define('Ext.ux.netbox.DefaultPreferenceManagerErrorManager', {
+	constructor: function(config) {
+	  preferenceManager.on("applyDefaultPreferenceFailed",this.manageApplyDefaultPreferenceFailed,this);
+	  preferenceManager.on("applyPreferenceFailed",this.manageApplyPreferenceFailed,this);
+	  preferenceManager.on("loadPreferencesFailed",this.manageLoadPreferencesFailed,this);
+	  preferenceManager.on("preferenceDeleteFailed",this.manageDeletePreferencesFailed,this);
+	  preferenceManager.on("preferenceSaveFailed",this.manageSavePreferenceFailed,this);
+  },
+	
   failedToApplyDefaultPreferenceTitle: "Error applying default preference",
-  /** Title of the error dialog when an error occurs while applying a preference
-    * @type String
-    */
+  
   failedToApplyPreferenceTitle: "Error applying preference",
-  /** Title of the error dialog when an error occurs while saving a preference
-    * @type String
-    */
+  
   failedToSavePreferenceTitle: "Error saving preference",
-  /** Title of the error dialog when an error occurs while deleting some preferences
-    * @type String
-    */
+  
   failedToDeletePreferenceTitle: "Error deleting preference(s)",
-  /** Title of the error dialog when an error occurs while loading the preferences
-    * @type String
-    */
+  
   failedToLoadPreferenceTitle: "Error loading preferences",
-  /** Callback of the applyDefaultPreferenceFailed event
-    * @private
-    * @ignore
-    */
+  
   manageApplyDefaultPreferenceFailed: function(response){
     this.manageError(this.failedToApplyDefaultPreferenceTitle,response.responseText);
   },
-  /** Callback of the applyPreferenceFailed event
-    * @private
-    * @ignore
-    */
+  
   manageApplyPreferenceFailed: function(prefId,response){
     this.manageError(this.failedToApplyPreferenceTitle,response.responseText);
   },
-  /** Callback of the preferenceSaveFailed event
-    * @private
-    * @ignore
-    */  
+    
   manageSavePreferenceFailed: function(prefId,prefName,response){
     this.manageError(this.failedToSavePreferenceTitle,response.responseText);
   },
-  /** Callback of the preferenceDeleteFailed event
-    * @private
-    * @ignore
-    */  
+    
   manageDeletePreferencesFailed: function(prefIdsArray,response){
     this.manageError(this.failedToDeletePreferenceTitle,response.responseText);
   },
-  /** Callback of the loadPreferencesFailed event
-    * @private
-    * @ignore
-    */  
+    
   manageLoadPreferencesFailed: function(response){
     this.manageError(this.failedToLoadPreferenceTitle,response.responseText);
   },
-  /** This method has as input the title of the dialog and the content of the response
-    * It shows a dialog with title as title and message as content.
-    * If you want to personalize the dialog or the behaviour just overwrite this method
-    * @param {String} title The title of the dialog
-    * @param {String} message The content of the dialog
-    */
+  
   manageError: function(title,message){
     Ext.MessageBox.show({
            title: title,
@@ -431,4 +364,4 @@ Ext.ux.netbox.DefaultPreferenceManagerErrorManager.prototype= {
            minWidth: 200
        });
   }
-};
+});

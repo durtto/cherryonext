@@ -20,37 +20,74 @@ Ext.namespace('Ext.ux.netbox.number');
   * @constructor
   * @extends Ext.ux.netbox.core.Field
   */
-Ext.ux.netbox.number.NumberField = function(id,label) {
-  Ext.ux.netbox.number.NumberField.superclass.constructor.call(this,id,label);
-  var equalOperator = new Ext.ux.netbox.core.Operator("NUMBER_EQUAL","=");
-  this.addOperator(equalOperator);
-  this.setDefaultOperator(equalOperator);
-  this.addOperator(new Ext.ux.netbox.core.Operator("NUMBER_NOT_EQUAL","!="));
-  noEmptyAllowed=this.emptyNotAllowedFn.createDelegate(this);
-  var op=new Ext.ux.netbox.core.Operator("NUMBER_GREATER",">");
-  op.addValidateFn(noEmptyAllowed);
-  this.addOperator(op);
-  op=new Ext.ux.netbox.core.Operator("NUMBER_GREATER_OR_EQUAL",">=");
-  op.addValidateFn(noEmptyAllowed);
-  this.addOperator(op);
-  op=new Ext.ux.netbox.core.Operator("NUMBER_LESS","<");
-  op.addValidateFn(noEmptyAllowed);
-  this.addOperator(op);
-  op=new Ext.ux.netbox.core.Operator("NUMBER_LESS_OR_EQUAL","<=");
-  op.addValidateFn(noEmptyAllowed);
-  this.addOperator(op);
-  this.addOperator(new Ext.ux.netbox.number.NumberRangeOperator());
-}
+Ext.define('Ext.ux.netbox.number.NumberField', {
+	extend: 'Ext.ux.netbox.core.Field',
+	  constructor:function(id,label) {
 
-Ext.extend(Ext.ux.netbox.number.NumberField,Ext.ux.netbox.core.Field,/** @scope Ext.ux.netbox.number.NumberField.prototype */{
-
-  /** This method creates an Ext.ux.netbox.core.TextValuesEditor with a Ext.form.NumberField as field.
-    * @param {String} operatorId The operatorId actually used in the filter
-    * @return {Ext.Editor} The field used to edit the values of this filter
-    */
-  createEditor: function(operatorId){
-    var editor=new Ext.ux.netbox.core.TextValuesEditor(new Ext.form.NumberField({decimalPrecision: 10}));
-    return editor;
-  }
+		  Ext.ux.netbox.number.NumberField.superclass.constructor.call(this,id,label);
+		  var equalOperator = Ext.create('Ext.ux.netbox.core.Operator',"NUMBER_EQUAL","=");
+		  this.addOperator(equalOperator);
+		  this.setDefaultOperator(equalOperator);
+		  this.addOperator(Ext.create('Ext.ux.netbox.core.Operator',"NUMBER_NOT_EQUAL","!="));
+		  noEmptyAllowed=Ext.bind(this.emptyNotAllowedFn,this);
+		  var op=Ext.create('Ext.ux.netbox.core.Operator',"NUMBER_GREATER",">");
+		  op.addValidateFn(noEmptyAllowed);
+		  this.addOperator(op);
+		  op=Ext.create('Ext.ux.netbox.core.Operator',"NUMBER_GREATER_OR_EQUAL",">=");
+		  op.addValidateFn(noEmptyAllowed);
+		  this.addOperator(op);
+		  op=Ext.create('Ext.ux.netbox.core.Operator',"NUMBER_LESS","<");
+		  op.addValidateFn(noEmptyAllowed);
+		  this.addOperator(op);
+		  op=Ext.create('Ext.ux.netbox.core.Operator',"NUMBER_LESS_OR_EQUAL","<=");
+		  op.addValidateFn(noEmptyAllowed);
+		  this.addOperator(op);
+		  this.addOperator(Ext.create('Ext.ux.netbox.number.NumberRangeOperator',"NUMBER_RANGE"));
+		  this.rangeOperator="NUMBER_RANGE";
+		  this.decimalPrecision=10;
+	},
+	
+  completeEdit: function(cellEditor) {
+	  if (cellEditor!=null) cellEditor.completeEdit();
+  },
+  
+  completeEditors: function() {
+	  this.completeEdit(this.numberCellFieldEditor);
+	  this.completeEdit(this.rangeFieldCellEditor);
+  },
+	    
+  getEditor: function(operatorId,filter,editorId) {
+	  if (operatorId!=this.rangeOperator) {
+		  if (this.numberCellFieldEditor===undefined) {
+			  var numberFieldEditor=Ext.create('Ext.form.NumberField',{decimalPrecision: this.decimalPrecision,
+				                                                       setValue: function (value) {
+				  															if (Ext.isArray(value)) {
+				  																value=value[0];
+				  															}
+				  															Ext.form.NumberField.superclass.setValue.call(this,value);
+			                                                           } 
+			                                                          });
+			  
+			  this.numberFieldCellEditor=Ext.create('Ext.grid.CellEditor', {
+                	                                                         editorId: editorId,
+                                                                             field: numberFieldEditor
+                                                                            }); 
+		  }
+		  return this.numberFieldCellEditor;
+	  } else {
+		  if (this.rangeFieldCellEditor===undefined) {
+			  var rangeFieldEditor=Ext.create('Ext.ux.netbox.core.RangeEditor',{
+			      textCls: "Ext.form.NumberField",
+			      fromConfig: {decimalPrecision: this.decimalPrecision},
+			      toConfig: {decimalPrecision: this.decimalPrecision}
+			    });
+			  this.rangeFieldCellEditor=Ext.create('Ext.grid.CellEditor', {
+                                                                           editorId: editorId,
+                                                                           field: rangeFieldEditor
+                                                                          }); 
+		  }
+		  return this.rangeFieldCellEditor;
+	  }
+  },
 
 });

@@ -17,50 +17,45 @@ Ext.namespace('Ext.ux.netbox.core');
   * @extends Ext.ux.netbox.FilterEditor
   */
 
-Ext.ux.netbox.core.AvailableValuesEditor=function(store,config){
+Ext.define('Ext.ux.netbox.core.AvailableValuesEditor', {
+	extend: 'Ext.ux.netbox.FilterEditor',
+	constructor: function(store,config) {
+	  if(config==undefined){
+		    config={};
+		  }
+		  var mode='local';
+		  if(config.remote==true)
+		    mode='remote';
+		  if(config.multiSelect==undefined){
+		    config.multiSelect=false;
+		  }
+		  this.fieldCombo=Ext.create('Ext.ux.Andrie.Select',{
+		    store         : store,
+		    displayField  : 'label',
+		    valueField    : 'value',
+		    selectOnFocus : true,
+		    mode          : mode,
+		    triggerAction : 'all',
+		    selectOnFocus : true,
+		    typeAhead     : true,
+		    multiSelect   : config.multiSelect,
+		    minChars      : 0
+		  });
+		  if(!config.multiSelect){
+		    this.fieldCombo.on('select',this.completeEditLater,this);
+		  }
+		  if(config.forceReload){
+		    this.fieldCombo.on("beforequery",function(qe){ qe.combo.lastQuery = null; });
+		  }
+		  if(config.caseSensitive)
+		    this.caseSensitive=true;
+		  else
+		    this.caseSensitive=false;
+		  Ext.ux.netbox.core.AvailableValuesEditor.superclass.constructor.call(this,this.fieldCombo,config);
+		  this.store=store;
+   },
 
-  if(config==undefined){
-    config={};
-  }
-  var mode='local';
-  if(config.remote==true)
-    mode='remote';
-  if(config.multiSelect==undefined){
-    config.multiSelect=false;
-  }
-  this.fieldCombo=new Ext.ux.Andrie.Select({
-    store         : store,
-    displayField  : 'label',
-    valueField    : 'value',
-    selectOnFocus : true,
-    mode          : mode,
-    triggerAction : 'all',
-    selectOnFocus : true,
-    typeAhead     : true,
-    multiSelect   : config.multiSelect,
-    minChars      : 0
-  });
-  if(!config.multiSelect){
-    this.fieldCombo.on('select',this.completeEditLater,this);
-  }
-  if(config.forceReload){
-    this.fieldCombo.on("beforequery",function(qe){ qe.combo.lastQuery = null; });
-  }
-  if(config.caseSensitive)
-    this.caseSensitive=true;
-  else
-    this.caseSensitive=false;
-  Ext.ux.netbox.core.AvailableValuesEditor.superclass.constructor.call(this,this.fieldCombo,config);
-  this.store=store;
-}
-
-Ext.extend(Ext.ux.netbox.core.AvailableValuesEditor,Ext.ux.netbox.FilterEditor,/** @scope Ext.ux.netbox.core.AvailableValuesEditor.prototype */{
-
-  /** This method sets the value. This means that it sets the value of the inner combo.
-    * If the value is an array with at least one element, the value to set is the array of the given elements.
-    * Otherwise the value will be the empty string.
-    * @param {Object} value The value to set.
-    */
+  
   setValue: function(value){
     var val=[];
     var rawVal=[];
@@ -80,28 +75,19 @@ Ext.extend(Ext.ux.netbox.core.AvailableValuesEditor,Ext.ux.netbox.FilterEditor,/
     this.originalValue=value;
 
     Ext.ux.netbox.core.AvailableValuesEditor.superclass.setValue.call(this,val);
-    /* Hack to show the right label even if the store is not loaded.*/
+    
     Ext.form.ComboBox.superclass.setValue.call(this.fieldCombo,rawVal.join(","));
     this.fieldCombo.value=val;
     this.fieldCombo.rawValueArray=rawVal;
   },
   
-  /** This is a hack. If I stop editing on the select event, the gridpanel will scroll to the first row if there is a scrollbar.
-    * The reason is that the ComboBox will request the focus after the event, even if it's not visible 
-    * (the editor that contains the combo is already hidden)
-    * I delay the complete of the editing at the end of the browser event queue (0 milliseconds of delay), to avoid the problem
-    * @provate
-    * @ignore
-    */
+  
   completeEditLater: function(){
-    var task=new Ext.util.DelayedTask(this.completeEdit,this);
+    var task=Ext.create('Ext.util.DelayedTask',this.completeEdit,this);
     task.delay(0);
   },
   
-  /** This method gets the value. It searches the values in the store to have, with the values, the labels. If the store is not loaded,
-    * since the user didn't modify the value, it returns the original value.
-    * @return {Array} An array ob objects in the format {label:..., value:...}
-    */
+  
   getValue: function() {
     var val=Ext.ux.netbox.core.AvailableValuesEditor.superclass.getValue.call(this);
     if(Ext.type(val)=='string'){

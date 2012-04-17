@@ -83,6 +83,9 @@
         },{
           "text": "PreferenceManagerView.js",
             "path": "src/netbox/"
+        },{
+          "text": "InputTextMask.js",
+            "path": "src/netbox/"
         }]
     },{
     	"name": "Cherry On Ext string",
@@ -111,6 +114,27 @@
         },{
           "text": "NumberField.js",
             "path": "src/netbox/number/"
+        },{
+          "text": "EnumIntField.js",
+            "path": "src/netbox/number/"
+        },{
+          "text": "EnumLongField.js",
+            "path": "src/netbox/number/"
+        },{
+          "text": "IntField.js",
+            "path": "src/netbox/number/"
+        },{
+          "text": "LongField.js",
+            "path": "src/netbox/number/"
+        },{
+          "text": "NumberRangeOperator.js",
+            "path": "src/netbox/number/"
+        },{
+          "text": "RangeEditor.js",
+            "path": "src/netbox/number/"
+        },{
+          "text": "RangeMenu.js",
+            "path": "src/netbox/number/"
         }]
     },{
     	"name": "Cherry On Ext date",
@@ -124,6 +148,24 @@
             "path": "src/netbox/date/"
         },{
           "text": "DateField.js",
+            "path": "src/netbox/date/"
+        },{
+          "text": "DateOperator.js",
+            "path": "src/netbox/date/"
+        },{
+          "text": "DatePeriodOperator.js",
+            "path": "src/netbox/date/"
+        },{
+          "text": "DateRangeEditor.js",
+            "path": "src/netbox/date/"
+        },{
+          "text": "DateRangeOperator.js",
+            "path": "src/netbox/date/"
+        },{
+          "text": "DateTimeEditor.js",
+            "path": "src/netbox/date/"
+        },{
+          "text": "RangeEditor.js",
             "path": "src/netbox/date/"
         }]
     },{

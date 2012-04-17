@@ -2,6 +2,7 @@
  * German translation done by Thorsten Müller, Bonn, www.terrestris.de
  */
 
+
 if(Ext.ux.netbox.core.DynamicFilterModelView){
    Ext.apply(Ext.ux.netbox.core.DynamicFilterModelView.prototype, {
       deleteText        : 'Löschen',
@@ -47,13 +48,6 @@ if(Ext.ux.netbox.core.RangeMenu){
       fromText : 'von',
       toText   : 'bis'
    });
-}
-
-if(Ext.ux.netbox.core.RangeItem){
-  Ext.apply(Ext.ux.netbox.core.RangeItem.prototype, {
-     fromText : 'von',
-     toText   : 'bis'
-  });
 }
 
 if(Ext.ux.netbox.core.RangeField){
@@ -132,4 +126,57 @@ if(Ext.ux.netbox.DefaultPreferenceManagerErrorManager){
   });
 }
 
+if(Ext.ux.netbox.date.RangeEditor){
+  Ext.apply(Ext.ux.netbox.date.RangeEditor.prototype, {
+	     fromText : 'von',
+	     toText   : 'bis'
+  });
+}
+
+if(Ext.ux.netbox.date.DateField){
+  Ext.apply(Ext.ux.netbox.date.DateField.prototype, {
+      periodText  : "Zeitraum",
+      yearText    : "letztes Jahr",
+      monthText   : "letzter Monat",
+      weekText    : "letzte Woche",
+      dayText     : "letzter Tag",
+      hourText    : "letzte Stunde",
+      quarterText : "letzte Viertelstunde",
+      valueNotExpected: "kein gültiger Wert"
+  });
+}
+
+if(Ext.ux.netbox.string.EnumField){
+  Ext.apply(Ext.ux.netbox.string.EnumField.prototype, {
+	     stringEqualsLabel: "=",
+	     stringDifferentLabel: "!=",
+	     containsText: "enthält",
+	     doesntContainsText: "enthält nicht",
+	     startsWithText: "beginnt mit",
+	     endsWithText: "endet mit",
+	     stringListText: "in Liste",
+	     stringNotListText: "nicht in Liste",
+	     emptyNotAllowed: "Wert darf nicht leer sein"
+  });
+}
+
+if(Ext.ux.netbox.number.EnumIntField){
+  Ext.apply(Ext.ux.netbox.number.EnumIntField.prototype, {
+	     stringEqualsLabel: "=",
+	     stringDifferentLabel: "!=",
+	     containsText: "enthält",
+	     doesntContainsText: "enthält nicht",
+	     startsWithText: "beginnt mit",
+	     endsWithText: "endet mit",
+	     stringListText: "in Liste",
+	     stringNotListText: "nicht in Liste",
+	     emptyNotAllowed: "Wert darf nicht leer sein"
+  });
+}
+
+if(Ext.ux.netbox.date.DateTimeEditor){
+	  Ext.apply(Ext.ux.netbox.date.DateTimeEditor.prototype, {
+		  selectText: "Schließen"
+	  });
+}
 
